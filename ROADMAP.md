@@ -9,7 +9,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | Phase | Parent issue | Branch | Status |
 | --- | --- | --- | --- |
 | P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Complete |
-| P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Closeout |
+| P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
 | P2 Evidence and source attribution model | TBD | `feature/p2-evidence-source-attribution` | Planned |
 | P3 Canonical data pipeline | TBD | `feature/p3-canonical-data-pipeline` | Planned |
 | P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
@@ -76,7 +76,7 @@ Parent issue: #7
 
 Branch: `feature/p1-seed-inventory-normalization`
 
-Status: closeout
+Status: complete
 
 Goal: unpack seed archives into ignored local space, document source/provenance
 inventory, define workbook normalization contracts, and add package-backed
@@ -103,12 +103,12 @@ artifacts into the public repository.
   - [x] Preserve excluded-source, duplicate-ID, and evidence-confidence checks.
   - [x] Add workbook validation entry points.
   - [x] Add text and JSON CLI output where useful.
-- [ ] P1.5 Docs, issues, and closeout (#12)
+- [x] P1.5 Docs, issues, and closeout (#12)
   - [x] Document normalization workflow and public-safe data handling.
   - [x] Update roadmap and changelog.
   - [x] Run local acceptance commands.
-  - [ ] Comment on child issues and parent issue with verification result.
-  - [ ] Commit and push branch.
+  - [x] Comment on child issues and parent issue with verification result.
+  - [x] Commit and push branch.
   - [x] Open PR to `main` (#13).
 
 Phase 1 local verification passed with:
