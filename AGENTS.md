@@ -20,8 +20,11 @@ standard until a source supports them.
 
 ## Current Repo State
 
-This repository has completed Phase 0 bootstrap and is implementing Phase 1 seed
-archive inventory and normalization contracts. It contains:
+This repository has completed Phase 0 bootstrap and Phase 1 seed archive
+inventory and normalization contracts. Phase 2 evidence and source attribution
+work is planned on `feature/p2-evidence-source-attribution` but is not complete
+until the roadmap tasks, issue records, implementation, verification, PR, CI,
+merge, and issue closeout all say so. The repository contains:
 
 - `README.md`: concise public overview and current status.
 - `ROADMAP.md`: phase/task roadmap and issue tracker map.
@@ -115,6 +118,34 @@ Use this workflow for active development from the first phase boundary onward:
 - Close the parent issue only after the PR has merged back to `main`.
 - Do not start a new active parent issue and branch until the current parent
   issue is closed unless the maintainer explicitly approves a parallel lane.
+
+## Phase Closeout Readiness Standard
+
+When the maintainer asks whether a roadmap phase is ready for closeout, answer
+with an evidence-backed audit, not a guess or a summary of recent activity. A
+phase is not ready for closeout merely because planning notes exist, a branch is
+clean, or tests passed once.
+
+Before saying a phase is ready for closeout, verify and report all of these:
+
+- `ROADMAP.md` lists the phase as active or complete with real issue numbers,
+  not `TBD` placeholders.
+- The GitHub parent issue exists and each roadmap task has a child issue.
+- Each child issue checklist is complete, or each deferral is explicit and
+  accepted in the issue body and roadmap.
+- The phase implementation exists in repo code, docs, schemas, tests, or
+  planning artifacts as required by the roadmap task wording.
+- Required tests and acceptance commands have passed after the final phase
+  changes.
+- `CHANGE_LOG.md`, planning notes, issue comments, and PR text are synchronized.
+- A PR exists from the phase branch to `main`, CI is green, and any PR number is
+  recorded where required.
+- The parent issue is not closed until the PR is merged to `main`.
+
+If any item is missing, say the phase is **not ready for closeout** and list the
+missing items plainly. Use wording such as `planning groundwork is ready` only
+when the work is genuinely planning-only, and do not call that phase closeout
+readiness unless the roadmap phase itself is defined as planning-only.
 
 ## GitHub Issue Body Quality Standard
 
