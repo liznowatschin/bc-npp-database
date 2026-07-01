@@ -13,6 +13,8 @@ database for coastal British Columbia.
    project-brief
    data-standards
    source-policy
+   seed-archives
+   workbook-normalization
    flagship-species
    roadmap
    release-checklist

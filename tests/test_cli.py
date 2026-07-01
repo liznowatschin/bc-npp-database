@@ -1,3 +1,4 @@
+from openpyxl import Workbook
 from typer.testing import CliRunner
 
 from bc_npp_database.cli import app
@@ -29,3 +30,32 @@ def test_validate_source_policy_command_detects_excluded_url(tmp_path):
 
     assert result.exit_code == 1
     assert "Excluded source found" in result.stderr
+
+
+def test_inventory_workbook_json_command(tmp_path):
+    workbook_path = tmp_path / "fixture.xlsx"
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "Species_Master"
+    worksheet.append(["Species_ID", "Botanical_Name"])
+    workbook.save(workbook_path)
+
+    result = runner.invoke(app, ["inventory-workbook", str(workbook_path), "--json"])
+
+    assert result.exit_code == 0
+    assert '"Species_Master"' in result.stdout
+    assert '"Species_ID"' in result.stdout
+
+
+def test_validate_workbook_command_reports_missing_sheets(tmp_path):
+    workbook_path = tmp_path / "fixture.xlsx"
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "Species_Master"
+    worksheet.append(["Species_ID"])
+    workbook.save(workbook_path)
+
+    result = runner.invoke(app, ["validate-workbook", str(workbook_path), "--json"])
+
+    assert result.exit_code == 1
+    assert "missing_sheet" in result.stdout
