@@ -109,7 +109,7 @@ artifacts into the public repository.
   - [x] Run local acceptance commands.
   - [ ] Comment on child issues and parent issue with verification result.
   - [ ] Commit and push branch.
-  - [ ] Open PR to `main`.
+  - [x] Open PR to `main` (#13).
 
 Phase 1 local verification passed with:
 
@@ -118,6 +118,8 @@ Phase 1 local verification passed with:
 - `sphinx-build -b html docs _build/html -W`
 - `python -m build`
 - `twine check dist/*`
+
+Pull request #13 is the Phase 1 closeout PR against `main`.
 
 ## Phase 2: Evidence And Source Attribution Model
 

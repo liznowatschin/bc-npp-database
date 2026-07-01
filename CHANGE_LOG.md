@@ -40,3 +40,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   inspection.
 - Completed Phase 1 local acceptance verification with Ruff, pytest, Sphinx,
   build, and twine checks passing.
+- Opened pull request #13 for Phase 1 closeout.
