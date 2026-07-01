@@ -1,4 +1,7 @@
 from bc_npp_database.validate import (
+    diagnose_duplicate_species_ids,
+    diagnose_excluded_sources,
+    diagnose_invalid_evidence_confidence,
     find_duplicate_species_ids,
     find_excluded_sources,
     find_invalid_evidence_confidence,
@@ -40,3 +43,27 @@ def test_invalid_evidence_confidence_accepts_configured_values():
     invalid = find_invalid_evidence_confidence(rows)
     assert len(invalid) == 1
     assert invalid[0]["value"] == "Z"
+
+
+def test_validation_diagnostics_are_structured():
+    rows = [
+        {
+            "Species ID": "BCNPPD-0001",
+            "Evidence Level": "Z",
+            "Source": "https://vancouver.ca/files/cov/vancouver-gri-planting-guidelines.pdf",
+        },
+        {"Species ID": "BCNPPD-0001", "Evidence Level": "A"},
+    ]
+
+    diagnostics = [
+        *diagnose_excluded_sources(rows),
+        *diagnose_duplicate_species_ids(rows),
+        *diagnose_invalid_evidence_confidence(rows),
+    ]
+
+    assert {diagnostic.code for diagnostic in diagnostics} == {
+        "excluded_source",
+        "duplicate_species_id",
+        "invalid_evidence_confidence",
+    }
+    assert all(diagnostic.to_dict()["severity"] == "error" for diagnostic in diagnostics)

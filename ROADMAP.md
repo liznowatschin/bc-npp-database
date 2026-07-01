@@ -9,7 +9,11 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | Phase | Parent issue | Branch | Status |
 | --- | --- | --- | --- |
 | P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Complete |
-| P1 Workbook normalization foundation | TBD | `feature/p1-workbook-normalization` | Planned |
+| P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
+| P2 Evidence and source attribution model | TBD | `feature/p2-evidence-source-attribution` | Planned |
+| P3 Canonical data pipeline | TBD | `feature/p3-canonical-data-pipeline` | Planned |
+| P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
+| P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -66,38 +70,119 @@ the Phase 0 closeout PR against `main`.
 Future phases should be activated only after Phase 0 closeout unless the
 maintainer explicitly approves a parallel lane.
 
-## Phase 1: Workbook Normalization Foundation
+## Phase 1: Seed Archive Inventory And Normalization Contracts
+
+Parent issue: #7
+
+Branch: `feature/p1-seed-inventory-normalization`
+
+Status: complete
+
+Goal: unpack seed archives into ignored local space, document source/provenance
+inventory, define workbook normalization contracts, and add package-backed
+workbook inspection plus validation diagnostics without promoting unchecked raw
+artifacts into the public repository.
+
+- [x] P1.1 Seed archive unpack and inventory (#8)
+  - [x] Extract seed archives to ignored `local/seed/`.
+  - [x] Inventory docs, schemas, workbooks, raw PDFs/screenshots, and legacy code.
+  - [x] Record tracked, ignored, deferred, and candidate derivative dispositions.
+  - [x] Confirm raw source artifacts remain ignored.
+- [x] P1.2 Workbook inventory and normalization contract (#9)
+  - [x] Inventory latest tracked workbook snapshot.
+  - [x] Map workbook sheets to intended canonical tables.
+  - [x] Record naming, ID, evidence confidence, and source attribution conventions.
+  - [x] Identify values that must remain `Unknown` or blank.
+- [x] P1.3 Workbook reader and synthetic fixtures (#10)
+  - [x] Add package-backed workbook inspection helpers.
+  - [x] Add synthetic workbook fixture builders for tests.
+  - [x] Avoid CI dependence on legacy workbook contents.
+  - [x] Document malformed workbook behavior.
+- [x] P1.4 Validation records and CLI (#11)
+  - [x] Replace loose validation dictionaries with typed diagnostic records.
+  - [x] Preserve excluded-source, duplicate-ID, and evidence-confidence checks.
+  - [x] Add workbook validation entry points.
+  - [x] Add text and JSON CLI output where useful.
+- [x] P1.5 Docs, issues, and closeout (#12)
+  - [x] Document normalization workflow and public-safe data handling.
+  - [x] Update roadmap and changelog.
+  - [x] Run local acceptance commands.
+  - [x] Comment on child issues and parent issue with verification result.
+  - [x] Commit and push branch.
+  - [x] Open PR to `main` (#13).
+
+Phase 1 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+
+Pull request #13 is the Phase 1 closeout PR against `main`.
+
+## Phase 2: Evidence And Source Attribution Model
 
 Parent issue: TBD
 
-Branch: `feature/p1-workbook-normalization`
+Branch: `feature/p2-evidence-source-attribution`
 
 Status: planned
 
-Goal: convert the latest approved workbook snapshot and schema seeds into
-structured, reproducible tables with validation coverage while preserving
-source uncertainty and workbook traceability.
+Goal: define durable source, evidence, reference ID, and attribution records
+that support auditable ecological claims.
 
-- [ ] P1.1 Workbook inventory and normalization design (TBD)
-  - [ ] Document sheet inventory for the latest tracked workbook snapshot.
-  - [ ] Map workbook sheets to normalized CSV/table outputs.
-  - [ ] Record field naming, ID, evidence confidence, and source attribution
-        conventions.
-  - [ ] Identify values that must remain `Unknown` or blank.
-- [ ] P1.2 Workbook reader and CSV export prototype (TBD)
-  - [ ] Add package-backed workbook reading helpers.
-  - [ ] Export selected sheets into deterministic CSV outputs.
-  - [ ] Keep generated outputs out of git unless explicitly approved.
-  - [ ] Add tests using small synthetic workbook fixtures.
-- [ ] P1.3 Expanded validation records and CLI output (TBD)
-  - [ ] Replace ad hoc validation dictionaries with typed validation records.
-  - [ ] Add workbook/CSV validation entry points.
-  - [ ] Preserve excluded-source, duplicate-ID, and evidence-confidence checks.
-  - [ ] Add CLI JSON output where useful for agents and CI.
-- [ ] P1.4 Documentation and closeout (TBD)
-  - [ ] Document normalization workflow and public-safe data handling.
-  - [ ] Update roadmap and changelog.
-  - [ ] Run local acceptance commands.
-  - [ ] Comment on child issues and parent issue with verification result.
-  - [ ] Commit and push branch.
-  - [ ] Open PR to `main`.
+- [ ] P2.1 Source tier and reference ID contract (TBD)
+- [ ] P2.2 Source attribution table and validation model (TBD)
+- [ ] P2.3 Excluded-source and source-completeness enforcement (TBD)
+- [ ] P2.4 Docs, examples, and closeout (TBD)
+
+## Phase 3: Canonical Data Pipeline
+
+Parent issue: TBD
+
+Branch: `feature/p3-canonical-data-pipeline`
+
+Status: planned
+
+Goal: convert approved workbook and schema inputs into deterministic canonical
+tables and import/export APIs while keeping generated outputs out of git unless
+explicitly approved.
+
+- [ ] P3.1 Canonical table dataclasses and schema helpers (TBD)
+- [ ] P3.2 Workbook-to-table import pipeline (TBD)
+- [ ] P3.3 Deterministic CSV/export workflow (TBD)
+- [ ] P3.4 Docs, examples, and closeout (TBD)
+
+## Phase 4: Scoring Framework
+
+Parent issue: TBD
+
+Branch: `feature/p4-scoring-framework`
+
+Status: planned
+
+Goal: document and implement evidence-aware UNI, PSI, and RVI score framework
+placeholders without inventing unsupported ecological values.
+
+- [ ] P4.1 Score vocabulary and weighting direction (TBD)
+- [ ] P4.2 Evidence-aware score calculation records (TBD)
+- [ ] P4.3 Score diagnostics and CLI/reporting surfaces (TBD)
+- [ ] P4.4 Docs, examples, and closeout (TBD)
+
+## Phase 5: v1.0.0a Foundation Record And Release
+
+Parent issue: TBD
+
+Branch: `feature/p5-v1-foundation-release`
+
+Status: planned
+
+Goal: produce a reviewed v1.0.0a foundation release with frozen schema
+direction, one gold-standard `Achillea millefolium` record, docs, verification,
+and GitHub release artifacts.
+
+- [ ] P5.1 Foundation schema freeze and release checklist (TBD)
+- [ ] P5.2 Gold-standard `Achillea millefolium` record workflow (TBD)
+- [ ] P5.3 Public docs and examples hardening (TBD)
+- [ ] P5.4 GitHub alpha release closeout (TBD)

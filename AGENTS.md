@@ -20,7 +20,8 @@ standard until a source supports them.
 
 ## Current Repo State
 
-This repository is in Phase 0 bootstrap. It contains:
+This repository has completed Phase 0 bootstrap and is implementing Phase 1 seed
+archive inventory and normalization contracts. It contains:
 
 - `README.md`: concise public overview and current status.
 - `ROADMAP.md`: phase/task roadmap and issue tracker map.
@@ -28,17 +29,22 @@ This repository is in Phase 0 bootstrap. It contains:
 - `planning/`: focused design notes and provenance records.
 - `pyproject.toml`: package metadata and optional dependency groups.
 - `src/bc_npp_database/`: importable package code for CLI and validation.
+- `src/bc_npp_database/workbooks.py`: read-only workbook inspection and
+  validation helpers.
+- `src/bc_npp_database/seed_archives.py`: seed archive inventory helpers.
 - `tests/`: package-backed tests for package metadata, CLI behavior, docs, and
   validation.
 - `docs/`: Sphinx documentation skeleton.
 - `schemas/`: seed schema and lookup CSV files.
 - `data/workbooks/`: legacy workbook snapshots retained for traceability.
+- `local/seed/`: ignored local extraction area for seed archives.
 - `.github/workflows/`: CI, docs, and release-artifact checks.
 - `tmp/`: ignored local working area for notes, experiments, and source bundles.
 
 Do not claim that BC-NPPD already implements full workbook normalization, score
-calculation, source ingestion, dashboard generation, or species research records
-until those capabilities are implemented and recorded in the roadmap.
+calculation, source ingestion, dashboard generation, canonical CSV export, or
+species research records until those capabilities are implemented and recorded
+in the roadmap.
 
 ## Data And Source Rules
 

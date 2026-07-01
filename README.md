@@ -62,6 +62,8 @@ twine check dist/*
 bc-nppd --version
 bc-nppd info
 bc-nppd validate-source-policy path/to/source-notes.txt
+bc-nppd inventory-workbook data/workbooks/native_plant_restoration_workbook_v1.0.0c.xlsx
+bc-nppd validate-workbook data/workbooks/native_plant_restoration_workbook_v1.0.0c.xlsx --json
 ```
 
 The CLI commands are thin wrappers over package APIs.

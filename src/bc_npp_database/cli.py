@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import typer
@@ -9,6 +10,7 @@ import typer
 from . import __version__
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
 from .validate import find_excluded_sources
+from .workbooks import inventory_workbook, validate_workbook
 
 app = typer.Typer(help="BC Native Plant & Pollinator Database tools.", no_args_is_help=True)
 
@@ -53,3 +55,41 @@ def validate_source_policy(path: Path) -> None:
             )
         raise typer.Exit(code=1)
     typer.echo(f"No excluded sources found in {path}.")
+
+
+@app.command("inventory-workbook")
+def inventory_workbook_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Print a read-only workbook sheet inventory."""
+    inventory = inventory_workbook(path)
+    if json_output:
+        typer.echo(json.dumps(inventory.to_dict(), indent=2))
+        return
+    typer.echo(f"Workbook: {inventory.path}")
+    for sheet in inventory.sheets:
+        headers = ", ".join(header for header in sheet.headers if header)
+        rows = sheet.max_row if sheet.max_row is not None else "unknown"
+        columns = sheet.max_column if sheet.max_column is not None else "unknown"
+        typer.echo(f"- {sheet.name}: {rows} rows x {columns} columns")
+        if headers:
+            typer.echo(f"  headers: {headers}")
+
+
+@app.command("validate-workbook")
+def validate_workbook_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate workbook readability and expected foundation sheets."""
+    diagnostics = validate_workbook(path)
+    if json_output:
+        typer.echo(json.dumps([diagnostic.to_dict() for diagnostic in diagnostics], indent=2))
+    elif diagnostics:
+        for diagnostic in diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Workbook validation passed for {path}.")
+    if any(diagnostic.severity.value == "error" for diagnostic in diagnostics):
+        raise typer.Exit(code=1)
