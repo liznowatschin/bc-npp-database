@@ -23,3 +23,5 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   pytest, Sphinx, build, and twine checks passing.
 - Committed and pushed the Phase 0 bootstrap branch
   `feature/p0-bootstrap-scaffold`.
+- Backfilled Phase 0 GitHub issue records: parent issue #1 and child task
+  issues #2 through #5.

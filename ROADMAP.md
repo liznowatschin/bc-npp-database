@@ -8,38 +8,38 @@ synchronized with GitHub issues, planning notes, pull requests, and
 
 | Phase | Parent issue | Branch | Status |
 | --- | --- | --- | --- |
-| P0 Bootstrap scaffold | TBD | `feature/p0-bootstrap-scaffold` | Complete |
+| P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Closeout |
 | P1 Workbook normalization foundation | TBD | `feature/p1-workbook-normalization` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
 
-Parent issue: TBD
+Parent issue: #1
 
 Branch: `feature/p0-bootstrap-scaffold`
 
-Status: complete
+Status: closeout
 
 Goal: establish BC-NPPD as a public-safe, package-backed UBC-FRESH project with
 strict governance, planning, docs, CI, source policy checks, and traceable
 legacy artifact migration.
 
-- [x] P0.1 Governance, public hygiene, and agent contract (TBD)
+- [x] P0.1 Governance, public hygiene, and agent contract (#2)
   - [x] Add public governance files.
   - [x] Add roadmap and changelog with Phase 0 issue placeholders.
   - [x] Add bootstrap rationale planning note.
   - [x] Document strict issue and roadmap workflow in `AGENTS.md`.
-- [x] P0.2 Python package, CLI, and minimal validation API (TBD)
+- [x] P0.2 Python package, CLI, and minimal validation API (#3)
   - [x] Add package metadata and dependency extras.
   - [x] Add minimal package module and CLI.
   - [x] Add source policy, species ID, and evidence confidence validation.
   - [x] Add focused tests.
-- [x] P0.3 Documentation, CI, Pages, and release-artifact scaffold (TBD)
+- [x] P0.3 Documentation, CI, Pages, and release-artifact scaffold (#4)
   - [x] Add Sphinx configuration and docs pages.
   - [x] Add CI workflow for Python 3.11 and 3.12.
   - [x] Add docs Pages workflow.
   - [x] Add release artifact workflow.
   - [x] Add tests for docs configuration import sanity.
-- [ ] P0.4 Legacy artifact migration and closeout verification (TBD)
+- [ ] P0.4 Legacy artifact migration and closeout verification (#5)
   - [x] Track cleaned public-safe docs, schema seeds, and workbook snapshots.
   - [x] Keep raw PDFs, screenshots, private data, and local scratch ignored.
   - [x] Run local acceptance commands.
@@ -58,12 +58,9 @@ Phase 0 local verification passed with:
 - `python -m build`
 - `twine check dist/*`
 
-GitHub issues are not created yet, so issue comments remain not applicable for
-this repo-side bootstrap closeout.
-
 Branch push completed for `feature/p0-bootstrap-scaffold`. Pull request creation
-is pending because the remote currently has no `main` branch and GitHub CLI is
-not installed in this shell.
+is pending until the empty `main` baseline branch is created and set as the
+repository default.
 
 ## Future Phase Candidates
 
