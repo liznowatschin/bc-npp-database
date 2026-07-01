@@ -1,0 +1,4 @@
+include README.md
+include CHANGE_LOG.md
+include LICENSE
+recursive-include schemas *.csv

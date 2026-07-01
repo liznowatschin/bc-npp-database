@@ -1,0 +1,44 @@
+lookup_name,value
+Life Cycle,Annual
+Life Cycle,Biennial
+Life Cycle,Perennial
+Life Cycle,Unknown
+Sun,Full Sun
+Sun,Part Shade
+Sun,Full Shade
+Sun,Sun–Part Shade
+Sun,Part Shade–Shade
+Soil Moisture,Dry
+Soil Moisture,Dry–Moist
+Soil Moisture,Moist
+Soil Moisture,Moist–Wet
+Soil Moisture,Wet
+Plant Type,Forb
+Plant Type,Bulb
+Plant Type,Grass
+Plant Type,Sedge
+Plant Type,Rush
+Plant Type,Fern
+Plant Type,Groundcover
+Growth Habit,Clumping
+Growth Habit,Mat-forming
+Growth Habit,Upright
+Growth Habit,Creeping
+Growth Habit,Tufted
+Growth Habit,Rosette
+Growth Habit,Rhizomatous
+Evidence Level,A
+Evidence Level,B
+Evidence Level,C
+Evidence Level,D
+Evidence Level,Mixed
+Suitability,Yes
+Suitability,No
+Suitability,Conditional
+Suitability,Unknown
+Score,0
+Score,1
+Score,2
+Score,3
+Score,4
+Score,5
