@@ -51,3 +51,6 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Added figrecover to the P2 integration planning layer as an optional
   media-derived evidence adapter with explicit review gates, provenance fields,
   and public-data hygiene boundaries.
+- Inspected the ignored local `tmp/LMH77.pdf` source with PyMuPDF, confirmed it
+  is born-digital and text-extractable, recorded key metadata and initial
+  `Achillea millefolium`/yarrow page hits, and added an LMH77 extraction plan.
