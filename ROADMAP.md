@@ -531,7 +531,8 @@ metadata, attribution rows, evidence gaps, score readiness, and caveats.
   - [x] Update docs, README, roadmap, and changelog.
   - [x] Add tests for detail records and static HTML behavior markers.
   - [x] Run full local acceptance.
-  - [ ] Open PR, merge after green CI, and close issues.
+  - [x] Open PR and record the PR number (#60).
+  - [ ] Merge after green CI and close issues.
 
 Phase 9 local verification passed with:
 
@@ -544,3 +545,5 @@ Phase 9 local verification passed with:
 The tracked usability artifact with embedded detail records validates with:
 
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
+
+Pull request #60 is the Phase 9 closeout PR against `main`.

@@ -223,3 +223,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   caveats for each plant.
 - Completed Phase 9 implementation local acceptance verification with Ruff,
   pytest, Sphinx, build, and twine checks passing.
+- Opened pull request #60 for Phase 9 closeout.
