@@ -143,7 +143,7 @@ that support auditable ecological claims.
 - [x] P2.2 Source attribution table, materialization, media-extraction manifest,
       and validation model (#16)
 - [x] P2.3 Excluded-source, source-completeness, and external-ID enforcement (#17)
-- [ ] P2.4 Integration-hook docs, examples, and closeout (#18)
+- [x] P2.4 Integration-hook docs, examples, and closeout (#18)
 
 Phase 2 local verification passed with:
 
@@ -152,6 +152,8 @@ Phase 2 local verification passed with:
 - `sphinx-build -b html docs _build/html -W`
 - `python -m build`
 - `twine check dist/*`
+
+Pull request #19 is the Phase 2 closeout PR against `main`.
 
 ## Phase 3: Canonical Data Pipeline
 

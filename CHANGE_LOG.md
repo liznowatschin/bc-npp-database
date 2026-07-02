@@ -65,3 +65,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   and review gates.
 - Completed Phase 2 implementation local acceptance verification with Ruff,
   pytest, Sphinx, build, and twine checks passing.
+- Opened pull request #19 for Phase 2 closeout.
