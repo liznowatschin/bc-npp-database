@@ -250,3 +250,15 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   prerelease with both wheel and source distribution artifacts attached:
   https://github.com/UBC-FRESH/bc-npp-database/releases/tag/v0.1.0a1
 - Closed Phase 10 as complete.
+- Started Phase 11 pollinator evidence-review module on
+  `feature/p11-pollinator-module`.
+- Created Phase 11 GitHub issue records: parent issue #66 and child issues
+  #67 through #69.
+- Added a pollinator module that materializes the Vancouver PoC pollinator
+  review queue as explicit review rows, source requirements, and evidence gaps
+  while keeping PSI `not_ready`.
+- Added tracked Vancouver pollinator module artifacts under
+  `data/poc/vancouver/pollinator_module/`.
+- Added pollinator module docs, tests, generation CLI, and validation CLI.
+- Completed Phase 11 local acceptance verification with Ruff, pytest, Sphinx,
+  build, twine, and the pollinator module validator passing.

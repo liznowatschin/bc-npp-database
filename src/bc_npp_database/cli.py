@@ -27,6 +27,13 @@ from .foundation import (
 from .foundation import (
     validate_foundation_dir,
 )
+from .pollinators import (
+    generate_vancouver_pollinator_module,
+    validate_vancouver_pollinator_module,
+)
+from .pollinators import (
+    has_error_diagnostics as has_pollinator_error_diagnostics,
+)
 from .scoring import (
     calculate_scores,
     validate_score_inputs,
@@ -380,6 +387,46 @@ def validate_vancouver_usability_command(
     else:
         typer.echo(f"Vancouver usability validation passed for {path}.")
     if has_usability_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("generate-vancouver-pollinator-module")
+def generate_vancouver_pollinator_module_command(
+    usability_dir: Path,
+    out_dir: Path = typer.Option(
+        ...,
+        "--out-dir",
+        help="Output directory for pollinator review artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Generate pollinator evidence-review artifacts for the Vancouver PoC."""
+    result = generate_vancouver_pollinator_module(usability_dir, out_dir)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated Vancouver pollinator module artifacts at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_pollinator_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-vancouver-pollinator-module")
+def validate_vancouver_pollinator_module_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate Vancouver pollinator evidence-review artifacts."""
+    result = validate_vancouver_pollinator_module(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Vancouver pollinator module validation passed for {path}.")
+    if has_pollinator_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

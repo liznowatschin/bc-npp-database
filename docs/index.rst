@@ -20,6 +20,7 @@ database for coastal British Columbia.
    vancouver-poc-list
    evidence-hardening
    usability-layer
+   pollinator-module
    seed-archives
    workbook-normalization
    flagship-species

@@ -1,0 +1,8 @@
+requirement_id,pollinator_field,preferred_source_tiers,minimum_review_status,notes
+POL-SRC-001,bloom_period,Tier 1;Tier 2,accepted,"Use regional flora, phenology, or reviewed local observations."
+POL-SRC-002,floral_resources,Tier 1;Tier 2;Tier 3,accepted,"Record nectar, pollen, or both only when explicitly supported."
+POL-SRC-003,native_bee_support,Tier 1;Tier 2;Tier 3,accepted,Prefer peer-reviewed or expert regional plant-pollinator evidence.
+POL-SRC-004,butterfly_support,Tier 1;Tier 2;Tier 3,accepted,Separate adult nectar use from larval host claims.
+POL-SRC-005,hummingbird_support,Tier 1;Tier 2;Tier 3,accepted,Treat as absent or unknown unless source explicitly supports it.
+POL-SRC-006,specialist_relationships,Tier 1;Tier 2,accepted,Specialist relationships require explicit source attribution.
+POL-SRC-007,larval_host_use,Tier 1;Tier 2;Tier 3,accepted,Host use must name the insect group or taxon when available.

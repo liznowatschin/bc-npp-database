@@ -300,3 +300,36 @@ def test_validate_vancouver_usability_command_json():
     assert result.exit_code == 0
     assert '"use_case_views": 61' in result.stdout
     assert '"diagnostics": []' in result.stdout
+
+
+def test_generate_vancouver_pollinator_module_command_json(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "generate-vancouver-pollinator-module",
+            "data/poc/vancouver/usability",
+            "--out-dir",
+            str(tmp_path / "pollinators"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"pollinator_review": 20' in result.stdout
+    assert '"pollinator_evidence_gaps": 140' in result.stdout
+    assert (tmp_path / "pollinators" / "pollinator_review.csv").exists()
+
+
+def test_validate_vancouver_pollinator_module_command_json():
+    result = runner.invoke(
+        app,
+        [
+            "validate-vancouver-pollinator-module",
+            "data/poc/vancouver/pollinator_module",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"pollinator_source_requirements": 7' in result.stdout
+    assert '"diagnostics": []' in result.stdout

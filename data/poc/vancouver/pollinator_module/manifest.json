@@ -1,0 +1,15 @@
+{
+  "artifact_name": "Vancouver Pollinator Module",
+  "caveat": "Pollinator module rows are review scaffolding for the Vancouver PoC. They do not contain reviewed pollinator-support claims and are not PSI scores.",
+  "input_usability_dir": "data\\poc\\vancouver\\usability",
+  "pollinator_gap_count": 140,
+  "psi_policy": "PSI remains not_ready until accepted field-level pollinator evidence exists for score inputs.",
+  "public_hygiene": {
+    "external_downloads_required": false,
+    "private_data_tracked": false,
+    "raw_sources_tracked": false
+  },
+  "source_requirement_count": 7,
+  "species_count": 20,
+  "status": "pollinator_review_scaffold"
+}

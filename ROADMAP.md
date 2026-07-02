@@ -19,6 +19,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P8 Usability layer | #50 | `feature/p8-usability-layer` | Complete |
 | P9 Plant record detail interface | #56 | `feature/p9-plant-record-detail-interface` | Complete |
 | P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Complete |
+| P11 Pollinator evidence-review module | #66 | `feature/p11-pollinator-module` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -612,3 +613,42 @@ Release artifacts attached:
 
 - `bc_npp_database-0.1.0a1-py3-none-any.whl`
 - `bc_npp_database-0.1.0a1.tar.gz`
+
+## Phase 11: Pollinator Evidence-Review Module
+
+Parent issue: #66
+
+Branch: `feature/p11-pollinator-module`
+
+Status: active
+
+Goal: add a pollinator evidence-review module that materializes the Vancouver
+PoC pollinator review queue without inventing plant-pollinator claims or
+calculating PSI scores.
+
+- [x] P11.1 Pollinator review data contract and validators (#67)
+  - [x] Define pollinator review rows, evidence-gap rows, and source
+        requirement rows.
+  - [x] Validate species IDs, review statuses, PSI readiness, and required
+        files.
+  - [x] Preserve the no-invented-pollinator-claims evidence rule.
+- [x] P11.2 Vancouver pollinator artifact generation and CLI (#68)
+  - [x] Generate Vancouver pollinator module artifacts from the tracked
+        usability layer.
+  - [x] Add `bc-nppd generate-vancouver-pollinator-module`.
+  - [x] Add `bc-nppd validate-vancouver-pollinator-module`.
+  - [x] Track public-safe PoC pollinator module outputs.
+- [ ] P11.3 Docs, tests, acceptance, and closeout (#69)
+  - [x] Add Sphinx and artifact README documentation.
+  - [x] Add unit and CLI tests.
+  - [x] Run local acceptance.
+  - [ ] Open and close through PR after green CI.
+
+Phase 11 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (83 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
