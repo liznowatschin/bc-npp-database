@@ -361,7 +361,7 @@ diagnostics, and docs.
 - [ ] P6.4 Verification, PR, and closeout (#42)
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
-  - [ ] Open PR to `main` and record the PR number.
+  - [x] Open PR to `main` and record the PR number (#43).
   - [ ] Comment verification on issues and close child issues only after
         checklist bodies are accurate.
   - [ ] Merge only after green CI and then close the parent issue.
@@ -377,6 +377,8 @@ Phase 6 local verification passed with:
 The tracked PoC artifact validates with:
 
 - `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+
+Pull request #43 is the Phase 6 closeout PR against `main`.
 
 ## Phase 7: Evidence Hardening
 
