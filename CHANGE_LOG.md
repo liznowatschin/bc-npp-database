@@ -66,3 +66,5 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed Phase 2 implementation local acceptance verification with Ruff,
   pytest, Sphinx, build, and twine checks passing.
 - Opened pull request #19 for Phase 2 closeout.
+- Verified that pull request #19 passed CI for Python 3.11 and 3.12 before
+  merge.

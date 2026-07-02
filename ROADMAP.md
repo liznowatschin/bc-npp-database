@@ -155,6 +155,8 @@ Phase 2 local verification passed with:
 
 Pull request #19 is the Phase 2 closeout PR against `main`.
 
+Pull request #19 passed CI for Python 3.11 and Python 3.12 before merge.
+
 ## Phase 3: Canonical Data Pipeline
 
 Parent issue: TBD
