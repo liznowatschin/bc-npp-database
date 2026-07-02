@@ -21,6 +21,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Complete |
 | P11 Pollinator evidence-review module | #66 | `feature/p11-pollinator-module` | Complete |
 | P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Complete |
+| P13 Add Matricaria discoidea | #76 | `feature/p13-add-matricaria-discoidea` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -710,3 +711,42 @@ Pull request #75 is the Phase 12 closeout PR against `main`.
 Pull request #75 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #75 merged to `main` as merge commit `ab91eca`.
+
+## Phase 13: Add Matricaria discoidea
+
+Parent issue: #76
+
+Branch: `feature/p13-add-matricaria-discoidea`
+
+Status: active
+
+Goal: add `Matricaria discoidea` to the Vancouver PoC artifacts as an
+unreviewed user-requested expansion candidate, preserving evidence boundaries
+and regenerating downstream artifacts.
+
+- [x] P13.1 Add Matricaria discoidea candidate and audit row (#77)
+  - [x] Add the species as an unreviewed candidate if absent.
+  - [x] Preserve common/family/trait fields as blank or pending until sourced.
+  - [x] Add request audit disposition and source attribution traceability.
+- [x] P13.2 Regenerate downstream Vancouver artifacts (#78)
+  - [x] Regenerate P7 evidence hardening.
+  - [x] Regenerate P8 usability web app artifacts.
+  - [x] Regenerate P11 pollinator module artifacts.
+  - [x] Preserve `not_ready` score and PSI boundaries.
+- [ ] P13.3 Validation, PR, and closeout (#79)
+  - [x] Update tests and docs/counts.
+  - [x] Run local acceptance.
+  - [ ] Open PR and merge after green CI.
+  - [ ] Close issues after merge.
+
+Phase 13 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (83 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
+- `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`

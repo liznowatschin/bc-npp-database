@@ -1,7 +1,7 @@
 # Vancouver Plant List PoC
 
 This directory contains the first useful BC-NPPD product artifact: a caveated
-52-species Vancouver/CDF plant list. It includes the original tracked workbook
+53-species Vancouver/CDF plant list. It includes the original tracked workbook
 seed rows plus unreviewed user-submitted expansion candidates.
 
 Inspect:

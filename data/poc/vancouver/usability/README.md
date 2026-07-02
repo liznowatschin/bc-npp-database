@@ -3,7 +3,7 @@
 This directory contains the Phase 8 static usability layer for the Vancouver
 plant list proof of concept.
 
-Open `index.html` directly in a browser to inspect the 52-species PoC list with
+Open `index.html` directly in a browser to inspect the 53-species PoC list with
 search, candidate use-case filters, and click-to-open plant record details. No
 local server, external assets, or external data calls are required.
 

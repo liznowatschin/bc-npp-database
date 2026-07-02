@@ -2,10 +2,10 @@
   "artifact_name": "Vancouver Usability Layer",
   "input_hardening_dir": "data\\poc\\vancouver\\evidence_hardening",
   "status": "p8_static_usability_poc",
-  "plant_count": 52,
-  "use_case_membership_count": 93,
+  "plant_count": 53,
+  "use_case_membership_count": 94,
   "view_count": 6,
-  "detail_record_count": 52,
+  "detail_record_count": 53,
   "public_hygiene": {
     "raw_sources_tracked": false,
     "external_downloads_required": false,

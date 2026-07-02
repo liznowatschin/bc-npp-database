@@ -18,8 +18,8 @@ def test_generate_vancouver_usability_from_tracked_hardening(tmp_path):
 
     assert not has_error_diagnostics(result.diagnostics)
     assert result.counts == {
-        "plant_table": 52,
-        "use_case_views": 93,
+        "plant_table": 53,
+        "use_case_views": 94,
         "view_summary": 6,
     }
     assert (tmp_path / "usability" / "index.html").exists()
@@ -29,7 +29,7 @@ def test_tracked_vancouver_usability_validates_cleanly():
     result = validate_vancouver_usability(USABILITY_DIR)
 
     assert result.diagnostics == ()
-    assert result.counts["plant_table"] == 52
+    assert result.counts["plant_table"] == 53
     assert result.counts["view_summary"] == 6
 
 
@@ -47,7 +47,7 @@ def test_view_summary_preserves_candidate_and_insufficient_data_boundaries():
 
     assert rows["boulevard"]["candidate_count"] == "11"
     assert rows["pollinator_support"]["status"] == "review_queue"
-    assert rows["pollinator_support"]["candidate_count"] == "52"
+    assert rows["pollinator_support"]["candidate_count"] == "53"
     assert rows["low_growing"]["status"] == "insufficient_data"
     assert rows["low_growing"]["candidate_count"] == "0"
 
@@ -83,7 +83,7 @@ def test_static_html_embeds_detail_records_and_row_hooks():
     records = json.loads(html_lib.unescape(html[start:end]))
     achillea = records["BCNPPD-0001"]
 
-    assert len(records) == 52
+    assert len(records) == 53
     assert 'id="record-detail"' in html
     assert 'data-species-id="BCNPPD-0001"' in html
     assert 'row.addEventListener("click"' in html

@@ -18,8 +18,8 @@ def test_generate_vancouver_pollinator_module_from_tracked_usability(tmp_path):
 
     assert not has_error_diagnostics(result.diagnostics)
     assert result.counts == {
-        "pollinator_review": 52,
-        "pollinator_evidence_gaps": 364,
+        "pollinator_review": 53,
+        "pollinator_evidence_gaps": 371,
         "pollinator_source_requirements": 7,
     }
     assert (tmp_path / "pollinators" / "pollinator_review.csv").exists()
@@ -29,8 +29,8 @@ def test_tracked_vancouver_pollinator_module_validates_cleanly():
     result = validate_vancouver_pollinator_module(POLLINATOR_DIR)
 
     assert result.diagnostics == ()
-    assert result.counts["pollinator_review"] == 52
-    assert result.counts["pollinator_evidence_gaps"] == 52 * len(POLLINATOR_FIELDS)
+    assert result.counts["pollinator_review"] == 53
+    assert result.counts["pollinator_evidence_gaps"] == 53 * len(POLLINATOR_FIELDS)
 
 
 def test_pollinator_review_rows_keep_psi_not_ready():
@@ -49,7 +49,7 @@ def test_pollinator_gap_rows_are_unknown_and_need_review():
     ) as handle:
         rows = list(csv.DictReader(handle))
 
-    assert len(rows) == 364
+    assert len(rows) == 371
     assert {row["current_value"] for row in rows} == {"Unknown"}
     assert {row["review_status"] for row in rows} == {"needs_review"}
     assert {row["pollinator_field"] for row in rows} == set(POLLINATOR_FIELDS)

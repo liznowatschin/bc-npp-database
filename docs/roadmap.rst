@@ -45,7 +45,11 @@ Phase 11 adds a pollinator evidence-review module. It materializes the
 Vancouver PoC pollinator review queue as review rows, evidence gaps, source
 requirements, diagnostics, and CLI validation while keeping PSI ``not_ready``.
 
-Phase 12 expands the current tracked Vancouver PoC product to 52 species by
+Phase 12 expanded the tracked Vancouver PoC product to 52 species by
 adding unreviewed user-submitted expansion candidates, recording a request
 audit, and regenerating evidence-hardening, usability, and pollinator artifacts
 without treating the request as ecological evidence.
+
+Phase 13 adds ``Matricaria discoidea`` as an additional unreviewed
+user-requested expansion candidate and regenerates the current PoC product to
+53 species.

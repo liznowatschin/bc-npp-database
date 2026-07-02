@@ -1,2 +1,2 @@
 severity,code,message,row_number,field,value,context
-warning,usability_candidate_view_caveat,P8 usability views are candidate inspection aids. They preserve P7 evidence gaps and score-readiness blocks and are not final planting recommendations.,,,,"{""species_count"": 52}"
+warning,usability_candidate_view_caveat,P8 usability views are candidate inspection aids. They preserve P7 evidence gaps and score-readiness blocks and are not final planting recommendations.,,,,"{""species_count"": 53}"

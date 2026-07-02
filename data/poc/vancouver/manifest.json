@@ -2,9 +2,9 @@
     "poc_name":  "Vancouver Plant List PoC",
     "source_workbook":  "data\\workbooks\\native_plant_restoration_workbook_v1.0.0c.xlsx",
     "status":  "poc_candidate",
-    "species_count":  52,
+    "species_count":  53,
     "source_count":  25,
-    "source_attribution_count":  73,
+    "source_attribution_count":  74,
     "legacy_id_policy":  "CDF-0001 maps to BCNPPD-0001; legacy ID retained.",
     "public_hygiene":  {
                            "raw_sources_tracked":  false,

@@ -155,3 +155,6 @@ BCNPPD-0051,RVI,not_ready,PoC workbook suitability/toughness values are candidat
 BCNPPD-0052,UNI,not_ready,PoC workbook suitability/toughness values are candidate display values and are not accepted P4 score inputs.
 BCNPPD-0052,PSI,not_ready,PoC workbook suitability/toughness values are candidate display values and are not accepted P4 score inputs.
 BCNPPD-0052,RVI,not_ready,PoC workbook suitability/toughness values are candidate display values and are not accepted P4 score inputs.
+BCNPPD-0053,UNI,not_ready,PoC workbook suitability/toughness values are candidate display values and are not accepted P4 score inputs.
+BCNPPD-0053,PSI,not_ready,PoC workbook suitability/toughness values are candidate display values and are not accepted P4 score inputs.
+BCNPPD-0053,RVI,not_ready,PoC workbook suitability/toughness values are candidate display values and are not accepted P4 score inputs.

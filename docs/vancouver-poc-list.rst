@@ -2,7 +2,7 @@ Vancouver Plant List PoC
 ========================
 
 Phase 6 creates the first useful BC-NPPD product artifact: a caveated
-52-species Vancouver/CDF plant list. The current tracked artifact includes the
+53-species Vancouver/CDF plant list. The current tracked artifact includes the
 original workbook snapshot rows plus unreviewed user-submitted expansion
 candidates.
 
@@ -75,7 +75,7 @@ Phase 8 Usability Layer
 -----------------------
 
 The P8 static inspection layer lives in ``data/poc/vancouver/usability/``.
-Open ``index.html`` directly in a browser to inspect the 52-species table with
+Open ``index.html`` directly in a browser to inspect the 53-species table with
 search and candidate view filters.
 
 Validate it with:

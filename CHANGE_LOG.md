@@ -287,3 +287,14 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #75 to `main` as merge commit `ab91eca`.
 - Closed Phase 12 as complete.
+- Started Phase 13 `Matricaria discoidea` addition on
+  `feature/p13-add-matricaria-discoidea`.
+- Created Phase 13 GitHub issue records: parent issue #76 and child issues
+  #77 through #79.
+- Added `Matricaria discoidea` as unreviewed candidate `BCNPPD-0053`, increasing
+  the tracked Vancouver PoC product from 52 to 53 species.
+- Regenerated the evidence-hardening, usability, and pollinator module
+  artifacts for the 53-species tracked PoC while keeping scores and PSI
+  `not_ready`.
+- Completed Phase 13 local acceptance verification with Ruff, pytest, Sphinx,
+  build, twine, and all Vancouver PoC artifact validators passing.
