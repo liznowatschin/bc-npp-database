@@ -242,3 +242,32 @@ def test_validate_vancouver_poc_list_command_json():
     assert result.exit_code == 0
     assert '"source_attribution": 41' in result.stdout
     assert '"diagnostics": []' in result.stdout
+
+
+def test_harden_vancouver_evidence_command_json(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "harden-vancouver-evidence",
+            "data/poc/vancouver",
+            "--out-dir",
+            str(tmp_path / "hardening"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"reviewed_fields": 80' in result.stdout
+    assert '"score_readiness": 60' in result.stdout
+    assert (tmp_path / "hardening" / "score_readiness.csv").exists()
+
+
+def test_validate_vancouver_evidence_command_json():
+    result = runner.invoke(
+        app,
+        ["validate-vancouver-evidence", "data/poc/vancouver/evidence_hardening", "--json"],
+    )
+
+    assert result.exit_code == 0
+    assert '"hardened_plant_list": 20' in result.stdout
+    assert '"diagnostics": []' in result.stdout

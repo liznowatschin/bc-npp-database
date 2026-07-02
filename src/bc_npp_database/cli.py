@@ -14,6 +14,13 @@ from .canonical import (
     import_canonical_workbook,
 )
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
+from .evidence_hardening import (
+    generate_vancouver_evidence_hardening,
+    validate_vancouver_evidence_hardening,
+)
+from .evidence_hardening import (
+    has_error_diagnostics as has_evidence_hardening_error_diagnostics,
+)
 from .foundation import (
     has_error_diagnostics as has_foundation_error_diagnostics,
 )
@@ -286,6 +293,46 @@ def validate_vancouver_poc_list_command(
     else:
         typer.echo(f"Vancouver PoC validation passed for {path}.")
     if has_vancouver_poc_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("harden-vancouver-evidence")
+def harden_vancouver_evidence_command(
+    poc_dir: Path,
+    out_dir: Path = typer.Option(
+        ...,
+        "--out-dir",
+        help="Output directory for evidence-hardening artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Generate P7 evidence-hardening artifacts for the Vancouver PoC list."""
+    result = generate_vancouver_evidence_hardening(poc_dir, out_dir)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated Vancouver evidence hardening at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_evidence_hardening_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-vancouver-evidence")
+def validate_vancouver_evidence_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate P7 Vancouver evidence-hardening artifacts."""
+    result = validate_vancouver_evidence_hardening(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Vancouver evidence hardening validation passed for {path}.")
+    if has_evidence_hardening_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

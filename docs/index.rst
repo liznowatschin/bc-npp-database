@@ -18,6 +18,7 @@ database for coastal British Columbia.
    scoring-framework
    foundation-release
    vancouver-poc-list
+   evidence-hardening
    seed-archives
    workbook-normalization
    flagship-species

@@ -1,0 +1,17 @@
+{
+  "artifact_name": "Vancouver Evidence Hardening",
+  "input_poc_dir": "data\\poc\\vancouver",
+  "status": "p7_evidence_hardened_poc",
+  "species_count": 20,
+  "reviewed_source_count": 24,
+  "reviewed_field_count": 80,
+  "evidence_gap_count": 100,
+  "score_readiness_count": 60,
+  "score_policy": "All UNI/PSI/RVI score families are not_ready until explicit reviewed numeric P4 score inputs exist.",
+  "public_hygiene": {
+    "raw_sources_tracked": false,
+    "external_downloads_required": false,
+    "private_data_tracked": false
+  },
+  "caveat": "P7 hardening marks only identity/native-range display fields as PoC-reviewed where Tier 1/2 taxonomy attribution exists; horticultural and scoring fields remain candidate values pending field-level review."
+}

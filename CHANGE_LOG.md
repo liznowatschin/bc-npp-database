@@ -163,3 +163,22 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #43 passed CI for Python 3.11 and Python 3.12
   before merge.
 - Merged pull request #43 to `main` as merge commit `f55fc1e`.
+- Started Phase 7 evidence hardening on `feature/p7-evidence-hardening`.
+- Created Phase 7 GitHub issue records: parent issue #44 and child issues #45
+  through #48.
+- Expanded the Phase 7 roadmap into UBC-FRESH-grade implementation subtasks for
+  source review policy, field-level evidence promotion, evidence gap reporting,
+  score readiness, docs, verification, and closeout.
+- Added `src/bc_npp_database/evidence_hardening.py` with P7 hardening
+  generation and validation for the tracked Vancouver PoC artifacts.
+- Added `bc-nppd harden-vancouver-evidence` and
+  `bc-nppd validate-vancouver-evidence` CLI commands.
+- Added tracked evidence-hardening artifacts under
+  `data/poc/vancouver/evidence_hardening/`: hardened plant list, reviewed
+  sources, reviewed fields, evidence gaps, score-readiness rows, manifest,
+  README, and diagnostics.
+- Kept UNI, PSI, and RVI readiness at `not_ready` for all 20 PoC species because
+  workbook suitability/toughness values are candidate display values, not
+  accepted P4 score inputs.
+- Completed Phase 7 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

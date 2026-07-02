@@ -69,9 +69,18 @@ Only reviewed recovered rows should become candidate source-attribution records.
 Unreviewed, rejected, or VLM-only numeric proposals should remain local review
 artifacts and must not become canonical species facts or score inputs.
 
-## Deferred To P2
+## Implemented Source And Hardening Layers
 
-P2 implements durable source/reference dataclasses, source completeness checks,
+P2 implemented durable source/reference dataclasses, source completeness checks,
 reference ID conventions, source-attribution validation behavior, and optional
 source materialization and media-derived extraction manifest contracts in
 `src/bc_npp_database/sources.py`.
+
+P7 adds a field-level hardening pattern for the Vancouver PoC list in
+`src/bc_npp_database/evidence_hardening.py`. The P7 layer can mark
+identity/native-range display fields as `poc_reviewed` where Tier 1/2
+taxonomy/native-range attribution exists. It also records explicit evidence
+gaps for horticultural, use-case, and score-related fields.
+
+Future review work should consume P7 reviewed-field and evidence-gap artifacts
+instead of promoting values directly from the workbook or from external context.
