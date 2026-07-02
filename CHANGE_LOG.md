@@ -133,3 +133,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   tag or publish artifacts.
 - Completed Phase 5 implementation local acceptance verification with Ruff,
   pytest, Sphinx, build, and twine checks passing.
+- Opened pull request #37 for Phase 5 closeout.

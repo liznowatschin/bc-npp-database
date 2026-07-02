@@ -305,7 +305,7 @@ and GitHub release artifacts.
 - [ ] P5.4 GitHub alpha release closeout (#36)
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
-  - [ ] Open PR to `main` and record the PR number.
+  - [x] Open PR to `main` and record the PR number (#37).
   - [ ] Comment verification on issues and close child issues only after
         checklist bodies are accurate.
   - [ ] Merge only after green CI and then close the parent issue.
@@ -317,3 +317,5 @@ Phase 5 local verification passed with:
 - `sphinx-build -b html docs _build/html -W`
 - `python -m build`
 - `twine check dist/*`
+
+Pull request #37 is the Phase 5 closeout PR against `main`.
