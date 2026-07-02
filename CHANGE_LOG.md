@@ -283,3 +283,7 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed Phase 12 local acceptance verification with Ruff, pytest, Sphinx,
   build, twine, and all Vancouver PoC artifact validators passing.
 - Opened pull request #75 for Phase 12 closeout.
+- Verified that pull request #75 passed CI for Python 3.11 and Python 3.12
+  before merge.
+- Merged pull request #75 to `main` as merge commit `ab91eca`.
+- Closed Phase 12 as complete.

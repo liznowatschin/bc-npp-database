@@ -20,7 +20,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P9 Plant record detail interface | #56 | `feature/p9-plant-record-detail-interface` | Complete |
 | P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Complete |
 | P11 Pollinator evidence-review module | #66 | `feature/p11-pollinator-module` | Complete |
-| P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Active |
+| P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -667,7 +667,7 @@ Parent issue: #71
 
 Branch: `feature/p12-expand-vancouver-species-list`
 
-Status: active
+Status: complete
 
 Goal: add the user-submitted species list to the Vancouver PoC artifacts unless
 species are already present, preserving evidence boundaries and avoiding
@@ -686,12 +686,12 @@ invented ecological claims.
   - [x] Regenerate P7 evidence hardening, P8 usability, and P11 pollinator
         artifacts.
   - [x] Preserve `not_ready` score and PSI boundaries.
-- [ ] P12.3 Docs, tests, verification, and closeout (#74)
+- [x] P12.3 Docs, tests, verification, and closeout (#74)
   - [x] Update docs and README counts.
   - [x] Update unit and CLI tests.
   - [x] Run local acceptance and artifact validators.
   - [x] Open PR and record the PR number (#75).
-  - [ ] Merge PR after green CI.
+  - [x] Merge PR after green CI.
 
 Phase 12 local verification passed with:
 
@@ -706,3 +706,7 @@ Phase 12 local verification passed with:
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
 
 Pull request #75 is the Phase 12 closeout PR against `main`.
+
+Pull request #75 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #75 merged to `main` as merge commit `ab91eca`.
