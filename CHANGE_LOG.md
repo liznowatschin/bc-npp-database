@@ -113,3 +113,23 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #31 passed CI for Python 3.11 and 3.12 before
   merge.
 - Merged pull request #31 to `main` as merge commit `6c2f679`.
+- Started Phase 5 v1.0.0a foundation record and release scaffold on
+  `feature/p5-v1-foundation-release`.
+- Created Phase 5 GitHub issue records: parent issue #32 and child issues #33
+  through #36.
+- Expanded the Phase 5 roadmap into UBC-FRESH-grade implementation subtasks for
+  schema freeze, release checklist artifacts, one reviewed
+  `Achillea millefolium` foundation record, docs, dry-run workflows,
+  verification, and closeout.
+- Added public-safe v1.0.0a foundation artifacts under
+  `data/foundation/v1.0.0a/`, including a schema freeze manifest, one
+  `Achillea millefolium` species record, source records, source-attribution
+  rows, score-input rows, and a release checklist.
+- Added `src/bc_npp_database/foundation.py` and `bc-nppd validate-foundation`
+  to validate required foundation files, cross-file species/source links,
+  public-hygiene flags, source-attribution records, and score-input records.
+- Added foundation release docs, release-checklist updates, v1.0.0a planning
+  updates, and a planning-only release dry-run workflow that does not create a
+  tag or publish artifacts.
+- Completed Phase 5 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

@@ -203,3 +203,14 @@ def test_calculate_scores_command_json(tmp_path):
     assert result.exit_code == 0
     assert '"score": 80.0' in result.stdout
     assert '"score_family": "UNI"' in result.stdout
+
+
+def test_validate_foundation_command_json():
+    result = runner.invoke(
+        app,
+        ["validate-foundation", "data/foundation/v1.0.0a", "--json"],
+    )
+
+    assert result.exit_code == 0
+    assert '"species": 1' in result.stdout
+    assert '"diagnostics": []' in result.stdout

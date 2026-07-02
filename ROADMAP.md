@@ -13,7 +13,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Complete |
 | P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Complete |
 | P4 Scoring framework | #26 | `feature/p4-scoring-framework` | Complete |
-| P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
+| P5 v1.0.0a foundation record and release | #32 | `feature/p5-v1-foundation-release` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -269,17 +269,51 @@ Pull request #31 merged to `main` as merge commit `6c2f679`.
 
 ## Phase 5: v1.0.0a Foundation Record And Release
 
-Parent issue: TBD
+Parent issue: #32
 
 Branch: `feature/p5-v1-foundation-release`
 
-Status: planned
+Status: active
 
 Goal: produce a reviewed v1.0.0a foundation release with frozen schema
 direction, one gold-standard `Achillea millefolium` record, docs, verification,
 and GitHub release artifacts.
 
-- [ ] P5.1 Foundation schema freeze and release checklist (TBD)
-- [ ] P5.2 Gold-standard `Achillea millefolium` record workflow (TBD)
-- [ ] P5.3 Public docs, dry-run workflow examples, and integration-hook hardening (TBD)
-- [ ] P5.4 GitHub alpha release closeout (TBD)
+- [x] P5.1 Foundation schema freeze and release checklist (#33)
+  - [x] Add foundation schema freeze manifest.
+  - [x] Record schema, lookup, source, canonical, and scoring contracts included
+        in the foundation.
+  - [x] Add release checklist artifacts without tagging a release.
+  - [x] Validate public hygiene and generated-output boundaries.
+  - [x] Add focused tests.
+- [x] P5.2 Gold-standard `Achillea millefolium` record workflow (#34)
+  - [x] Add a reviewed example `Achillea millefolium` species record.
+  - [x] Add source-attribution sidecar rows with reviewed source IDs and
+        evidence confidence.
+  - [x] Add score-input sidecar rows that exercise P4 without inventing
+        unsupported values.
+  - [x] Add package validators for foundation artifacts.
+  - [x] Add tests that validate the foundation record and sidecars.
+- [x] P5.3 Public docs, dry-run workflow examples, and integration-hook
+      hardening (#35)
+  - [x] Add foundation release Sphinx docs.
+  - [x] Add dry-run workflow examples for canonical import, scoring, and
+        release preparation.
+  - [x] Clarify optional integration hooks remain deferred and dependency-free.
+  - [x] Update planning notes and release checklist docs.
+  - [x] Add docs tests or import sanity where useful.
+- [ ] P5.4 GitHub alpha release closeout (#36)
+  - [x] Update roadmap and changelog with implementation state.
+  - [x] Run full local acceptance.
+  - [ ] Open PR to `main` and record the PR number.
+  - [ ] Comment verification on issues and close child issues only after
+        checklist bodies are accurate.
+  - [ ] Merge only after green CI and then close the parent issue.
+
+Phase 5 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`

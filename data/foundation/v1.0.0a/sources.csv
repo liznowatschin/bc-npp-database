@@ -1,0 +1,3 @@
+source_id,source_name,source_tier,citation,url,external_id,review_status,notes
+SRC-0001,E-Flora BC Achillea millefolium,Tier 2,"Klinkenberg, Brian, editor. E-Flora BC: Electronic Atlas of the Flora of British Columbia. Achillea millefolium.","https://linnet.geog.ubc.ca/Atlas/Atlas.aspx?noTransfer=0&sciname=Achillea+millefolium",,accepted,Used for BC-oriented identity and morphology fields.
+SRC-0002,USDA NRCS Common Yarrow Plant Guide,Tier 2,"USDA NRCS Plant Materials Program. Common Yarrow Achillea millefolium Plant Guide.","https://plants.sc.egov.usda.gov/DocumentLibrary/plantguide/pdf/cs_acmi2.pdf",,accepted,Used as a public government source for morphology and habit cross-checks.

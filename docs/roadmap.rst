@@ -21,5 +21,8 @@ CSV export, and a dependency-free FreshForge workflow shape.
 
 Phase 4 implements evidence-aware score records, provisional weighted
 calculation, diagnostics, CLI reporting, and a dependency-free FreshForge
-workflow shape for UNI, PSI, and RVI. Phase 5 is planned for the reviewed
-v1.0.0a foundation release.
+workflow shape for UNI, PSI, and RVI.
+
+Phase 5 prepares the v1.0.0a foundation scaffold: schema freeze manifest, one
+reviewed `Achillea millefolium` example record, source-attribution and
+score-input sidecars, release checklist artifacts, and dry-run workflow shapes.

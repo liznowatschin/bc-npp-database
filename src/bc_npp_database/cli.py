@@ -14,6 +14,12 @@ from .canonical import (
     import_canonical_workbook,
 )
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
+from .foundation import (
+    has_error_diagnostics as has_foundation_error_diagnostics,
+)
+from .foundation import (
+    validate_foundation_dir,
+)
 from .scoring import (
     calculate_scores,
     validate_score_inputs,
@@ -214,6 +220,29 @@ def calculate_scores_command(
         if result.diagnostics:
             typer.echo(f"Diagnostics: {len(result.diagnostics)}")
     if has_score_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-foundation")
+def validate_foundation_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate a BC-NPPD foundation artifact directory."""
+    result = validate_foundation_dir(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        counts = result.to_summary_dict()["counts"]
+        typer.echo(f"Foundation validation passed for {path}.")
+        typer.echo(f"- species: {counts['species']}")
+        typer.echo(f"- sources: {counts['sources']}")
+        typer.echo(f"- source attribution: {counts['source_attribution']}")
+        typer.echo(f"- score inputs: {counts['score_inputs']}")
+    if has_foundation_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

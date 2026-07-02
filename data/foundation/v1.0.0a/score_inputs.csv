@@ -1,0 +1,4 @@
+species_id,score_family,metric,value,source_id,evidence_confidence,weight,review_status,external_id,context_id,notes
+BCNPPD-0001,UNI,foundation_schema_exercise,0,SRC-0001,Pending review,1,accepted,,,Placeholder zero-value score input to exercise P4 contracts; not an ecological suitability score.
+BCNPPD-0001,PSI,foundation_schema_exercise,0,SRC-0001,Pending review,1,accepted,,,Placeholder zero-value score input to exercise P4 contracts; not a pollinator support score.
+BCNPPD-0001,RVI,foundation_schema_exercise,0,SRC-0001,Pending review,1,accepted,,,Placeholder zero-value score input to exercise P4 contracts; not a restoration value score.

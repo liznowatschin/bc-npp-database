@@ -1,0 +1,25 @@
+{
+  "foundation_version": "v1.0.0a",
+  "status": "foundation-ready",
+  "schema_files": [
+    "schemas/master_species_columns.csv",
+    "schemas/lookups_seed.csv",
+    "src/bc_npp_database/schemas/master_species_columns.csv",
+    "src/bc_npp_database/schemas/lookups_seed.csv"
+  ],
+  "contracts": [
+    "source-attribution records from P2",
+    "canonical import/export records from P3",
+    "provisional scoring records from P4"
+  ],
+  "foundation_species_ids": [
+    "BCNPPD-0001"
+  ],
+  "release_boundary": "Foundation scaffold only; not a full reviewed species database.",
+  "public_hygiene": {
+    "raw_sources_tracked": false,
+    "generated_outputs_tracked": false,
+    "external_downloads_required": false,
+    "private_data_tracked": false
+  }
+}

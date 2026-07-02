@@ -1,0 +1,25 @@
+# Planning-only dry-run workflow shape for P5.
+# This file is not executed in CI and does not create a release tag.
+provider: bc_npp_database
+workflow: p5_foundation_release_dry_run
+version: 0.1.0a0
+inputs:
+  foundation_dir: data/foundation/v1.0.0a
+nodes:
+  - id: validate_foundation
+    uses: foundation.validate
+    with:
+      path: ${inputs.foundation_dir}
+  - id: calculate_placeholder_scores
+    uses: score.calculate
+    needs: [validate_foundation]
+    with:
+      inputs: ${inputs.foundation_dir}/score_inputs.csv
+  - id: package_artifact_manifest
+    uses: release.artifact_manifest
+    needs: [calculate_placeholder_scores]
+policy:
+  create_tag: false
+  publish_release: false
+  generated_outputs: ignored
+  ecological_inference: prohibited

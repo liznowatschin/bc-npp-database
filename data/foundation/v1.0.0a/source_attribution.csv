@@ -1,0 +1,9 @@
+source_id,species_id,claim_field,claim_value,claim_scope,evidence_confidence,external_id,review_status,notes
+SRC-0001,BCNPPD-0001,Botanical Name,Achillea millefolium,species,B,,accepted,E-Flora BC taxon page supports the botanical name.
+SRC-0001,BCNPPD-0001,Common Name,common yarrow,species,B,,accepted,E-Flora BC taxon page and BC Species Explorer common-name usage support common yarrow/yarrow.
+SRC-0001,BCNPPD-0001,Family,Asteraceae,species,B,,accepted,E-Flora BC and USDA plant guide place common yarrow in Asteraceae/sunflower family.
+SRC-0001,BCNPPD-0001,Native Status,Native,species,B,,accepted,E-Flora BC listing supports inclusion in BC flora; unresolved biogeographic nuance remains out of scope.
+SRC-0001,BCNPPD-0001,Height Min cm,10,species,B,,accepted,E-Flora BC reports stems 10-100 cm tall.
+SRC-0001,BCNPPD-0001,Height Max cm,100,species,B,,accepted,E-Flora BC reports stems 10-100 cm tall.
+SRC-0001,BCNPPD-0001,Life Cycle,Perennial,species,B,,accepted,E-Flora BC describes the species as a perennial herb.
+SRC-0002,BCNPPD-0001,Rhizomatous,Yes,species,B,,accepted,USDA plant guide describes common yarrow as producing stems from horizontal rootstock/rhizome.
