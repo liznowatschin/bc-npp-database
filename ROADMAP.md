@@ -17,6 +17,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P6 Vancouver plant list PoC MVP | #38 | `feature/p6-vancouver-poc-list` | Complete |
 | P7 Evidence hardening | #44 | `feature/p7-evidence-hardening` | Complete |
 | P8 Usability layer | #50 | `feature/p8-usability-layer` | Complete |
+| P9 Plant record detail interface | #56 | `feature/p9-plant-record-detail-interface` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -506,7 +507,7 @@ Parent issue: #56
 
 Branch: `feature/p9-plant-record-detail-interface`
 
-Status: active
+Status: complete
 
 Goal: extend the static Vancouver PoC usability interface so each plant row
 opens a full record detail view with all current attribute data, source
@@ -526,13 +527,13 @@ metadata, attribution rows, evidence gaps, score readiness, and caveats.
   - [x] Include sources, attribution, reviewed fields, gaps, score readiness,
         candidate views, and caveats.
   - [x] Keep the static page self-contained with no external assets or server.
-- [ ] P9.3 Docs, tests, tracked artifact regeneration, and closeout (#59)
+- [x] P9.3 Docs, tests, tracked artifact regeneration, and closeout (#59)
   - [x] Regenerate tracked usability artifacts.
   - [x] Update docs, README, roadmap, and changelog.
   - [x] Add tests for detail records and static HTML behavior markers.
   - [x] Run full local acceptance.
   - [x] Open PR and record the PR number (#60).
-  - [ ] Merge after green CI and close issues.
+  - [x] Merge after green CI and close issues.
 
 Phase 9 local verification passed with:
 
@@ -547,3 +548,7 @@ The tracked usability artifact with embedded detail records validates with:
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
 
 Pull request #60 is the Phase 9 closeout PR against `main`.
+
+Pull request #60 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #60 merged to `main` as merge commit `834cebd`.
