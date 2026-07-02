@@ -244,3 +244,9 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #65 passed CI for Python 3.11 and Python 3.12
   before merge.
 - Merged pull request #65 to `main` as merge commit `40ed110`.
+- Created and pushed annotated tag `v0.1.0a1` from clean `main` commit
+  `7e2525d`.
+- Verified release workflow run 28560597191 passed and published the GitHub
+  prerelease with both wheel and source distribution artifacts attached:
+  https://github.com/UBC-FRESH/bc-npp-database/releases/tag/v0.1.0a1
+- Closed Phase 10 as complete.

@@ -18,7 +18,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P7 Evidence hardening | #44 | `feature/p7-evidence-hardening` | Complete |
 | P8 Usability layer | #50 | `feature/p8-usability-layer` | Complete |
 | P9 Plant record detail interface | #56 | `feature/p9-plant-record-detail-interface` | Complete |
-| P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Active |
+| P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -560,7 +560,7 @@ Parent issue: #61
 
 Branch: `feature/p10-v0.1.0a1-release`
 
-Status: active
+Status: complete
 
 Goal: prepare and cut the first BC-NPPD GitHub alpha prerelease, `v0.1.0a1`,
 representing the current Vancouver PoC product through Phase 9.
@@ -576,14 +576,14 @@ representing the current Vancouver PoC product through Phase 9.
   - [x] Build and twine-check dist artifacts on tag push.
   - [x] Publish a prerelease for `v*` tags and attach dist artifacts.
   - [x] Keep PyPI publishing out of scope.
-- [ ] P10.3 Release verification, tag, prerelease publication, and closeout (#64)
+- [x] P10.3 Release verification, tag, prerelease publication, and closeout (#64)
   - [x] Run full local acceptance and PoC artifact validators.
   - [x] Open release-prep PR and record the PR number (#65).
   - [x] Merge release-prep PR after green CI.
-  - [ ] Create and push annotated tag `v0.1.0a1` from clean `main`.
-  - [ ] Confirm release workflow succeeds and prerelease has wheel/sdist
+  - [x] Create and push annotated tag `v0.1.0a1` from clean `main`.
+  - [x] Confirm release workflow succeeds and prerelease has wheel/sdist
         attached.
-  - [ ] Update roadmap/changelog/issues with release URL and close out.
+  - [x] Update roadmap/changelog/issues with release URL and close out.
 
 Phase 10 release-prep local verification passed with:
 
@@ -601,3 +601,14 @@ Pull request #65 is the Phase 10 release-prep PR against `main`.
 Pull request #65 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #65 merged to `main` as merge commit `40ed110`.
+
+Annotated tag `v0.1.0a1` was created from clean `main` commit `7e2525d` and
+pushed to origin.
+
+Release workflow run 28560597191 passed and published the GitHub prerelease:
+https://github.com/UBC-FRESH/bc-npp-database/releases/tag/v0.1.0a1
+
+Release artifacts attached:
+
+- `bc_npp_database-0.1.0a1-py3-none-any.whl`
+- `bc_npp_database-0.1.0a1.tar.gz`
