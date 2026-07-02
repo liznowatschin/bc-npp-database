@@ -22,7 +22,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P11 Pollinator evidence-review module | #66 | `feature/p11-pollinator-module` | Complete |
 | P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Complete |
 | P13 Add Matricaria discoidea | #76 | `feature/p13-add-matricaria-discoidea` | Complete |
-| P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Active |
+| P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -765,7 +765,7 @@ Parent issue: #81
 
 Branch: `feature/p14-fill-common-names`
 
-Status: active
+Status: complete
 
 Goal: fill blank common-name fields in the tracked Vancouver PoC product with
 source-attributed, pending-review common names while preserving the distinction
@@ -781,12 +781,12 @@ between display labels and reviewed ecological evidence.
   - [x] Regenerate P7 evidence hardening artifacts.
   - [x] Regenerate P8 usability web app artifacts.
   - [x] Regenerate P11 pollinator module artifacts.
-- [ ] P14.3 Validation, PR, and closeout (#84)
+- [x] P14.3 Validation, PR, and closeout (#84)
   - [x] Update tests for new source and attribution counts.
   - [x] Run local acceptance.
   - [x] Open PR and record the PR number (#85).
-  - [ ] Merge PR after green CI.
-  - [ ] Close issues after merge.
+  - [x] Merge PR after green CI.
+  - [x] Close issues after merge.
 
 Phase 14 local verification passed with:
 
@@ -801,3 +801,7 @@ Phase 14 local verification passed with:
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
 
 Pull request #85 is the Phase 14 closeout PR against `main`.
+
+Pull request #85 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #85 merged to `main` as merge commit `3569a49`.

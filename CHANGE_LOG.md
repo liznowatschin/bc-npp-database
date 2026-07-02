@@ -317,3 +317,7 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed Phase 14 local acceptance verification with Ruff, pytest, Sphinx,
   build, twine, and all Vancouver PoC artifact validators passing.
 - Opened pull request #85 for Phase 14 closeout.
+- Verified that pull request #85 passed CI for Python 3.11 and Python 3.12
+  before merge.
+- Merged pull request #85 to `main` as merge commit `3569a49`.
+- Closed Phase 14 as complete.
