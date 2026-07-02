@@ -14,7 +14,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Complete |
 | P4 Scoring framework | #26 | `feature/p4-scoring-framework` | Complete |
 | P5 v1.0.0a foundation record and release | #32 | `feature/p5-v1-foundation-release` | Complete |
-| P6 Vancouver plant list PoC MVP | #38 | `feature/p6-vancouver-poc-list` | Active |
+| P6 Vancouver plant list PoC MVP | #38 | `feature/p6-vancouver-poc-list` | Complete |
 | P7 Evidence hardening | TBD | `feature/p7-evidence-hardening` | Planned |
 | P8 Usability layer | TBD | `feature/p8-usability-layer` | Planned |
 
@@ -333,7 +333,7 @@ Parent issue: #38
 
 Branch: `feature/p6-vancouver-poc-list`
 
-Status: active
+Status: complete
 
 Goal: produce an inspectable, public-safe, caveated Vancouver/CDF plant list PoC
 from the existing 20-row workbook candidate set with stable `BCNPPD-*` IDs,
@@ -362,9 +362,9 @@ diagnostics, and docs.
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
   - [x] Open PR to `main` and record the PR number (#43).
-  - [ ] Comment verification on issues and close child issues only after
+  - [x] Comment verification on issues and close child issues only after
         checklist bodies are accurate.
-  - [ ] Merge only after green CI and then close the parent issue.
+  - [x] Merge only after green CI and then close the parent issue.
 
 Phase 6 local verification passed with:
 
@@ -379,6 +379,10 @@ The tracked PoC artifact validates with:
 - `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
 
 Pull request #43 is the Phase 6 closeout PR against `main`.
+
+Pull request #43 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #43 merged to `main` as merge commit `f55fc1e`.
 
 ## Phase 7: Evidence Hardening
 
