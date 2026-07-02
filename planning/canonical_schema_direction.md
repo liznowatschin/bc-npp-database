@@ -22,7 +22,20 @@ explicit uncertainty, and source-attribution hooks. Dashboard fields and
 workbook-specific visual scaffolds should not become core source tables unless
 they encode durable data.
 
+## Workflow Contract Direction
+
+P3 should be able to express workbook-to-table normalization as an optional
+FreshForge workflow after the table contracts exist. The first workflow contract
+should stay small: inspect workbook, import approved sheets, join reviewed
+source/manifests where present, validate canonical rows, and export
+deterministic tables under ignored `outputs/` unless a release task approves
+tracked derivatives.
+
+Source-manifest joins should preserve external identifiers and acquisition
+status without requiring live BC Data Catalogue, FEMIC, or HectaresBC access in
+CI.
+
 ## Deferred To P3
 
-P3 should create the package-backed canonical table model and deterministic
-import/export workflow.
+P3 should create the package-backed canonical table model, deterministic
+import/export workflow, and optional workflow records for source-manifest joins.

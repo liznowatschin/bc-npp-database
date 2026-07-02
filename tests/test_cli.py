@@ -59,3 +59,32 @@ def test_validate_workbook_command_reports_missing_sheets(tmp_path):
 
     assert result.exit_code == 1
     assert "missing_sheet" in result.stdout
+
+
+def test_validate_source_records_command_json(tmp_path):
+    source_path = tmp_path / "sources.csv"
+    source_path.write_text(
+        "source_id,source_name,source_tier,citation\n"
+        "SRC-0001,LMH77,Tier 2,Klassen et al. 2026.\n",
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(app, ["validate-source-records", str(source_path), "--json"])
+
+    assert result.exit_code == 0
+    assert result.stdout.strip() == "[]"
+
+
+def test_validate_source_attribution_command_json_reports_errors(tmp_path):
+    source_path = tmp_path / "attribution.json"
+    source_path.write_text(
+        '[{"source_id": "SRC-0001", "claim_field": "habitat", '
+        '"evidence_confidence": "Certain"}]',
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(app, ["validate-source-attribution", str(source_path), "--json"])
+
+    assert result.exit_code == 1
+    assert "invalid_evidence_confidence" in result.stdout
+    assert "missing_required_field" in result.stdout

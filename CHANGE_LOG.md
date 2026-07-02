@@ -43,3 +43,28 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Opened pull request #13 for Phase 1 closeout.
 - Verified that pull request #13 passed CI for Python 3.11 and 3.12 before
   merge.
+- Started Phase 2 planning on `feature/p2-evidence-source-attribution` by
+  documenting optional ecosystem integration hooks for FreshForge, FEMIC BC Data
+  Catalogue workflows, and fresh-hectaresbc raster context search.
+- Kept FreshForge, FEMIC, and fresh-hectaresbc out of core dependencies while
+  recording future optional adapter and workflow-node directions.
+- Added figrecover to the P2 integration planning layer as an optional
+  media-derived evidence adapter with explicit review gates, provenance fields,
+  and public-data hygiene boundaries.
+- Inspected the ignored local `tmp/LMH77.pdf` source with PyMuPDF, confirmed it
+  is born-digital and text-extractable, recorded key metadata and initial
+  `Achillea millefolium`/yarrow page hits, and added an LMH77 extraction plan.
+- Created Phase 2 GitHub issue records: parent issue #14 and child issues #15
+  through #18.
+- Began implementing the Phase 2 source/evidence model with typed source,
+  attribution, materialization, and media-extraction records plus validation
+  and CLI surfaces.
+- Added `src/bc_npp_database/sources.py`, source record and attribution CLI
+  validators, Sphinx source-attribution docs, and synthetic tests for source
+  tiers, reference IDs, external IDs, completeness, excluded-source scanning,
+  and review gates.
+- Completed Phase 2 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.
+- Opened pull request #19 for Phase 2 closeout.
+- Verified that pull request #19 passed CI for Python 3.11 and 3.12 before
+  merge.
