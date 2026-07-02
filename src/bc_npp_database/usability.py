@@ -126,9 +126,11 @@ def generate_vancouver_usability(
 
     output_dir.mkdir(parents=True, exist_ok=True)
     hardened_rows = _load_csv(hardening_dir / "hardened_plant_list.csv", [])
+    poc_dir = hardening_dir.parent
     view_rows = _build_use_case_rows(hardened_rows)
     view_summary_rows = _build_view_summary(view_rows)
     table_rows = _build_table_rows(hardened_rows, view_rows)
+    detail_records = _build_detail_records(poc_dir, hardening_dir, table_rows, view_rows)
     diagnostics = (
         Diagnostic(
             code="usability_candidate_view_caveat",
@@ -152,6 +154,7 @@ def generate_vancouver_usability(
             "plant_count": len(table_rows),
             "use_case_membership_count": len(view_rows),
             "view_count": len(view_summary_rows),
+            "detail_record_count": len(detail_records),
             "public_hygiene": {
                 "raw_sources_tracked": False,
                 "external_downloads_required": False,
@@ -162,7 +165,7 @@ def generate_vancouver_usability(
         },
     )
     Path(paths["index"]).write_text(
-        _render_html(table_rows, view_summary_rows),
+        _render_html(table_rows, view_summary_rows, detail_records),
         encoding="utf-8",
     )
     return validate_vancouver_usability(output_dir)
@@ -198,6 +201,7 @@ def validate_vancouver_usability(path: Path) -> UsabilityResult:
     diagnostics.extend(_validate_summary_rows(summary_rows))
     diagnostics.extend(_validate_manifest(manifest, counts))
     diagnostics.extend(_validate_html(html_text, counts))
+    diagnostics.extend(_validate_embedded_detail_records(html_text, species_ids))
     diagnostics.extend(_validate_diagnostic_rows(diagnostic_rows))
 
     return UsabilityResult(str(path), counts, tuple(diagnostics), _paths(path))
@@ -257,6 +261,63 @@ def _build_use_case_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
                     )
                 )
     return view_rows
+
+
+def _build_detail_records(
+    poc_dir: Path,
+    hardening_dir: Path,
+    table_rows: list[dict[str, str]],
+    view_rows: list[dict[str, str]],
+) -> dict[str, dict[str, object]]:
+    sources = _rows_by_key(_load_csv(poc_dir / "sources.csv", []), "source_id")
+    attributions = _group_rows(
+        _load_csv(poc_dir / "source_attribution.csv", []),
+        "species_id",
+    )
+    reviewed_fields = _group_rows(
+        _load_csv(hardening_dir / "reviewed_fields.csv", []),
+        "species_id",
+    )
+    gaps = _group_rows(_load_csv(hardening_dir / "evidence_gap_report.csv", []), "species_id")
+    scores = _group_rows(_load_csv(hardening_dir / "score_readiness.csv", []), "species_id")
+    views = _group_rows(view_rows, "species_id")
+
+    detail_records: dict[str, dict[str, object]] = {}
+    for row in table_rows:
+        species_id = row.get("Species ID", "")
+        source_ids = [value for value in row.get("Primary References", "").split(";") if value]
+        detail_records[species_id] = {
+            "identity": {
+                "species_id": species_id,
+                "botanical_name": row.get("Botanical Name", ""),
+                "common_name": row.get("Common Name", ""),
+                "family": row.get("Family", ""),
+                "native_status": row.get("Native Status", ""),
+            },
+            "attributes": {
+                "life_cycle": row.get("Life Cycle", ""),
+                "sun": row.get("Sun", ""),
+                "soil_moisture": row.get("Soil Moisture", ""),
+                "urban_toughness": row.get("Urban Toughness", ""),
+                "candidate_views": row.get("candidate_views", ""),
+            },
+            "evidence": {
+                "reviewed_field_count": row.get("reviewed_field_count", ""),
+                "gap_count": row.get("gap_count", ""),
+                "score_readiness": row.get("score_readiness", ""),
+                "reviewed_fields": reviewed_fields.get(species_id, []),
+                "gaps": gaps.get(species_id, []),
+                "score_readiness_rows": scores.get(species_id, []),
+            },
+            "sources": [sources[source_id] for source_id in source_ids if source_id in sources],
+            "source_attribution": attributions.get(species_id, []),
+            "use_case_views": views.get(species_id, []),
+            "caveats": {
+                "poc_caveat": row.get("poc_caveat", ""),
+                "usability_caveat": USABILITY_CAVEAT,
+            },
+        }
+    return detail_records
 
 
 def _candidate_use_cases(row: dict[str, str]) -> dict[str, str]:
@@ -350,6 +411,7 @@ def _rule_summary(use_case: str) -> str:
 def _render_html(
     table_rows: list[dict[str, str]],
     view_summary_rows: list[dict[str, str]],
+    detail_records: dict[str, dict[str, object]],
 ) -> str:
     buttons = "\n".join(
         f'<button type="button" data-view="{html.escape(row["use_case"])}">'
@@ -365,6 +427,7 @@ def _render_html(
         for row in view_summary_rows
     )
     body_rows = "\n".join(_render_table_row(row) for row in table_rows)
+    detail_json = html.escape(json.dumps(detail_records, sort_keys=True), quote=False)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -455,6 +518,31 @@ def _render_html(
     .not-ready {{ color: var(--warn); }}
     .views {{ color: var(--accent-2); }}
     .hidden {{ display: none; }}
+    tr[data-species-id] {{ cursor: pointer; }}
+    tr[data-species-id]:focus {{ outline: 3px solid var(--accent-2); outline-offset: -3px; }}
+    .detail-shell {{
+      margin-top: 18px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 18px;
+    }}
+    .detail-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }}
+    .detail-section {{
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      margin-top: 12px;
+    }}
+    .detail-section h3 {{ margin: 0 0 8px; font-size: 1rem; letter-spacing: 0; }}
+    .detail-list {{ margin: 0; padding-left: 18px; }}
+    .detail-list li {{ margin-bottom: 6px; }}
+    .detail-kv {{ display: grid; grid-template-columns: 130px 1fr; gap: 6px 10px; }}
+    .detail-kv dt {{ color: var(--muted); }}
+    .detail-kv dd {{ margin: 0; }}
   </style>
 </head>
 <body>
@@ -498,13 +586,130 @@ def _render_html(
           </tbody>
         </table>
       </div>
+      <aside id="record-detail" class="detail-shell" aria-live="polite">
+        <h2>Plant Record Detail</h2>
+        <p>Select a plant row to inspect all current attributes, metadata,
+        sources, evidence gaps, score readiness, and caveats.</p>
+      </aside>
     </section>
   </main>
+  <script id="record-data" type="application/json">{detail_json}</script>
   <script>
     const search = document.querySelector("#search");
     const buttons = [...document.querySelectorAll("button[data-view]")];
     const rows = [...document.querySelectorAll("tbody tr")];
+    const detailPanel = document.querySelector("#record-detail");
+    const detailRecords = JSON.parse(document.querySelector("#record-data").textContent);
     let activeView = "all";
+    function escapeHtml(value) {{
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({{
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }}[char]));
+    }}
+    function listRows(items, renderer, emptyText) {{
+      if (!items || !items.length) {{
+        return `<p>${{escapeHtml(emptyText)}}</p>`;
+      }}
+      return `<ul class="detail-list">${{items.map(renderer).join("")}}</ul>`;
+    }}
+    function keyValues(values) {{
+      return `<dl class="detail-kv">${{values.map(([key, value]) =>
+        `<dt>${{escapeHtml(key)}}</dt><dd>${{escapeHtml(value || "Unknown")}}</dd>`
+      ).join("")}}</dl>`;
+    }}
+    function renderDetail(speciesId) {{
+      const record = detailRecords[speciesId];
+      if (!record) return;
+      const identity = record.identity;
+      const attributes = record.attributes;
+      const evidence = record.evidence;
+      detailPanel.innerHTML = `
+        <h2><em>${{escapeHtml(identity.botanical_name)}}</em></h2>
+        <p>${{escapeHtml(identity.common_name)}} · ${{escapeHtml(identity.species_id)}}</p>
+        <div class="detail-grid">
+          <section>
+            <h3>Identity</h3>
+            ${{keyValues([
+              ["Family", identity.family],
+              ["Native Status", identity.native_status]
+            ])}}
+          </section>
+          <section>
+            <h3>Candidate Attributes</h3>
+            ${{keyValues([
+              ["Life Cycle", attributes.life_cycle],
+              ["Sun", attributes.sun],
+              ["Soil Moisture", attributes.soil_moisture],
+              ["Urban Toughness", attributes.urban_toughness],
+              ["Candidate Views", attributes.candidate_views || "None"]
+            ])}}
+          </section>
+          <section>
+            <h3>Evidence Summary</h3>
+            ${{keyValues([
+              ["Reviewed Fields", evidence.reviewed_field_count],
+              ["Evidence Gaps", evidence.gap_count],
+              ["Score Readiness", evidence.score_readiness]
+            ])}}
+          </section>
+        </div>
+        <section class="detail-section">
+          <h3>Reviewed Fields</h3>
+          ${{listRows(evidence.reviewed_fields, (row) =>
+            `<li><strong>${{escapeHtml(row.field_name)}}</strong>: ` +
+            `${{escapeHtml(row.field_value)}} ` +
+            `<span class="status">${{escapeHtml(row.evidence_confidence)}}</span></li>`,
+            "No reviewed fields recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Evidence Gaps</h3>
+          ${{listRows(evidence.gaps, (row) =>
+            `<li><strong>${{escapeHtml(row.field_name)}}</strong>: ` +
+            `${{escapeHtml(row.gap_type)}}. ${{escapeHtml(row.recommended_action)}}</li>`,
+            "No evidence gaps recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Sources</h3>
+          ${{listRows(record.sources, (source) =>
+            `<li><strong>${{escapeHtml(source.source_id)}}</strong>: ` +
+            `${{escapeHtml(source.source_name)}} (${{escapeHtml(source.source_tier)}}). ` +
+            `${{escapeHtml(source.url || source.citation)}}</li>`,
+            "No sources recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Source Attribution</h3>
+          ${{listRows(record.source_attribution, (row) =>
+            `<li><strong>${{escapeHtml(row.claim_field)}}</strong> from ` +
+            `${{escapeHtml(row.source_id)}}; confidence ` +
+            `${{escapeHtml(row.evidence_confidence)}}; status ` +
+            `${{escapeHtml(row.review_status)}}.</li>`,
+            "No source attribution rows recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Use-Case Views</h3>
+          ${{listRows(record.use_case_views, (row) =>
+            `<li><strong>${{escapeHtml(row.use_case)}}</strong>: ` +
+            `${{escapeHtml(row.candidate_status)}}. ` +
+            `${{escapeHtml(row.candidate_reason)}}</li>`,
+            "No use-case view rows recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Caveats</h3>
+          <p>${{escapeHtml(record.caveats.poc_caveat)}}</p>
+          <p>${{escapeHtml(record.caveats.usability_caveat)}}</p>
+        </section>
+      `;
+      detailPanel.scrollIntoView({{ behavior: "smooth", block: "nearest" }});
+    }}
     function applyFilters() {{
       const query = search.value.trim().toLowerCase();
       for (const row of rows) {{
@@ -519,6 +724,15 @@ def _render_html(
         activeView = button.dataset.view;
         buttons.forEach((candidate) => candidate.classList.toggle("active", candidate === button));
         applyFilters();
+      }});
+    }}
+    for (const row of rows) {{
+      row.addEventListener("click", () => renderDetail(row.dataset.speciesId));
+      row.addEventListener("keydown", (event) => {{
+        if (event.key === "Enter" || event.key === " ") {{
+          event.preventDefault();
+          renderDetail(row.dataset.speciesId);
+        }}
       }});
     }}
     search.addEventListener("input", applyFilters);
@@ -537,7 +751,9 @@ def _render_table_row(row: dict[str, str]) -> str:
     views = row.get("candidate_views", "") or "None"
     evidence = f"{row.get('reviewed_field_count', '0')} reviewed / {row.get('gap_count', '0')} gaps"
     return (
-        f'<tr data-views="{html.escape(";".join(view_slugs))}">'
+        f'<tr data-views="{html.escape(";".join(view_slugs))}" '
+        f'data-species-id="{html.escape(row.get("Species ID", ""))}" '
+        'tabindex="0">'
         f"<td>{html.escape(row.get('Species ID', ''))}</td>"
         f"<td><em>{html.escape(row.get('Botanical Name', ''))}</em><br>"
         f"{html.escape(row.get('Family', ''))}</td>"
@@ -631,10 +847,61 @@ def _validate_html(html_text: str, counts: dict[str, int]) -> list[Diagnostic]:
     diagnostics: list[Diagnostic] = []
     if "<table" not in html_text or "data-view" not in html_text:
         diagnostics.append(_diagnostic("invalid_static_html", field="index.html"))
+    if "id=\"record-detail\"" not in html_text or "id=\"record-data\"" not in html_text:
+        diagnostics.append(_diagnostic("missing_detail_panel", field="index.html"))
+    if "renderDetail" not in html_text or "data-species-id" not in html_text:
+        diagnostics.append(_diagnostic("missing_detail_behavior", field="index.html"))
     if html_text.count("<tr data-views=") != counts["plant_table"]:
         diagnostics.append(_diagnostic("html_row_count_mismatch", field="index.html"))
-    if "http://" in html_text or "https://" in html_text:
+    external_load_markers = ('src="http://', 'src="https://', 'href="http://', 'href="https://')
+    if any(marker in html_text for marker in external_load_markers):
         diagnostics.append(_diagnostic("external_asset_reference", field="index.html"))
+    return diagnostics
+
+
+def _validate_embedded_detail_records(
+    html_text: str,
+    species_ids: set[str],
+) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    marker = '<script id="record-data" type="application/json">'
+    start = html_text.find(marker)
+    if start == -1:
+        return [_diagnostic("missing_detail_data", field="index.html")]
+    start += len(marker)
+    end = html_text.find("</script>", start)
+    if end == -1:
+        return [_diagnostic("unterminated_detail_data", field="index.html")]
+    try:
+        payload = json.loads(html.unescape(html_text[start:end]))
+    except json.JSONDecodeError as exc:
+        return [_diagnostic("invalid_detail_data", field="index.html", value=str(exc))]
+    if not isinstance(payload, dict):
+        return [_diagnostic("invalid_detail_data", field="index.html")]
+    if set(payload) != species_ids:
+        diagnostics.append(_diagnostic("detail_species_mismatch", field="index.html"))
+    for species_id, record in payload.items():
+        if not isinstance(record, dict):
+            diagnostics.append(_diagnostic("invalid_detail_record", field="index.html"))
+            continue
+        for key in (
+            "identity",
+            "attributes",
+            "evidence",
+            "sources",
+            "source_attribution",
+            "use_case_views",
+            "caveats",
+        ):
+            if key not in record:
+                diagnostics.append(_diagnostic("missing_detail_section", field=key))
+        identity = record.get("identity", {})
+        if isinstance(identity, dict) and identity.get("species_id") != species_id:
+            diagnostics.append(_diagnostic("detail_species_id_mismatch", field="species_id"))
+        if not record.get("sources"):
+            diagnostics.append(_diagnostic("detail_sources_missing", field=species_id))
+        if not record.get("source_attribution"):
+            diagnostics.append(_diagnostic("detail_attribution_missing", field=species_id))
     return diagnostics
 
 
@@ -655,6 +922,17 @@ def _validate_diagnostic_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
 
 def _empty_counts() -> dict[str, int]:
     return {"plant_table": 0, "use_case_views": 0, "view_summary": 0}
+
+
+def _group_rows(rows: list[dict[str, str]], key: str) -> dict[str, list[dict[str, str]]]:
+    grouped: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        grouped.setdefault(row.get(key, ""), []).append(row)
+    return grouped
+
+
+def _rows_by_key(rows: list[dict[str, str]], key: str) -> dict[str, dict[str, str]]:
+    return {row.get(key, ""): row for row in rows}
 
 
 def _paths(path: Path) -> dict[str, str]:

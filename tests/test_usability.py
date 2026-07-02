@@ -1,4 +1,6 @@
 import csv
+import html as html_lib
+import json
 from pathlib import Path
 
 from bc_npp_database.usability import (
@@ -67,5 +69,28 @@ def test_static_html_is_self_contained_and_filterable():
 
     assert "<table" in html
     assert "data-view=\"dry_sun\"" in html
-    assert "http://" not in html
-    assert "https://" not in html
+    assert 'src="http://' not in html
+    assert 'src="https://' not in html
+    assert 'href="http://' not in html
+    assert 'href="https://' not in html
+
+
+def test_static_html_embeds_detail_records_and_row_hooks():
+    html = (USABILITY_DIR / "index.html").read_text(encoding="utf-8")
+    marker = '<script id="record-data" type="application/json">'
+    start = html.index(marker) + len(marker)
+    end = html.index("</script>", start)
+    records = json.loads(html_lib.unescape(html[start:end]))
+    achillea = records["BCNPPD-0001"]
+
+    assert len(records) == 20
+    assert 'id="record-detail"' in html
+    assert 'data-species-id="BCNPPD-0001"' in html
+    assert 'row.addEventListener("click"' in html
+    assert 'event.key === "Enter"' in html
+    assert achillea["identity"]["botanical_name"] == "Achillea millefolium"
+    assert achillea["sources"]
+    assert achillea["source_attribution"]
+    assert achillea["evidence"]["gaps"]
+    assert 'src="https://' not in html
+    assert 'href="https://' not in html

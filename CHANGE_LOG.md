@@ -208,3 +208,18 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #55 passed CI for Python 3.11 and Python 3.12
   before merge.
 - Merged pull request #55 to `main` as merge commit `f47c612`.
+- Started Phase 9 plant record detail interface on
+  `feature/p9-plant-record-detail-interface`.
+- Created Phase 9 GitHub issue records: parent issue #56 and child issues #57
+  through #59.
+- Planned P9 as a static usability enhancement: each plant row should open a
+  full detail view with current attributes, source metadata, attribution,
+  evidence gaps, score readiness, candidate views, and caveats.
+- Extended `src/bc_npp_database/usability.py` to embed per-species detail
+  records in `index.html` from tracked P6/P7/P8 artifacts.
+- Added row click and keyboard activation in the static PoC interface so users
+  can inspect identity fields, candidate attributes, reviewed fields, evidence
+  gaps, score-readiness rows, sources, attribution, use-case memberships, and
+  caveats for each plant.
+- Completed Phase 9 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

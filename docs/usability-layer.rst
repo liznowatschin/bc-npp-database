@@ -10,8 +10,8 @@ Where To Inspect
 The tracked usability artifacts live in ``data/poc/vancouver/usability/``:
 
 ``index.html``
-   Self-contained static table with search and candidate view filters. It can
-   be opened directly in a browser.
+   Self-contained static table with search, candidate view filters, and
+   click-to-open plant record details. It can be opened directly in a browser.
 
 ``plant_table.csv``
    Human-readable display table derived from the P7 hardening layer.
@@ -28,6 +28,18 @@ The tracked usability artifacts live in ``data/poc/vancouver/usability/``:
 
 ``diagnostics.csv``
    Non-error caveats for the usability layer.
+
+Record Detail Panel
+-------------------
+
+Click a plant row, or focus it with the keyboard and press Enter or Space, to
+open the plant record detail panel. The panel shows the current identity fields,
+candidate planting attributes, reviewed fields, evidence gaps, score-readiness
+rows, source records, source-attribution rows, use-case memberships, and
+caveats.
+
+The detail panel is generated from tracked P6/P7/P8 artifacts embedded in the
+static page as JSON. It does not call a server or load external assets.
 
 CLI
 ---

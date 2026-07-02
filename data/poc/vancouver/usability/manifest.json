@@ -5,6 +5,7 @@
   "plant_count": 20,
   "use_case_membership_count": 61,
   "view_count": 6,
+  "detail_record_count": 20,
   "public_hygiene": {
     "raw_sources_tracked": false,
     "external_downloads_required": false,

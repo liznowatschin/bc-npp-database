@@ -499,3 +499,48 @@ Pull request #55 is the Phase 8 closeout PR against `main`.
 Pull request #55 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #55 merged to `main` as merge commit `f47c612`.
+
+## Phase 9: Plant Record Detail Interface
+
+Parent issue: #56
+
+Branch: `feature/p9-plant-record-detail-interface`
+
+Status: active
+
+Goal: extend the static Vancouver PoC usability interface so each plant row
+opens a full record detail view with all current attribute data, source
+metadata, attribution rows, evidence gaps, score readiness, and caveats.
+
+- [x] P9.1 Detail data bundle and record metadata contract (#57)
+  - [x] Build embedded detail records from hardened plant rows, sources, source
+        attribution, reviewed fields, evidence gaps, score readiness, and
+        use-case rows.
+  - [x] Preserve stable IDs, source IDs, evidence confidence, review status, and
+        caveats.
+  - [x] Keep detail data public-safe and dependency-free.
+  - [x] Add validation checks for embedded detail records.
+- [x] P9.2 Static detail panel UI and row-click behavior (#58)
+  - [x] Add row click and keyboard activation to open a detail panel.
+  - [x] Show all current plant attributes and metadata in structured sections.
+  - [x] Include sources, attribution, reviewed fields, gaps, score readiness,
+        candidate views, and caveats.
+  - [x] Keep the static page self-contained with no external assets or server.
+- [ ] P9.3 Docs, tests, tracked artifact regeneration, and closeout (#59)
+  - [x] Regenerate tracked usability artifacts.
+  - [x] Update docs, README, roadmap, and changelog.
+  - [x] Add tests for detail records and static HTML behavior markers.
+  - [x] Run full local acceptance.
+  - [ ] Open PR, merge after green CI, and close issues.
+
+Phase 9 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+
+The tracked usability artifact with embedded detail records validates with:
+
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
