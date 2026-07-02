@@ -47,3 +47,14 @@ The implementation should include:
 
 External context remains provenance only. P4 must not infer score inputs from
 GIS, raster, media, source text, workbook prose, or canonical species rows.
+
+## P7 Score Readiness Boundary
+
+P7 applies this rule to the Vancouver PoC list by generating
+`data/poc/vancouver/evidence_hardening/score_readiness.csv`. Every PoC species
+is marked `not_ready` for UNI, PSI, and RVI because the workbook suitability and
+toughness fields are candidate display values, not reviewed P4 score inputs.
+
+Future scoring work should start from the P7 evidence-gap report and create
+explicit reviewed score-input rows only after field-level evidence supports the
+metric, numeric value, source ID, evidence confidence, and review status.

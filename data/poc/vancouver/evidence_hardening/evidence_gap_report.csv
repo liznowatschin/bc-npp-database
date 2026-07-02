@@ -1,0 +1,101 @@
+species_id,field_name,field_value,gap_type,recommended_action,current_source_ids
+BCNPPD-0001,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0001;SRC-0002;SRC-0024
+BCNPPD-0001,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0001;SRC-0002;SRC-0024
+BCNPPD-0001,Sun,Full sun to part sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0001;SRC-0002;SRC-0024
+BCNPPD-0001,Soil Moisture,Dry to mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0001;SRC-0002;SRC-0024
+BCNPPD-0001,Urban Toughness,5,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0001;SRC-0002;SRC-0024
+BCNPPD-0002,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0003;SRC-0004
+BCNPPD-0002,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0003;SRC-0004
+BCNPPD-0002,Sun,Full sun to part shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0003;SRC-0004
+BCNPPD-0002,Soil Moisture,Dry to mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0003;SRC-0004
+BCNPPD-0002,Urban Toughness,5,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0003;SRC-0004
+BCNPPD-0003,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0005;SRC-0004
+BCNPPD-0003,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0005;SRC-0004
+BCNPPD-0003,Sun,Sun to part shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0005;SRC-0004
+BCNPPD-0003,Soil Moisture,Mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0005;SRC-0004
+BCNPPD-0003,Urban Toughness,5,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0005;SRC-0004
+BCNPPD-0004,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0006;SRC-0007
+BCNPPD-0004,Life Cycle,Perennial geophyte,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0006;SRC-0007
+BCNPPD-0004,Sun,Full sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0006;SRC-0007
+BCNPPD-0004,Soil Moisture,Winter wet / summer dry to mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0006;SRC-0007
+BCNPPD-0004,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0006;SRC-0007
+BCNPPD-0005,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0008;SRC-0004
+BCNPPD-0005,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0008;SRC-0004
+BCNPPD-0005,Sun,Part shade to sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0008;SRC-0004
+BCNPPD-0005,Soil Moisture,Mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0008;SRC-0004
+BCNPPD-0005,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0008;SRC-0004
+BCNPPD-0006,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0009;SRC-0004
+BCNPPD-0006,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0009;SRC-0004
+BCNPPD-0006,Sun,Part shade to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0009;SRC-0004
+BCNPPD-0006,Soil Moisture,Mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0009;SRC-0004
+BCNPPD-0006,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0009;SRC-0004
+BCNPPD-0007,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0010;SRC-0004
+BCNPPD-0007,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0010;SRC-0004
+BCNPPD-0007,Sun,Part shade to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0010;SRC-0004
+BCNPPD-0007,Soil Moisture,Mesic to moist,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0010;SRC-0004
+BCNPPD-0007,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0010;SRC-0004
+BCNPPD-0008,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0011;SRC-0004
+BCNPPD-0008,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0011;SRC-0004
+BCNPPD-0008,Sun,Sun to part shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0011;SRC-0004
+BCNPPD-0008,Soil Moisture,Dry to mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0011;SRC-0004
+BCNPPD-0008,Urban Toughness,5,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0011;SRC-0004
+BCNPPD-0009,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0012;SRC-0004
+BCNPPD-0009,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0012;SRC-0004
+BCNPPD-0009,Sun,Part shade to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0012;SRC-0004
+BCNPPD-0009,Soil Moisture,Moist,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0012;SRC-0004
+BCNPPD-0009,Urban Toughness,3,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0012;SRC-0004
+BCNPPD-0010,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0013;SRC-0004
+BCNPPD-0010,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0013;SRC-0004
+BCNPPD-0010,Sun,Part shade to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0013;SRC-0004
+BCNPPD-0010,Soil Moisture,Mesic to moist,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0013;SRC-0004
+BCNPPD-0010,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0013;SRC-0004
+BCNPPD-0011,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0014;SRC-0004
+BCNPPD-0011,Life Cycle,Perennial geophyte,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0014;SRC-0004
+BCNPPD-0011,Sun,Full sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0014;SRC-0004
+BCNPPD-0011,Soil Moisture,Dry to mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0014;SRC-0004
+BCNPPD-0011,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0014;SRC-0004
+BCNPPD-0012,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0015;SRC-0004
+BCNPPD-0012,Life Cycle,Perennial subshrub/forb,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0015;SRC-0004
+BCNPPD-0012,Sun,Full sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0015;SRC-0004
+BCNPPD-0012,Soil Moisture,Dry,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0015;SRC-0004
+BCNPPD-0012,Urban Toughness,5,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0015;SRC-0004
+BCNPPD-0013,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0016;SRC-0004
+BCNPPD-0013,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0016;SRC-0004
+BCNPPD-0013,Sun,Full sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0016;SRC-0004
+BCNPPD-0013,Soil Moisture,Dry to mesic winter/spring,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0016;SRC-0004
+BCNPPD-0013,Urban Toughness,3,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0016;SRC-0004
+BCNPPD-0014,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0017;SRC-0004
+BCNPPD-0014,Life Cycle,Annual,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0017;SRC-0004
+BCNPPD-0014,Sun,Full sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0017;SRC-0004
+BCNPPD-0014,Soil Moisture,Vernal moist to summer dry,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0017;SRC-0004
+BCNPPD-0014,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0017;SRC-0004
+BCNPPD-0015,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0018;SRC-0004
+BCNPPD-0015,Life Cycle,Annual,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0018;SRC-0004
+BCNPPD-0015,Sun,Sun to part shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0018;SRC-0004
+BCNPPD-0015,Soil Moisture,Mesic spring; summer dry,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0018;SRC-0004
+BCNPPD-0015,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0018;SRC-0004
+BCNPPD-0016,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0019;SRC-0004
+BCNPPD-0016,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0019;SRC-0004
+BCNPPD-0016,Sun,Part shade to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0019;SRC-0004
+BCNPPD-0016,Soil Moisture,Mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0019;SRC-0004
+BCNPPD-0016,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0019;SRC-0004
+BCNPPD-0017,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0020;SRC-0004
+BCNPPD-0017,Life Cycle,Evergreen subshrub,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0020;SRC-0004
+BCNPPD-0017,Sun,Full sun to part sun,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0020;SRC-0004
+BCNPPD-0017,Soil Moisture,Dry,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0020;SRC-0004
+BCNPPD-0017,Urban Toughness,5,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0020;SRC-0004
+BCNPPD-0018,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0021;SRC-0004
+BCNPPD-0018,Life Cycle,Evergreen subshrub,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0021;SRC-0004
+BCNPPD-0018,Sun,Part shade to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0021;SRC-0004
+BCNPPD-0018,Soil Moisture,Dry to mesic,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0021;SRC-0004
+BCNPPD-0018,Urban Toughness,4,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0021;SRC-0004
+BCNPPD-0019,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0022;SRC-0004
+BCNPPD-0019,Life Cycle,Perennial,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0022;SRC-0004
+BCNPPD-0019,Sun,Shade to part shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0022;SRC-0004
+BCNPPD-0019,Soil Moisture,Moist,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0022;SRC-0004
+BCNPPD-0019,Urban Toughness,3,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0022;SRC-0004
+BCNPPD-0020,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
+BCNPPD-0020,Life Cycle,Perennial graminoid,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
+BCNPPD-0020,Sun,Sun to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
+BCNPPD-0020,Soil Moisture,Moist to wet,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
+BCNPPD-0020,Urban Toughness,3,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004

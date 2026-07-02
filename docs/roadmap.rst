@@ -30,3 +30,8 @@ score-input sidecars, release checklist artifacts, and dry-run workflow shapes.
 Phase 6 produces the first usable PoC artifact: a tracked, caveated
 20-species Vancouver/CDF plant list with stable BC-NPPD IDs, source records,
 source-attribution rows, validation diagnostics, and inspection docs.
+
+Phase 7 hardens evidence for the Vancouver PoC list. It adds a tracked
+field-level hardening layer with reviewed identity/native-range fields, evidence
+gap reports, explicit score-readiness blocks, diagnostics, CLI validation, and
+inspection docs.

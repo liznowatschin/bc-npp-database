@@ -15,7 +15,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P4 Scoring framework | #26 | `feature/p4-scoring-framework` | Complete |
 | P5 v1.0.0a foundation record and release | #32 | `feature/p5-v1-foundation-release` | Complete |
 | P6 Vancouver plant list PoC MVP | #38 | `feature/p6-vancouver-poc-list` | Complete |
-| P7 Evidence hardening | TBD | `feature/p7-evidence-hardening` | Planned |
+| P7 Evidence hardening | #44 | `feature/p7-evidence-hardening` | Active |
 | P8 Usability layer | TBD | `feature/p8-usability-layer` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
@@ -358,7 +358,7 @@ diagnostics, and docs.
   - [x] Add P7 evidence hardening and P8 usability layer to roadmap.
   - [x] Keep raw/generated/private artifacts out of git.
   - [x] Add artifact tests.
-- [ ] P6.4 Verification, PR, and closeout (#42)
+- [x] P6.4 Verification, PR, and closeout (#42)
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
   - [x] Open PR to `main` and record the PR number (#43).
@@ -386,20 +386,57 @@ Pull request #43 merged to `main` as merge commit `f55fc1e`.
 
 ## Phase 7: Evidence Hardening
 
-Parent issue: TBD
+Parent issue: #44
 
 Branch: `feature/p7-evidence-hardening`
 
-Status: planned
+Status: active
 
 Goal: review and improve evidence for the 20-species Vancouver PoC list,
 promoting candidate fields to reviewed fields only where source attribution is
 adequate.
 
-- [ ] P7.1 Source review and source registry cleanup (TBD)
-- [ ] P7.2 Field-level evidence promotion and evidence gap report (TBD)
-- [ ] P7.3 Provisional score input review and score outputs (TBD)
-- [ ] P7.4 Docs, artifacts, verification, and closeout (TBD)
+- [x] P7.1 Source review and evidence-status policy (#45)
+  - [x] Define P7 PoC-reviewed field boundaries.
+  - [x] Treat Tier 1/2 taxonomy/native-range attribution as sufficient for
+        identity/native-range display review.
+  - [x] Keep Tier 3 practitioner sources as context, not reviewed score inputs.
+  - [x] Preserve P6 source registry rows and add a P7 source-review layer.
+- [x] P7.2 Evidence hardening generator, reports, and validator (#46)
+  - [x] Add package-backed hardening generator and validator.
+  - [x] Generate hardened plant list, reviewed sources, reviewed fields,
+        evidence gaps, score readiness, manifest, and diagnostics.
+  - [x] Add CLI commands for generation and validation.
+  - [x] Validate tracked artifacts with no hard errors.
+  - [x] Add focused unit and CLI tests.
+- [x] P7.3 Score readiness and field-level evidence gap docs (#47)
+  - [x] Record field-level gaps for horticultural, use-case, and score-related
+        values.
+  - [x] Mark UNI, PSI, and RVI as `not_ready` for every PoC species.
+  - [x] Document that workbook suitability/toughness values are candidate
+        display values, not accepted P4 score inputs.
+  - [x] Add human-readable hardening docs and artifact README.
+- [ ] P7.4 Verification, PR, and closeout (#48)
+  - [x] Update roadmap and changelog with implementation state.
+  - [x] Run full local acceptance.
+  - [x] Open PR to `main` and record the PR number (#49).
+  - [ ] Comment verification on issues and close child issues only after
+        checklist bodies are accurate.
+  - [ ] Merge only after green CI and then close the parent issue.
+
+Phase 7 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+
+The tracked evidence-hardening artifact validates with:
+
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+
+Pull request #49 is the Phase 7 closeout PR against `main`.
 
 ## Phase 8: Usability Layer
 

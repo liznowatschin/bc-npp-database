@@ -49,3 +49,18 @@ Boundary
 The PoC list is useful for inspection, prioritization, and workflow validation.
 It is not yet a final planting recommendation list. Phase 7 should harden
 field-level evidence and Phase 8 should add more usable filtered views.
+
+Phase 7 Evidence Layer
+----------------------
+
+The P7 evidence-hardening layer lives in
+``data/poc/vancouver/evidence_hardening/``. It marks identity/native-range
+fields as PoC-reviewed where Tier 1/2 taxonomy attribution exists, records
+field-level evidence gaps, and keeps UNI, PSI, and RVI readiness at
+``not_ready`` until reviewed score inputs exist.
+
+Validate it with:
+
+.. code-block:: shell
+
+   bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json
