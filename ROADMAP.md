@@ -14,6 +14,9 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Complete |
 | P4 Scoring framework | #26 | `feature/p4-scoring-framework` | Complete |
 | P5 v1.0.0a foundation record and release | #32 | `feature/p5-v1-foundation-release` | Complete |
+| P6 Vancouver plant list PoC MVP | #38 | `feature/p6-vancouver-poc-list` | Active |
+| P7 Evidence hardening | TBD | `feature/p7-evidence-hardening` | Planned |
+| P8 Usability layer | TBD | `feature/p8-usability-layer` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -245,7 +248,7 @@ placeholders without inventing unsupported ecological values.
   - [x] Add CLI commands for score-input validation and score calculation.
   - [x] Add JSON report summaries.
   - [x] Add CLI tests.
-- [ ] P4.4 Docs, examples, verification, and closeout (#30)
+- [x] P4.4 Docs, examples, verification, and closeout (#30)
   - [x] Update Sphinx docs and planning notes.
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
@@ -302,7 +305,7 @@ and GitHub release artifacts.
   - [x] Clarify optional integration hooks remain deferred and dependency-free.
   - [x] Update planning notes and release checklist docs.
   - [x] Add docs tests or import sanity where useful.
-- [ ] P5.4 GitHub alpha release closeout (#36)
+- [x] P5.4 GitHub alpha release closeout (#36)
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
   - [x] Open PR to `main` and record the PR number (#37).
@@ -323,3 +326,91 @@ Pull request #37 is the Phase 5 closeout PR against `main`.
 Pull request #37 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #37 merged to `main` as merge commit `8c04ac9`.
+
+## Phase 6: Vancouver Plant List PoC MVP
+
+Parent issue: #38
+
+Branch: `feature/p6-vancouver-poc-list`
+
+Status: active
+
+Goal: produce an inspectable, public-safe, caveated Vancouver/CDF plant list PoC
+from the existing 20-row workbook candidate set with stable `BCNPPD-*` IDs,
+deterministic source IDs, valid source-attribution links, validation
+diagnostics, and docs.
+
+- [x] P6.1 Legacy ID migration and deterministic source registry (#39)
+  - [x] Add deterministic `CDF-*` to `BCNPPD-*` ID migration helper.
+  - [x] Preserve legacy IDs in PoC plant rows.
+  - [x] Deduplicate workbook source names and URLs into stable `SRC-*` IDs.
+  - [x] Validate generated source registry rows.
+  - [x] Add focused tests.
+- [x] P6.2 Vancouver PoC generator and validator APIs/CLI (#40)
+  - [x] Add generator API for the Vancouver PoC plant list.
+  - [x] Add validator API for generated PoC artifact directories.
+  - [x] Add CLI commands for generation and validation with JSON summaries.
+  - [x] Ensure hard errors are eliminated from generated PoC artifacts.
+  - [x] Add CLI and validation tests.
+- [x] P6.3 Tracked PoC artifacts, docs, and future P7/P8 roadmap (#41)
+  - [x] Track public-safe PoC artifacts under `data/poc/vancouver`.
+  - [x] Add human-readable docs page for inspecting the plant list.
+  - [x] Add P7 evidence hardening and P8 usability layer to roadmap.
+  - [x] Keep raw/generated/private artifacts out of git.
+  - [x] Add artifact tests.
+- [ ] P6.4 Verification, PR, and closeout (#42)
+  - [x] Update roadmap and changelog with implementation state.
+  - [x] Run full local acceptance.
+  - [x] Open PR to `main` and record the PR number (#43).
+  - [ ] Comment verification on issues and close child issues only after
+        checklist bodies are accurate.
+  - [ ] Merge only after green CI and then close the parent issue.
+
+Phase 6 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+
+The tracked PoC artifact validates with:
+
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+
+Pull request #43 is the Phase 6 closeout PR against `main`.
+
+## Phase 7: Evidence Hardening
+
+Parent issue: TBD
+
+Branch: `feature/p7-evidence-hardening`
+
+Status: planned
+
+Goal: review and improve evidence for the 20-species Vancouver PoC list,
+promoting candidate fields to reviewed fields only where source attribution is
+adequate.
+
+- [ ] P7.1 Source review and source registry cleanup (TBD)
+- [ ] P7.2 Field-level evidence promotion and evidence gap report (TBD)
+- [ ] P7.3 Provisional score input review and score outputs (TBD)
+- [ ] P7.4 Docs, artifacts, verification, and closeout (TBD)
+
+## Phase 8: Usability Layer
+
+Parent issue: TBD
+
+Branch: `feature/p8-usability-layer`
+
+Status: planned
+
+Goal: add a human-friendly inspection layer for the Vancouver PoC list, with
+sortable/filterable views and use-case groupings while preserving evidence
+caveats.
+
+- [ ] P8.1 Static table or lightweight app surface (TBD)
+- [ ] P8.2 Use-case views for boulevard, rain garden, dry sun, shade, pollinator
+      support, and low-growing species (TBD)
+- [ ] P8.3 Documentation and public-use caveats (TBD)
+- [ ] P8.4 Verification and closeout (TBD)

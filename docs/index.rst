@@ -17,6 +17,7 @@ database for coastal British Columbia.
    canonical-pipeline
    scoring-framework
    foundation-release
+   vancouver-poc-list
    seed-archives
    workbook-normalization
    flagship-species

@@ -26,3 +26,7 @@ workflow shape for UNI, PSI, and RVI.
 Phase 5 prepares the v1.0.0a foundation scaffold: schema freeze manifest, one
 reviewed `Achillea millefolium` example record, source-attribution and
 score-input sidecars, release checklist artifacts, and dry-run workflow shapes.
+
+Phase 6 produces the first usable PoC artifact: a tracked, caveated
+20-species Vancouver/CDF plant list with stable BC-NPPD IDs, source records,
+source-attribution rows, validation diagnostics, and inspection docs.

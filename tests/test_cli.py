@@ -214,3 +214,31 @@ def test_validate_foundation_command_json():
     assert result.exit_code == 0
     assert '"species": 1' in result.stdout
     assert '"diagnostics": []' in result.stdout
+
+
+def test_generate_vancouver_poc_list_command_json(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "generate-vancouver-poc-list",
+            "data/workbooks/native_plant_restoration_workbook_v1.0.0c.xlsx",
+            "--out-dir",
+            str(tmp_path / "poc"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"plant_list": 20' in result.stdout
+    assert (tmp_path / "poc" / "plant_list.csv").exists()
+
+
+def test_validate_vancouver_poc_list_command_json():
+    result = runner.invoke(
+        app,
+        ["validate-vancouver-poc-list", "data/poc/vancouver", "--json"],
+    )
+
+    assert result.exit_code == 0
+    assert '"source_attribution": 41' in result.stdout
+    assert '"diagnostics": []' in result.stdout

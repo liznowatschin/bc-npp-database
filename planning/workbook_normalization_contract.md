@@ -57,3 +57,11 @@ tracked derivative.
 P3 must not infer missing ecological values, calculate scores, or treat
 source-attribution rows as facts by import alone. Source-attribution rows pass
 through the P2 validator and remain evidence records for later review.
+
+## P6 PoC Product Boundary
+
+P6 may promote the 20 tracked workbook candidates into a caveated Vancouver PoC
+artifact when it also migrates legacy IDs, creates deterministic source IDs,
+preserves source-attribution links, and labels the output as a PoC candidate
+list. The artifact is useful for inspection and prioritization, but not a final
+planting recommendation list.

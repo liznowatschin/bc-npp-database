@@ -137,3 +137,26 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #37 passed CI for Python 3.11 and 3.12 before
   merge.
 - Merged pull request #37 to `main` as merge commit `8c04ac9`.
+- Started Phase 6 Vancouver plant list PoC MVP on
+  `feature/p6-vancouver-poc-list`.
+- Created Phase 6 GitHub issue records: parent issue #38 and child issues #39
+  through #42.
+- Planned the shortest path to a useful PoC: convert the existing 20 workbook
+  candidates into a caveated Vancouver/CDF plant list with stable `BCNPPD-*`
+  IDs, deterministic `SRC-*` sources, source-attribution links, validation
+  diagnostics, tracked artifacts, and docs.
+- Added planned Phase 7 evidence hardening and Phase 8 usability layer roadmap
+  entries so post-PoC work is explicit.
+- Added `src/bc_npp_database/vancouver_poc.py` with deterministic legacy ID
+  migration, source-registry generation, source-attribution repair, PoC artifact
+  writing, and artifact validation.
+- Added `bc-nppd generate-vancouver-poc-list` and
+  `bc-nppd validate-vancouver-poc-list`.
+- Added tracked Vancouver PoC artifacts under `data/poc/vancouver/`: a 20-row
+  plant list, 24 source records, 41 source-attribution rows, manifest, README,
+  and diagnostics.
+- Added Vancouver PoC docs and tests covering ID migration, source linking,
+  artifact validation, CLI generation, and tracked artifact integrity.
+- Completed Phase 6 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.
+- Opened pull request #43 for Phase 6 closeout.

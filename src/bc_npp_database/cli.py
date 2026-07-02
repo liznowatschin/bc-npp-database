@@ -33,6 +33,13 @@ from .sources import (
     validate_source_records,
 )
 from .validate import find_excluded_sources
+from .vancouver_poc import (
+    generate_vancouver_poc_list,
+    validate_vancouver_poc_list,
+)
+from .vancouver_poc import (
+    has_error_diagnostics as has_vancouver_poc_error_diagnostics,
+)
 from .workbooks import inventory_workbook, validate_workbook
 
 app = typer.Typer(help="BC Native Plant & Pollinator Database tools.", no_args_is_help=True)
@@ -243,6 +250,42 @@ def validate_foundation_command(
         typer.echo(f"- source attribution: {counts['source_attribution']}")
         typer.echo(f"- score inputs: {counts['score_inputs']}")
     if has_foundation_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("generate-vancouver-poc-list")
+def generate_vancouver_poc_list_command(
+    workbook_path: Path,
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output directory for PoC artifacts."),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Generate the Vancouver plant list PoC artifact set."""
+    result = generate_vancouver_poc_list(workbook_path, out_dir)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated Vancouver PoC list at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_vancouver_poc_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-vancouver-poc-list")
+def validate_vancouver_poc_list_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate a generated Vancouver plant list PoC artifact directory."""
+    result = validate_vancouver_poc_list(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Vancouver PoC validation passed for {path}.")
+    if has_vancouver_poc_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 
