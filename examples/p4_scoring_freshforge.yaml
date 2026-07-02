@@ -1,0 +1,27 @@
+# Planning-only FreshForge workflow shape for P4.
+# This file is not executed in CI and does not make FreshForge a dependency.
+provider: bc_npp_database
+workflow: p4_scoring_framework
+version: 0.1.0a0
+inputs:
+  score_inputs: outputs/p4/score_inputs.csv
+  score_weights: outputs/p4/score_weights.csv
+nodes:
+  - id: prepare_inputs
+    uses: score.prepare_inputs
+    with:
+      inputs: ${inputs.score_inputs}
+      weights: ${inputs.score_weights}
+  - id: calculate
+    uses: score.calculate
+    needs: [prepare_inputs]
+  - id: report
+    uses: score.report
+    needs: [calculate]
+policy:
+  generated_outputs: ignored
+  external_context: provenance_only
+  ecological_inference: prohibited
+  accepted_review_statuses:
+    - accepted
+    - manually_corrected

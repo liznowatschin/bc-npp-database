@@ -12,7 +12,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
 | P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Complete |
 | P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Complete |
-| P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
+| P4 Scoring framework | #26 | `feature/p4-scoring-framework` | Active |
 | P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
@@ -190,7 +190,7 @@ explicitly approved.
   - [x] Add CLI JSON summaries for canonical import and export.
   - [x] Document optional FreshForge workflow shape without adding a dependency.
   - [x] Add export and CLI tests.
-- [ ] P3.4 Docs, examples, verification, and closeout (#24)
+- [x] P3.4 Docs, examples, verification, and closeout (#24)
   - [x] Update Sphinx docs and planning notes.
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
@@ -214,20 +214,52 @@ Pull request #25 merged to `main` as merge commit `9444d91`.
 
 ## Phase 4: Scoring Framework
 
-Parent issue: TBD
+Parent issue: #26
 
 Branch: `feature/p4-scoring-framework`
 
-Status: planned
+Status: active
 
 Goal: document and implement evidence-aware UNI, PSI, and RVI score framework
 placeholders without inventing unsupported ecological values.
 
-- [ ] P4.1 Score vocabulary and weighting direction (TBD)
-- [ ] P4.2 Evidence-aware score calculation records (TBD)
-- [ ] P4.3 Score diagnostics, reviewed context/media hooks, and CLI/reporting
-      surfaces (TBD)
-- [ ] P4.4 Docs, examples, and closeout (TBD)
+- [x] P4.1 Score vocabulary and weighting direction (#27)
+  - [x] Define UNI, PSI, and RVI score-family vocabulary.
+  - [x] Define provisional weight records and validation rules.
+  - [x] Keep score inputs separate from evidence confidence and source
+        attribution.
+  - [x] Document that weights are provisional until reviewed.
+  - [x] Add focused tests.
+- [x] P4.2 Evidence-aware score input and calculation records (#28)
+  - [x] Add score input records with species ID, metric, value, weight
+        reference, evidence confidence, source ID, and review status.
+  - [x] Add score result and run-summary records.
+  - [x] Calculate scores only from explicit reviewed numeric inputs.
+  - [x] Emit diagnostics for excluded or invalid inputs.
+  - [x] Add calculation tests.
+- [x] P4.3 Score diagnostics, reviewed context/media hooks, and CLI/reporting
+      surfaces (#29)
+  - [x] Validate source IDs, species IDs, evidence confidence, numeric ranges,
+        weights, and review gates.
+  - [x] Keep external context/media hooks as provenance fields only.
+  - [x] Add CLI commands for score-input validation and score calculation.
+  - [x] Add JSON report summaries.
+  - [x] Add CLI tests.
+- [ ] P4.4 Docs, examples, verification, and closeout (#30)
+  - [x] Update Sphinx docs and planning notes.
+  - [x] Update roadmap and changelog with implementation state.
+  - [x] Run full local acceptance.
+  - [ ] Open PR to `main` and record the PR number.
+  - [ ] Comment verification on issues and close child issues only after
+        checklist bodies are accurate.
+
+Phase 4 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
 
 ## Phase 5: v1.0.0a Foundation Record And Release
 

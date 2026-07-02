@@ -17,5 +17,9 @@ manifests, and review-gated media extraction manifests.
 
 Phase 3 implements the canonical data pipeline: schema-backed species rows,
 lookup rows, source-attribution validation, bloom-calendar import, deterministic
-CSV export, and a dependency-free FreshForge workflow shape. Phases 4 and 5 are
-planned for the scoring framework and the reviewed v1.0.0a foundation release.
+CSV export, and a dependency-free FreshForge workflow shape.
+
+Phase 4 implements evidence-aware score records, provisional weighted
+calculation, diagnostics, CLI reporting, and a dependency-free FreshForge
+workflow shape for UNI, PSI, and RVI. Phase 5 is planned for the reviewed
+v1.0.0a foundation release.

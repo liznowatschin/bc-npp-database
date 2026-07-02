@@ -14,6 +14,13 @@ from .canonical import (
     import_canonical_workbook,
 )
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
+from .scoring import (
+    calculate_scores,
+    validate_score_inputs,
+)
+from .scoring import (
+    has_error_diagnostics as has_score_error_diagnostics,
+)
 from .sources import (
     load_mapping_records,
     validate_source_attribution_records,
@@ -164,6 +171,49 @@ def export_canonical_workbook_command(
         for table, exported_path in export_result.paths.items():
             typer.echo(f"- {table}: {exported_path}")
     if has_error_diagnostics(export_result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-score-inputs")
+def validate_score_inputs_command(
+    path: Path,
+    weights_path: Path | None = typer.Option(
+        None,
+        "--weights",
+        help="Optional CSV, JSON, or JSON Lines score weights.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate score inputs and optional metric weights."""
+    rows = load_mapping_records(path)
+    weights = load_mapping_records(weights_path) if weights_path else []
+    diagnostics = validate_score_inputs(rows, weights)
+    _emit_diagnostics(diagnostics, json_output=json_output)
+
+
+@app.command("calculate-scores")
+def calculate_scores_command(
+    path: Path,
+    weights_path: Path | None = typer.Option(
+        None,
+        "--weights",
+        help="Optional CSV, JSON, or JSON Lines score weights.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Calculate provisional scores from reviewed numeric score inputs."""
+    rows = load_mapping_records(path)
+    weights = load_mapping_records(weights_path) if weights_path else []
+    result = calculate_scores(rows, weights)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        for score in result.results:
+            value = "not calculated" if score.score is None else score.score
+            typer.echo(f"{score.species_id} {score.score_family}: {value}")
+        if result.diagnostics:
+            typer.echo(f"Diagnostics: {len(result.diagnostics)}")
+    if has_score_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

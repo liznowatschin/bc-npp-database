@@ -45,3 +45,8 @@ Scoring
 
 Scores must not hide evidence uncertainty. Keep source confidence and ecological
 score as separate values.
+
+P4 score calculations use only explicit reviewed numeric inputs with source IDs,
+evidence confidence, and accepted or manually corrected review status. External
+GIS, raster, media, or workflow context may support review diagnostics, but it
+must not create score values directly.

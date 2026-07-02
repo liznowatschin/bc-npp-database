@@ -93,3 +93,19 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #25 passed CI for Python 3.11 and 3.12 before
   merge.
 - Merged pull request #25 to `main` as merge commit `9444d91`.
+- Started Phase 4 scoring framework on `feature/p4-scoring-framework`.
+- Created Phase 4 GitHub issue records: parent issue #26 and child issues #27
+  through #30.
+- Expanded the Phase 4 roadmap into UBC-FRESH-grade implementation subtasks for
+  score vocabulary, provisional weighting, reviewed score inputs, diagnostics,
+  CLI/reporting, docs, verification, and closeout.
+- Added `src/bc_npp_database/scoring.py` with score-family vocabulary, weight
+  records, score input records, result records, run summaries, validation, and
+  provisional weighted-average scoring.
+- Added `bc-nppd validate-score-inputs` and `bc-nppd calculate-scores` CLI
+  commands with JSON diagnostics and result summaries.
+- Added scoring framework docs, data-standard updates, planning updates, and a
+  planning-only FreshForge scoring workflow shape without adding FreshForge as a
+  dependency.
+- Completed Phase 4 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

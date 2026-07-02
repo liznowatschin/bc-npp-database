@@ -1,3 +1,5 @@
+import json
+
 from openpyxl import Workbook
 from typer.testing import CliRunner
 
@@ -138,3 +140,66 @@ def test_export_canonical_workbook_command_json_reports_errors(tmp_path):
     assert result.exit_code == 1
     assert "invalid_species_id" in result.stdout
     assert (tmp_path / "out" / "species.csv").exists()
+
+
+def test_validate_score_inputs_command_json_reports_errors(tmp_path):
+    scores_path = tmp_path / "scores.csv"
+    scores_path.write_text(
+        "species_id,score_family,metric,value,source_id,evidence_confidence,review_status\n"
+        "BCNPPD-0001,PSI,Native Bee Score,4,SRC-0001,A,pending_review\n",
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(app, ["validate-score-inputs", str(scores_path), "--json"])
+
+    assert result.exit_code == 1
+    assert "unreviewed_score_input" in result.stdout
+    assert "missing_score_weight" in result.stdout
+
+
+def test_calculate_scores_command_json(tmp_path):
+    scores_path = tmp_path / "scores.json"
+    scores_path.write_text(
+        json.dumps(
+            [
+                {
+                    "species_id": "BCNPPD-0001",
+                    "score_family": "UNI",
+                    "metric": "Urban Toughness",
+                    "value": "4",
+                    "source_id": "SRC-0001",
+                    "evidence_confidence": "A",
+                    "review_status": "accepted",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+    weights_path = tmp_path / "weights.json"
+    weights_path.write_text(
+        json.dumps(
+            [
+                {
+                    "score_family": "UNI",
+                    "metric": "Urban Toughness",
+                    "weight": "1",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(
+        app,
+        [
+            "calculate-scores",
+            str(scores_path),
+            "--weights",
+            str(weights_path),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"score": 80.0' in result.stdout
+    assert '"score_family": "UNI"' in result.stdout
