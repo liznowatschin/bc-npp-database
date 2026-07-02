@@ -11,7 +11,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Complete |
 | P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
 | P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Complete |
-| P3 Canonical data pipeline | TBD | `feature/p3-canonical-data-pipeline` | Planned |
+| P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Active |
 | P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
 | P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
 
@@ -161,21 +161,50 @@ Pull request #19 merged to `main` as merge commit `b22ee57`.
 
 ## Phase 3: Canonical Data Pipeline
 
-Parent issue: TBD
+Parent issue: #20
 
 Branch: `feature/p3-canonical-data-pipeline`
 
-Status: planned
+Status: active
 
 Goal: convert approved workbook and schema inputs into deterministic canonical
 tables and import/export APIs while keeping generated outputs out of git unless
 explicitly approved.
 
-- [ ] P3.1 Canonical table dataclasses and schema helpers (TBD)
-- [ ] P3.2 Workbook-to-table import pipeline, accepted recovered-table inputs,
-      and manifest joins (TBD)
-- [ ] P3.3 Deterministic CSV/export and optional FreshForge workflow (TBD)
-- [ ] P3.4 Docs, examples, and closeout (TBD)
+- [x] P3.1 Canonical table dataclasses and schema helpers (#21)
+  - [x] Add canonical dataclasses and result containers.
+  - [x] Load schema seed column definitions with stable order.
+  - [x] Normalize workbook header aliases such as `Species_ID` to `Species ID`.
+  - [x] Validate required canonical fields and ID conventions.
+  - [x] Add focused unit tests.
+- [x] P3.2 Workbook-to-table import pipeline and manifest joins (#22)
+  - [x] Implement read-only workbook import for approved sheets.
+  - [x] Preserve source attribution rows through P2 validators.
+  - [x] Import bloom calendar rows without scoring or ecological inference.
+  - [x] Emit diagnostics for malformed rows, excluded sources, and invalid
+        confidence values.
+  - [x] Add synthetic workbook tests.
+- [x] P3.3 Deterministic CSV export and optional FreshForge workflow shape (#23)
+  - [x] Export deterministic CSV tables to caller-provided output directories.
+  - [x] Include diagnostics export when diagnostics are present.
+  - [x] Add CLI JSON summaries for canonical import and export.
+  - [x] Document optional FreshForge workflow shape without adding a dependency.
+  - [x] Add export and CLI tests.
+- [ ] P3.4 Docs, examples, verification, and closeout (#24)
+  - [x] Update Sphinx docs and planning notes.
+  - [x] Update roadmap and changelog with implementation state.
+  - [x] Run full local acceptance.
+  - [ ] Open PR to `main` and record the PR number.
+  - [ ] Comment verification on issues and close child issues only after
+        checklist bodies are accurate.
+
+Phase 3 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
 
 ## Phase 4: Scoring Framework
 

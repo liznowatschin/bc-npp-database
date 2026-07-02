@@ -88,3 +88,53 @@ def test_validate_source_attribution_command_json_reports_errors(tmp_path):
     assert result.exit_code == 1
     assert "invalid_evidence_confidence" in result.stdout
     assert "missing_required_field" in result.stdout
+
+
+def test_import_canonical_workbook_command_json(tmp_path):
+    workbook_path = tmp_path / "canonical.xlsx"
+    workbook = Workbook()
+    species = workbook.active
+    species.title = "Species_Master"
+    species.append(["Species_ID", "Botanical_Name", "Evidence_Confidence"])
+    species.append(["BCNPPD-0001", "Achillea millefolium", "A"])
+    lookups = workbook.create_sheet("Lookup_Tables")
+    lookups.append(["lookup_name", "value"])
+    lookups.append(["Life Cycle", "Perennial"])
+    attribution = workbook.create_sheet("Source_Attribution")
+    attribution.append(["Source ID", "Species_ID", "Field", "Confidence"])
+    attribution.append(["SRC-0001", "BCNPPD-0001", "habitat", "B"])
+    bloom = workbook.create_sheet("Bloom_Calendar")
+    bloom.append(["Species_ID", "Common_Name", "Jan"])
+    bloom.append(["BCNPPD-0001", "yarrow", ""])
+    workbook.save(workbook_path)
+
+    result = runner.invoke(app, ["import-canonical-workbook", str(workbook_path), "--json"])
+
+    assert result.exit_code == 0
+    assert '"species": 1' in result.stdout
+    assert '"source_attribution": 1' in result.stdout
+
+
+def test_export_canonical_workbook_command_json_reports_errors(tmp_path):
+    workbook_path = tmp_path / "canonical.xlsx"
+    workbook = Workbook()
+    species = workbook.active
+    species.title = "Species_Master"
+    species.append(["Species_ID", "Botanical_Name", "Evidence_Confidence"])
+    species.append(["BAD-0001", "Achillea millefolium", "A"])
+    workbook.save(workbook_path)
+
+    result = runner.invoke(
+        app,
+        [
+            "export-canonical-workbook",
+            str(workbook_path),
+            "--out-dir",
+            str(tmp_path / "out"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "invalid_species_id" in result.stdout
+    assert (tmp_path / "out" / "species.csv").exists()

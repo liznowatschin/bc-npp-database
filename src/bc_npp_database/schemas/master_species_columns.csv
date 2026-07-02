@@ -1,0 +1,68 @@
+section,column_name,data_type,allowed_values_or_notes
+Identity,Species ID,text,Stable ID such as BCNPPD-0001
+Identity,Botanical Name,text,Name used in source or project
+Identity,Accepted Name,text,Current accepted name when verified
+Identity,Synonyms,text,Semicolon-separated
+Identity,Common Name,text,Preferred common name
+Identity,Family,text,Botanical family
+Identity,Native Status,text,Use lookup
+Identity,Ecoregion,text,Use lookup or semicolon-separated
+Growth,Plant Type,text,Use lookup
+Growth,Height Min cm,number,Minimum typical mature height
+Growth,Height Max cm,number,Maximum typical mature height
+Growth,Spread Min cm,number,Minimum typical mature spread
+Growth,Spread Max cm,number,Maximum typical mature spread
+Growth,Life Cycle,text,Use lookup
+Growth,Growth Habit,text,Use lookup
+Growth,Evergreen,text,Yes/No/Partial/Unknown
+Growth,Rhizomatous,text,Yes/No/Unknown
+Growth,Nitrogen Fixer,text,Yes/No/Unknown
+Bloom,Bloom Start,text,Month lookup
+Bloom,Bloom End,text,Month lookup
+Bloom,Bloom Months,text,Formula or calculated list
+Bloom Duration,Bloom Duration Months,number,Calculated
+Bloom,Flower Colour,text,Use lookup; semicolon-separated if needed
+Bloom,Flower Shape,text,Use lookup
+Site,Sun,text,Use lookup; semicolon-separated
+Site,Soil Moisture,text,Use lookup
+Site,Soil Texture,text,Use lookup
+Site,Drainage,text,Use lookup
+Site,Soil pH,text,Acidic/Neutral/Alkaline/Unknown
+Site,Drought Tolerance,number,0-5
+Site,Salt Tolerance,number,0-5
+Site,Compaction Tolerance,number,0-5
+Pollinators,Native Bee Score,number,0-5
+Pollinators,Bumble Bee Score,number,0-5
+Pollinators,Mason Bee Score,number,0-5
+Pollinators,Butterfly Nectar Score,number,0-5
+Pollinators,Butterfly Host,text,Yes/No/Unknown; note species where known
+Pollinators,Hoverfly Score,number,0-5
+Pollinators,Hummingbird Score,number,0-5
+Wildlife,Bird Value,number,0-5
+Wildlife,Mammal Value,number,0-5
+Wildlife,Larval Host,text,Yes/No/Unknown; note taxa where known
+Wildlife,Seed Food,text,Yes/No/Unknown
+Wildlife,Nesting Value,text,Yes/No/Unknown
+Cultivation,Seeds per kg,number,Blank if unverified
+Cultivation,Seeds per g,number,Calculated from seeds per kg
+Cultivation,Germination Requirements,text,Brief controlled/prose note
+Cultivation,Cold Stratification,text,Duration/temp if known
+Cultivation,Scarification,text,Yes/No/Unknown/Details
+Cultivation,Ease of Establishment,number,0-5
+Cultivation,Establishment Speed,text,Slow/Moderate/Fast/Unknown
+Cultivation,Self-Seeding,text,None/Low/Moderate/High/Unknown
+Cultivation,Maintenance Level,text,Low/Moderate/High/Unknown
+Urban,Boulevard,text,Yes/No/Conditional/Unknown
+Urban,Bioswale,text,Yes/No/Conditional/Unknown
+Urban,Rain Garden,text,Yes/No/Conditional/Unknown
+Urban,Green Roof,text,Yes/No/Conditional/Unknown
+Urban,School Grounds,text,Yes/No/Conditional/Unknown
+Urban,Residential,text,Yes/No/Conditional/Unknown
+Urban,Urban Toughness,number,0-5
+Scoring,UNI Score,number,Calculated 0-100
+Scoring,PSI Score,number,Calculated 0-100
+Scoring,RVI Score,number,Calculated 0-100
+Database,Evidence Level,text,A/B/C/D/Mixed
+Database,Primary References,text,Reference IDs
+Database,Last Verified,date,YYYY-MM-DD
+Database,Notes,text,Concise notes and caveats

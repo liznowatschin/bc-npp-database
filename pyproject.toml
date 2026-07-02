@@ -73,6 +73,9 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+bc_npp_database = ["schemas/*.csv"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

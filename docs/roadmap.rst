@@ -13,6 +13,9 @@ normalization contract, added read-only workbook inspection helpers, and
 expanded validation records.
 
 Phase 2 defines source attribution, evidence records, source materialization
-manifests, and review-gated media extraction manifests. Phases 3 through 5 are
-planned for the canonical data pipeline, scoring framework, and the reviewed
-v1.0.0a foundation release.
+manifests, and review-gated media extraction manifests.
+
+Phase 3 implements the canonical data pipeline: schema-backed species rows,
+lookup rows, source-attribution validation, bloom-calendar import, deterministic
+CSV export, and a dependency-free FreshForge workflow shape. Phases 4 and 5 are
+planned for the scoring framework and the reviewed v1.0.0a foundation release.

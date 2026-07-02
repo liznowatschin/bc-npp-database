@@ -1,0 +1,30 @@
+# Planning-only FreshForge workflow shape for P3.
+# This file is not executed in CI and does not make FreshForge a dependency.
+provider: bc_npp_database
+workflow: p3_canonical_pipeline
+version: 0.1.0a0
+inputs:
+  workbook: data/workbooks/native_plant_restoration_workbook_v1.0.0c.xlsx
+  output_dir: outputs/p3
+nodes:
+  - id: workbook_inventory
+    uses: workbook.inventory
+    with:
+      path: ${inputs.workbook}
+  - id: import_tables
+    uses: workbook.import_tables
+    needs: [workbook_inventory]
+    with:
+      path: ${inputs.workbook}
+  - id: validate_tables
+    uses: tables.validate
+    needs: [import_tables]
+  - id: export_tables
+    uses: tables.export
+    needs: [validate_tables]
+    with:
+      output_dir: ${inputs.output_dir}
+policy:
+  generated_outputs: ignored
+  external_downloads: disabled
+  ecological_inference: prohibited

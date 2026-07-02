@@ -69,3 +69,23 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #19 passed CI for Python 3.11 and 3.12 before
   merge.
 - Merged pull request #19 to `main` as merge commit `b22ee57`.
+- Started Phase 3 canonical data pipeline on
+  `feature/p3-canonical-data-pipeline`.
+- Created Phase 3 GitHub issue records: parent issue #20 and child issues #21
+  through #24.
+- Expanded the Phase 3 roadmap into UBC-FRESH-grade implementation subtasks for
+  canonical records, workbook import, deterministic export, optional FreshForge
+  workflow shape, docs, verification, and closeout.
+- Added `src/bc_npp_database/canonical.py` with canonical schema helpers,
+  species, lookup, bloom-calendar, import-result, and export-result records.
+- Added read-only canonical workbook import for approved sheets, alias-aware
+  legacy workbook headers, source-attribution validation through the P2 model,
+  structured diagnostics, and deterministic CSV export.
+- Added `bc-nppd import-canonical-workbook` and
+  `bc-nppd export-canonical-workbook` CLI commands with JSON summaries.
+- Packaged canonical schema CSVs as package data so schema-backed APIs work from
+  built wheels as well as the source checkout.
+- Added canonical pipeline docs, planning updates, and a planning-only
+  FreshForge workflow shape without adding FreshForge as a dependency.
+- Completed Phase 3 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

@@ -14,6 +14,7 @@ database for coastal British Columbia.
    data-standards
    source-policy
    source-attribution
+   canonical-pipeline
    seed-archives
    workbook-normalization
    flagship-species

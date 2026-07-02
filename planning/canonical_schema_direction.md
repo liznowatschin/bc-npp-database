@@ -35,7 +35,19 @@ Source-manifest joins should preserve external identifiers and acquisition
 status without requiring live BC Data Catalogue, FEMIC, or HectaresBC access in
 CI.
 
-## Deferred To P3
+## P3 Implementation Direction
 
-P3 should create the package-backed canonical table model, deterministic
-import/export workflow, and optional workflow records for source-manifest joins.
+P3 creates the package-backed canonical table model, deterministic import/export
+workflow, and optional workflow shape for source-manifest joins. The
+implementation should treat workbook rows as candidate records, preserve source
+attribution through P2 validators, and write generated CSV outputs only to
+caller-provided ignored directories such as `outputs/`.
+
+The first canonical implementation should include:
+
+* schema helpers for `schemas/master_species_columns.csv` and
+  `schemas/lookups_seed.csv`;
+* alias-aware workbook headers such as `Species_ID` to `Species ID`;
+* candidate species, lookup, bloom-calendar, and source-attribution records;
+* deterministic CSV export with stable filenames and column order;
+* a planning-only FreshForge workflow shape without a runtime dependency.

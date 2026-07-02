@@ -47,7 +47,13 @@ silently rewritten in place.
 Use `Unknown` where a relevant value is unresolved. Leave cells blank only when
 the field is intentionally not applicable or intentionally unpopulated.
 
-## P1 Boundary
+## P3 Canonical Import Boundary
 
-P1 inventories and validates workbook structure. It does not declare exported
-CSV files to be canonical tracked data.
+P3 may import approved workbook sheets into package-backed canonical records and
+write deterministic CSV exports to ignored local output directories. Those CSV
+exports remain review artifacts until a later release task explicitly approves a
+tracked derivative.
+
+P3 must not infer missing ecological values, calculate scores, or treat
+source-attribution rows as facts by import alone. Source-attribution rows pass
+through the P2 validator and remain evidence records for later review.

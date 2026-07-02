@@ -8,6 +8,11 @@ from pathlib import Path
 import typer
 
 from . import __version__
+from .canonical import (
+    export_canonical_tables,
+    has_error_diagnostics,
+    import_canonical_workbook,
+)
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
 from .sources import (
     load_mapping_records,
@@ -117,6 +122,48 @@ def validate_workbook_command(
     else:
         typer.echo(f"Workbook validation passed for {path}.")
     if any(diagnostic.severity.value == "error" for diagnostic in diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("import-canonical-workbook")
+def import_canonical_workbook_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Import approved workbook sheets into canonical in-memory tables."""
+    result = import_canonical_workbook(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        counts = result.to_summary_dict()["counts"]
+        typer.echo(f"Imported canonical workbook: {path}")
+        typer.echo(f"- species: {counts['species']}")
+        typer.echo(f"- lookups: {counts['lookups']}")
+        typer.echo(f"- source attribution: {counts['source_attribution']}")
+        typer.echo(f"- bloom calendar: {counts['bloom_calendar']}")
+        typer.echo(f"- diagnostics: {counts['diagnostics']}")
+    if has_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("export-canonical-workbook")
+def export_canonical_workbook_command(
+    path: Path,
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output directory for CSV tables."),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Import approved workbook sheets and export deterministic CSV tables."""
+    import_result = import_canonical_workbook(path)
+    export_result = export_canonical_tables(import_result, out_dir)
+    if json_output:
+        summary = import_result.to_summary_dict()
+        summary["export"] = export_result.to_summary_dict()
+        typer.echo(json.dumps(summary, indent=2))
+    else:
+        typer.echo(f"Exported canonical workbook tables to {out_dir}.")
+        for table, exported_path in export_result.paths.items():
+            typer.echo(f"- {table}: {exported_path}")
+    if has_error_diagnostics(export_result.diagnostics):
         raise typer.Exit(code=1)
 
 
