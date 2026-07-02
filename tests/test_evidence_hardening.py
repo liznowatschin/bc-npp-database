@@ -17,7 +17,7 @@ def test_generate_vancouver_evidence_hardening_from_tracked_poc(tmp_path):
     assert not has_error_diagnostics(result.diagnostics)
     assert result.counts == {
         "hardened_plant_list": 53,
-        "reviewed_sources": 25,
+        "reviewed_sources": 35,
         "reviewed_fields": 80,
         "evidence_gaps": 265,
         "score_readiness": 159,

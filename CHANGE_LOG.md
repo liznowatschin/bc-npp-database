@@ -303,3 +303,16 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #80 to `main` as merge commit `1971827`.
 - Closed Phase 13 as complete.
+- Started Phase 14 missing common-name fill on
+  `feature/p14-fill-common-names`.
+- Created Phase 14 GitHub issue records: parent issue #81 and child issues
+  #82 through #84.
+- Filled 10 blank common-name fields in the tracked Vancouver PoC list using
+  pending-review common-name source support.
+- Added 10 E-Flora BC source records and 10 `Common Name` source-attribution
+  rows, increasing the tracked PoC source registry from 25 to 35 records and
+  attribution table from 74 to 84 rows.
+- Regenerated the evidence-hardening, usability, and pollinator module
+  artifacts while keeping ecological evidence, scores, and PSI `not_ready`.
+- Completed Phase 14 local acceptance verification with Ruff, pytest, Sphinx,
+  build, twine, and all Vancouver PoC artifact validators passing.

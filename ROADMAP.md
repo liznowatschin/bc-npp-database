@@ -22,6 +22,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P11 Pollinator evidence-review module | #66 | `feature/p11-pollinator-module` | Complete |
 | P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Complete |
 | P13 Add Matricaria discoidea | #76 | `feature/p13-add-matricaria-discoidea` | Complete |
+| P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -757,3 +758,44 @@ Pull request #80 is the Phase 13 closeout PR against `main`.
 Pull request #80 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #80 merged to `main` as merge commit `1971827`.
+
+## Phase 14: Fill Missing Common Names
+
+Parent issue: #81
+
+Branch: `feature/p14-fill-common-names`
+
+Status: active
+
+Goal: fill blank common-name fields in the tracked Vancouver PoC product with
+source-attributed, pending-review common names while preserving the distinction
+between display labels and reviewed ecological evidence.
+
+- [x] P14.1 Common-name source attribution rows (#82)
+  - [x] Inventory blank common-name fields in `plant_list.csv`.
+  - [x] Add deterministic `SRC-*` source records for common-name support.
+  - [x] Add `Common Name` attribution rows with `Pending review` confidence.
+  - [x] Keep trait, pollinator, suitability, and score evidence unchanged.
+- [x] P14.2 Regenerate Vancouver artifacts and web app (#83)
+  - [x] Fill common names in the tracked Vancouver PoC list.
+  - [x] Regenerate P7 evidence hardening artifacts.
+  - [x] Regenerate P8 usability web app artifacts.
+  - [x] Regenerate P11 pollinator module artifacts.
+- [ ] P14.3 Validation, PR, and closeout (#84)
+  - [x] Update tests for new source and attribution counts.
+  - [x] Run local acceptance.
+  - [ ] Open PR and record the PR number.
+  - [ ] Merge PR after green CI.
+  - [ ] Close issues after merge.
+
+Phase 14 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (83 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
+- `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
