@@ -10,7 +10,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | --- | --- | --- | --- |
 | P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Complete |
 | P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
-| P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Active |
+| P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Complete |
 | P3 Canonical data pipeline | TBD | `feature/p3-canonical-data-pipeline` | Planned |
 | P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
 | P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
@@ -134,7 +134,7 @@ Parent issue: #14
 
 Branch: `feature/p2-evidence-source-attribution`
 
-Status: active
+Status: complete
 
 Goal: define durable source, evidence, reference ID, and attribution records
 that support auditable ecological claims.
@@ -156,6 +156,8 @@ Phase 2 local verification passed with:
 Pull request #19 is the Phase 2 closeout PR against `main`.
 
 Pull request #19 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #19 merged to `main` as merge commit `b22ee57`.
 
 ## Phase 3: Canonical Data Pipeline
 
