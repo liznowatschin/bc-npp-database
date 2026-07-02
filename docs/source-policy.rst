@@ -45,3 +45,15 @@ Prioritize sources in this order:
 * Conservation organizations.
 * Botanical gardens and universities.
 * Native plant nurseries and seed suppliers for commercial and cultivation data.
+
+Attribution and review
+----------------------
+
+Source/reference records require a stable source ID, source name, tier, and a
+citation or URL. Source attribution rows connect one source to one supported
+claim or field. Species-specific claims must include a stable BC-NPPD species
+ID.
+
+External data manifests and media-derived extraction outputs are provenance
+records, not automatic facts. They become candidate evidence only after review,
+and their review status remains separate from evidence confidence.

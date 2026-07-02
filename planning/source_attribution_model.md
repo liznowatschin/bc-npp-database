@@ -71,6 +71,7 @@ artifacts and must not become canonical species facts or score inputs.
 
 ## Deferred To P2
 
-P2 should define durable source/reference dataclasses, source completeness
-checks, reference ID conventions, source-attribution validation behavior, and
-optional source materialization and media-derived extraction manifest contracts.
+P2 implements durable source/reference dataclasses, source completeness checks,
+reference ID conventions, source-attribution validation behavior, and optional
+source materialization and media-derived extraction manifest contracts in
+`src/bc_npp_database/sources.py`.

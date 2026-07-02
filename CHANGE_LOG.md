@@ -54,3 +54,14 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Inspected the ignored local `tmp/LMH77.pdf` source with PyMuPDF, confirmed it
   is born-digital and text-extractable, recorded key metadata and initial
   `Achillea millefolium`/yarrow page hits, and added an LMH77 extraction plan.
+- Created Phase 2 GitHub issue records: parent issue #14 and child issues #15
+  through #18.
+- Began implementing the Phase 2 source/evidence model with typed source,
+  attribution, materialization, and media-extraction records plus validation
+  and CLI surfaces.
+- Added `src/bc_npp_database/sources.py`, source record and attribution CLI
+  validators, Sphinx source-attribution docs, and synthetic tests for source
+  tiers, reference IDs, external IDs, completeness, excluded-source scanning,
+  and review gates.
+- Completed Phase 2 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

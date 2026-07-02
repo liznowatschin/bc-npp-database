@@ -10,7 +10,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | --- | --- | --- | --- |
 | P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Complete |
 | P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
-| P2 Evidence and source attribution model | TBD | `feature/p2-evidence-source-attribution` | Planned |
+| P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Active |
 | P3 Canonical data pipeline | TBD | `feature/p3-canonical-data-pipeline` | Planned |
 | P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
 | P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
@@ -130,20 +130,28 @@ Pull request #13 is the Phase 1 closeout PR against `main`.
 
 ## Phase 2: Evidence And Source Attribution Model
 
-Parent issue: TBD
+Parent issue: #14
 
 Branch: `feature/p2-evidence-source-attribution`
 
-Status: planned
+Status: active
 
 Goal: define durable source, evidence, reference ID, and attribution records
 that support auditable ecological claims.
 
-- [ ] P2.1 Source tier and reference ID contract (TBD)
-- [ ] P2.2 Source attribution table, materialization, media-extraction manifest,
-      and validation model (TBD)
-- [ ] P2.3 Excluded-source, source-completeness, and external-ID enforcement (TBD)
-- [ ] P2.4 Integration-hook docs, examples, and closeout (TBD)
+- [x] P2.1 Source tier and reference ID contract (#15)
+- [x] P2.2 Source attribution table, materialization, media-extraction manifest,
+      and validation model (#16)
+- [x] P2.3 Excluded-source, source-completeness, and external-ID enforcement (#17)
+- [ ] P2.4 Integration-hook docs, examples, and closeout (#18)
+
+Phase 2 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
 
 ## Phase 3: Canonical Data Pipeline
 

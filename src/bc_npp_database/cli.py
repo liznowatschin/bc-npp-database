@@ -9,6 +9,11 @@ import typer
 
 from . import __version__
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
+from .sources import (
+    load_mapping_records,
+    validate_source_attribution_records,
+    validate_source_records,
+)
 from .validate import find_excluded_sources
 from .workbooks import inventory_workbook, validate_workbook
 
@@ -57,6 +62,26 @@ def validate_source_policy(path: Path) -> None:
     typer.echo(f"No excluded sources found in {path}.")
 
 
+@app.command("validate-source-records")
+def validate_source_records_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate source/reference records from CSV, JSON, or JSON Lines."""
+    diagnostics = validate_source_records(load_mapping_records(path))
+    _emit_diagnostics(diagnostics, json_output=json_output)
+
+
+@app.command("validate-source-attribution")
+def validate_source_attribution_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate source attribution records from CSV, JSON, or JSON Lines."""
+    diagnostics = validate_source_attribution_records(load_mapping_records(path))
+    _emit_diagnostics(diagnostics, json_output=json_output)
+
+
 @app.command("inventory-workbook")
 def inventory_workbook_command(
     path: Path,
@@ -91,5 +116,17 @@ def validate_workbook_command(
             typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
     else:
         typer.echo(f"Workbook validation passed for {path}.")
+    if any(diagnostic.severity.value == "error" for diagnostic in diagnostics):
+        raise typer.Exit(code=1)
+
+
+def _emit_diagnostics(diagnostics: list[object], *, json_output: bool) -> None:
+    if json_output:
+        typer.echo(json.dumps([diagnostic.to_dict() for diagnostic in diagnostics], indent=2))
+    elif diagnostics:
+        for diagnostic in diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo("Validation passed.")
     if any(diagnostic.severity.value == "error" for diagnostic in diagnostics):
         raise typer.Exit(code=1)
