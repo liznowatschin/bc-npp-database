@@ -11,7 +11,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P0 Bootstrap scaffold | #1 | `feature/p0-bootstrap-scaffold` | Complete |
 | P1 Seed archive inventory and normalization contracts | #7 | `feature/p1-seed-inventory-normalization` | Complete |
 | P2 Evidence and source attribution model | #14 | `feature/p2-evidence-source-attribution` | Complete |
-| P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Active |
+| P3 Canonical data pipeline | #20 | `feature/p3-canonical-data-pipeline` | Complete |
 | P4 Scoring framework | TBD | `feature/p4-scoring-framework` | Planned |
 | P5 v1.0.0a foundation record and release | TBD | `feature/p5-v1-foundation-release` | Planned |
 
@@ -165,7 +165,7 @@ Parent issue: #20
 
 Branch: `feature/p3-canonical-data-pipeline`
 
-Status: active
+Status: complete
 
 Goal: convert approved workbook and schema inputs into deterministic canonical
 tables and import/export APIs while keeping generated outputs out of git unless
@@ -195,7 +195,7 @@ explicitly approved.
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
   - [x] Open PR to `main` and record the PR number (#25).
-  - [ ] Comment verification on issues and close child issues only after
+  - [x] Comment verification on issues and close child issues only after
         checklist bodies are accurate.
 
 Phase 3 local verification passed with:
@@ -207,6 +207,10 @@ Phase 3 local verification passed with:
 - `twine check dist/*`
 
 Pull request #25 is the Phase 3 closeout PR against `main`.
+
+Pull request #25 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #25 merged to `main` as merge commit `9444d91`.
 
 ## Phase 4: Scoring Framework
 
