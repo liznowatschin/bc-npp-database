@@ -419,7 +419,7 @@ adequate.
 - [ ] P7.4 Verification, PR, and closeout (#48)
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
-  - [ ] Open PR to `main` and record the PR number.
+  - [x] Open PR to `main` and record the PR number (#49).
   - [ ] Comment verification on issues and close child issues only after
         checklist bodies are accurate.
   - [ ] Merge only after green CI and then close the parent issue.
@@ -435,6 +435,8 @@ Phase 7 local verification passed with:
 The tracked evidence-hardening artifact validates with:
 
 - `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+
+Pull request #49 is the Phase 7 closeout PR against `main`.
 
 ## Phase 8: Usability Layer
 
