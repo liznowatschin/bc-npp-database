@@ -194,7 +194,7 @@ explicitly approved.
   - [x] Update Sphinx docs and planning notes.
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
-  - [ ] Open PR to `main` and record the PR number.
+  - [x] Open PR to `main` and record the PR number (#25).
   - [ ] Comment verification on issues and close child issues only after
         checklist bodies are accurate.
 
@@ -205,6 +205,8 @@ Phase 3 local verification passed with:
 - `sphinx-build -b html docs _build/html -W`
 - `python -m build`
 - `twine check dist/*`
+
+Pull request #25 is the Phase 3 closeout PR against `main`.
 
 ## Phase 4: Scoring Framework
 

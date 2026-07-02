@@ -89,3 +89,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   FreshForge workflow shape without adding FreshForge as a dependency.
 - Completed Phase 3 implementation local acceptance verification with Ruff,
   pytest, Sphinx, build, and twine checks passing.
+- Opened pull request #25 for Phase 3 closeout.
