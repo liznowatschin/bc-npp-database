@@ -2,7 +2,7 @@
 # This file is not executed in CI and does not create a release tag.
 provider: bc_npp_database
 workflow: p5_foundation_release_dry_run
-version: 0.1.0a0
+version: 0.1.0a1
 inputs:
   foundation_dir: data/foundation/v1.0.0a
 nodes:

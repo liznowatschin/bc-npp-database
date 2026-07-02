@@ -227,3 +227,16 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #60 passed CI for Python 3.11 and Python 3.12
   before merge.
 - Merged pull request #60 to `main` as merge commit `834cebd`.
+- Started Phase 10 `v0.1.0a1` GitHub alpha release on
+  `feature/p10-v0.1.0a1-release`.
+- Created Phase 10 GitHub issue records: parent issue #61 and child issues #62
+  through #64.
+- Bumped package, citation, examples, and version assertions from `0.1.0a0` to
+  `0.1.0a1`.
+- Added tracked release notes for `v0.1.0a1` covering the Vancouver PoC product,
+  evidence hardening, static usability interface, plant record details, and
+  caveats.
+- Updated the release workflow so `v*` tags build wheel/sdist artifacts and
+  publish a GitHub prerelease with `dist/*` attached.
+- Completed Phase 10 release-prep local acceptance verification with Ruff,
+  pytest, Sphinx, build, twine, and PoC artifact validators passing.

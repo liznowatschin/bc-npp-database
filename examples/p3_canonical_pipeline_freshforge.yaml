@@ -2,7 +2,7 @@
 # This file is not executed in CI and does not make FreshForge a dependency.
 provider: bc_npp_database
 workflow: p3_canonical_pipeline
-version: 0.1.0a0
+version: 0.1.0a1
 inputs:
   workbook: data/workbooks/native_plant_restoration_workbook_v1.0.0c.xlsx
   output_dir: outputs/p3

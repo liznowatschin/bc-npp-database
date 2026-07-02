@@ -2,7 +2,7 @@
 # This file is not executed in CI and does not make FreshForge a dependency.
 provider: bc_npp_database
 workflow: p4_scoring_framework
-version: 0.1.0a0
+version: 0.1.0a1
 inputs:
   score_inputs: outputs/p4/score_inputs.csv
   score_weights: outputs/p4/score_weights.csv

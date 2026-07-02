@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bc-npp-database"
-version = "0.1.0a0"
+version = "0.1.0a1"
 description = "Evidence-based native plant and pollinator decision-support database for coastal British Columbia."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -18,3 +18,14 @@ For the v1.0.0a foundation scaffold:
 * Confirm the dry-run workflow example does not create tags, publish releases,
   or require external downloads.
 * Create tag ``v1.0.0a`` only after explicit maintainer approval.
+
+For the v0.1.0a1 GitHub alpha prerelease:
+
+* Confirm package, citation, and tests report ``0.1.0a1``.
+* Confirm ``docs/releases/v0.1.0a1.md`` accurately describes the PoC product
+  and caveats.
+* Confirm PoC, evidence-hardening, and usability artifact validators pass.
+* Create annotated tag ``v0.1.0a1`` from clean ``main`` after the release-prep
+  PR merges.
+* Confirm the tag workflow creates a GitHub prerelease and attaches wheel and
+  source distribution artifacts.

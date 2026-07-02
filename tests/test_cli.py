@@ -11,7 +11,7 @@ runner = CliRunner()
 def test_cli_version():
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
-    assert "bc-npp-database 0.1.0a0" in result.stdout
+    assert "bc-npp-database 0.1.0a1" in result.stdout
 
 
 def test_cli_info():

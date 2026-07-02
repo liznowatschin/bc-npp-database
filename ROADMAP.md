@@ -18,6 +18,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P7 Evidence hardening | #44 | `feature/p7-evidence-hardening` | Complete |
 | P8 Usability layer | #50 | `feature/p8-usability-layer` | Complete |
 | P9 Plant record detail interface | #56 | `feature/p9-plant-record-detail-interface` | Complete |
+| P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -552,3 +553,44 @@ Pull request #60 is the Phase 9 closeout PR against `main`.
 Pull request #60 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #60 merged to `main` as merge commit `834cebd`.
+
+## Phase 10: v0.1.0a1 GitHub Alpha Release
+
+Parent issue: #61
+
+Branch: `feature/p10-v0.1.0a1-release`
+
+Status: active
+
+Goal: prepare and cut the first BC-NPPD GitHub alpha prerelease, `v0.1.0a1`,
+representing the current Vancouver PoC product through Phase 9.
+
+- [x] P10.1 Version metadata and release notes (#62)
+  - [x] Bump package metadata, package `__version__`, citation version/date,
+        and version assertions to `0.1.0a1`.
+  - [x] Update version-bearing examples.
+  - [x] Add tracked `v0.1.0a1` release notes.
+  - [x] Record release scope and caveats.
+- [x] P10.2 GitHub release workflow hardening (#63)
+  - [x] Update release workflow permissions to allow GitHub Release creation.
+  - [x] Build and twine-check dist artifacts on tag push.
+  - [x] Publish a prerelease for `v*` tags and attach dist artifacts.
+  - [x] Keep PyPI publishing out of scope.
+- [ ] P10.3 Release verification, tag, prerelease publication, and closeout (#64)
+  - [x] Run full local acceptance and PoC artifact validators.
+  - [ ] Open and merge release-prep PR after green CI.
+  - [ ] Create and push annotated tag `v0.1.0a1` from clean `main`.
+  - [ ] Confirm release workflow succeeds and prerelease has wheel/sdist
+        attached.
+  - [ ] Update roadmap/changelog/issues with release URL and close out.
+
+Phase 10 release-prep local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`

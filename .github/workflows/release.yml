@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -39,3 +39,14 @@ jobs:
         with:
           name: bc-npp-database-dist
           path: dist/*
+
+      - name: Publish GitHub prerelease
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body_path: docs/releases/${{ github.ref_name }}.md
+          prerelease: true
+          make_latest: false
+          files: dist/*
