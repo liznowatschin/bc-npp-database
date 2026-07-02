@@ -240,7 +240,7 @@ def test_validate_vancouver_poc_list_command_json():
     )
 
     assert result.exit_code == 0
-    assert '"source_attribution": 74' in result.stdout
+    assert '"source_attribution": 84' in result.stdout
     assert '"diagnostics": []' in result.stdout
 
 

@@ -3,7 +3,7 @@
   "input_poc_dir": "data\\poc\\vancouver",
   "status": "p7_evidence_hardened_poc",
   "species_count": 53,
-  "reviewed_source_count": 25,
+  "reviewed_source_count": 35,
   "reviewed_field_count": 80,
   "evidence_gap_count": 265,
   "score_readiness_count": 159,
