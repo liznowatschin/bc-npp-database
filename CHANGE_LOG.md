@@ -186,3 +186,21 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified that pull request #49 passed CI for Python 3.11 and Python 3.12
   before merge.
 - Merged pull request #49 to `main` as merge commit `5c1bfeb`.
+- Started Phase 8 usability layer on `feature/p8-usability-layer`.
+- Created Phase 8 GitHub issue records: parent issue #50 and child issues #51
+  through #54.
+- Expanded the Phase 8 roadmap into UBC-FRESH-grade implementation subtasks for
+  static inspection artifacts, caveat-preserving candidate use-case views, CLI
+  generation/validation, docs, verification, and closeout.
+- Added `src/bc_npp_database/usability.py` with P8 static usability generation
+  and validation for the tracked Vancouver evidence-hardening artifacts.
+- Added `bc-nppd generate-vancouver-usability` and
+  `bc-nppd validate-vancouver-usability` CLI commands.
+- Added tracked usability artifacts under `data/poc/vancouver/usability/`: a
+  self-contained static HTML inspection page, plant table, use-case membership
+  rows, view summary, manifest, README, and diagnostics.
+- Kept P8 use-case views caveated: boulevard, rain garden, dry sun, and shade
+  are candidate filters; pollinator support is a review queue; low-growing is
+  marked insufficient data because height/spread fields are not reviewed yet.
+- Completed Phase 8 implementation local acceptance verification with Ruff,
+  pytest, Sphinx, build, and twine checks passing.

@@ -16,7 +16,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P5 v1.0.0a foundation record and release | #32 | `feature/p5-v1-foundation-release` | Complete |
 | P6 Vancouver plant list PoC MVP | #38 | `feature/p6-vancouver-poc-list` | Complete |
 | P7 Evidence hardening | #44 | `feature/p7-evidence-hardening` | Complete |
-| P8 Usability layer | TBD | `feature/p8-usability-layer` | Planned |
+| P8 Usability layer | #50 | `feature/p8-usability-layer` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -416,7 +416,7 @@ adequate.
   - [x] Document that workbook suitability/toughness values are candidate
         display values, not accepted P4 score inputs.
   - [x] Add human-readable hardening docs and artifact README.
-- [ ] P7.4 Verification, PR, and closeout (#48)
+- [x] P7.4 Verification, PR, and closeout (#48)
   - [x] Update roadmap and changelog with implementation state.
   - [x] Run full local acceptance.
   - [x] Open PR to `main` and record the PR number (#49).
@@ -444,18 +444,52 @@ Pull request #49 merged to `main` as merge commit `5c1bfeb`.
 
 ## Phase 8: Usability Layer
 
-Parent issue: TBD
+Parent issue: #50
 
 Branch: `feature/p8-usability-layer`
 
-Status: planned
+Status: active
 
 Goal: add a human-friendly inspection layer for the Vancouver PoC list, with
 sortable/filterable views and use-case groupings while preserving evidence
 caveats.
 
-- [ ] P8.1 Static table or lightweight app surface (TBD)
-- [ ] P8.2 Use-case views for boulevard, rain garden, dry sun, shade, pollinator
-      support, and low-growing species (TBD)
-- [ ] P8.3 Documentation and public-use caveats (TBD)
-- [ ] P8.4 Verification and closeout (TBD)
+- [x] P8.1 Static inspection table and usability artifact contract (#51)
+  - [x] Define P8 public-safe artifact set and validation contract.
+  - [x] Generate a static human inspection page from P7 hardening artifacts.
+  - [x] Include stable species IDs, display fields, evidence status, gap counts,
+        and score readiness.
+  - [x] Avoid external assets, external services, and live data fetches.
+  - [x] Add tests for artifact generation and validation.
+- [x] P8.2 Candidate use-case views and caveat-preserving filters (#52)
+  - [x] Define deterministic candidate view rules for boulevard, rain garden,
+        dry sun, shade, pollinator support, and low-growing species.
+  - [x] Generate view membership rows without creating final recommendations.
+  - [x] Preserve P7 evidence gap and score-readiness fields in every view.
+  - [x] Make deferred evidence hardening explicit for all candidate views.
+  - [x] Add tests for deterministic memberships and caveats.
+- [x] P8.3 CLI generator/validator, docs, and tracked public-safe artifacts (#53)
+  - [x] Add package-backed usability generator and validator APIs.
+  - [x] Add CLI commands for generation and validation with JSON summaries.
+  - [x] Track public-safe usability artifacts under `data/poc/vancouver/usability`.
+  - [x] Add Sphinx docs and artifact README for inspection.
+  - [x] Keep generated build folders, raw sources, and private data ignored.
+- [ ] P8.4 Verification, PR, and closeout (#54)
+  - [x] Update roadmap and changelog with implementation state.
+  - [x] Run full local acceptance.
+  - [ ] Open PR to `main` and record the PR number.
+  - [ ] Comment verification on issues and close child issues only after
+        checklist bodies are accurate.
+  - [ ] Merge only after green CI and then close the parent issue.
+
+Phase 8 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+
+The tracked usability artifact validates with:
+
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`

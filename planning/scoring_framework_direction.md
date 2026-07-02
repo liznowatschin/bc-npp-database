@@ -58,3 +58,10 @@ toughness fields are candidate display values, not reviewed P4 score inputs.
 Future scoring work should start from the P7 evidence-gap report and create
 explicit reviewed score-input rows only after field-level evidence supports the
 metric, numeric value, source ID, evidence confidence, and review status.
+
+## P8 Usability Boundary
+
+P8 exposes candidate use-case views for inspection in
+`data/poc/vancouver/usability/`, but these views are not score outputs. The
+static usability layer must keep `score_readiness` visible as `not_ready` until
+reviewed P4 score-input rows exist.

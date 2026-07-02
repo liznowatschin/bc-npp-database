@@ -64,3 +64,16 @@ Validate it with:
 .. code-block:: shell
 
    bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json
+
+Phase 8 Usability Layer
+-----------------------
+
+The P8 static inspection layer lives in ``data/poc/vancouver/usability/``.
+Open ``index.html`` directly in a browser to inspect the 20-species table with
+search and candidate view filters.
+
+Validate it with:
+
+.. code-block:: shell
+
+   bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json

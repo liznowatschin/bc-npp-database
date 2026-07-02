@@ -1,0 +1,15 @@
+{
+  "artifact_name": "Vancouver Usability Layer",
+  "input_hardening_dir": "data\\poc\\vancouver\\evidence_hardening",
+  "status": "p8_static_usability_poc",
+  "plant_count": 20,
+  "use_case_membership_count": 61,
+  "view_count": 6,
+  "public_hygiene": {
+    "raw_sources_tracked": false,
+    "external_downloads_required": false,
+    "private_data_tracked": false,
+    "external_assets_required": false
+  },
+  "caveat": "P8 usability views are candidate inspection aids. They preserve P7 evidence gaps and score-readiness blocks and are not final planting recommendations."
+}

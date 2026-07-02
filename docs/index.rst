@@ -19,6 +19,7 @@ database for coastal British Columbia.
    foundation-release
    vancouver-poc-list
    evidence-hardening
+   usability-layer
    seed-archives
    workbook-normalization
    flagship-species

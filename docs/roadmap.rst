@@ -35,3 +35,8 @@ Phase 7 hardens evidence for the Vancouver PoC list. It adds a tracked
 field-level hardening layer with reviewed identity/native-range fields, evidence
 gap reports, explicit score-readiness blocks, diagnostics, CLI validation, and
 inspection docs.
+
+Phase 8 adds a static usability layer for the Vancouver PoC list. It generates
+self-contained inspection HTML, a display table, candidate use-case views,
+view summaries, diagnostics, CLI validation, and docs while preserving P7
+evidence caveats.

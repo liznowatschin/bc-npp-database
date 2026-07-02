@@ -1,0 +1,7 @@
+use_case,label,candidate_count,status,rule_summary,caveat
+boulevard,Boulevard,11,candidate_view,Urban Toughness >= 4 and sun exposure includes sun.,Candidate filter based on display fields with P7 evidence gaps preserved.
+rain_garden,Rain Garden,7,candidate_view,"Soil moisture includes moist, wet, winter wet, or vernal wetness.",Candidate filter based on display fields with P7 evidence gaps preserved.
+dry_sun,Dry Sun,10,candidate_view,Sun exposure includes sun and soil moisture includes dry.,Candidate filter based on display fields with P7 evidence gaps preserved.
+shade,Shade,13,candidate_view,Sun exposure includes shade.,Candidate filter based on display fields with P7 evidence gaps preserved.
+pollinator_support,Pollinator Review,20,review_queue,20 native PoC species queued for pollinator evidence review.,Not a PSI score and not a reviewed pollinator-support ranking.
+low_growing,Low Growing,0,insufficient_data,No height or spread field exists in the current PoC artifact.,Do not infer low-growing suitability until stature data is reviewed.

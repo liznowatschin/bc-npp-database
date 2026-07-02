@@ -271,3 +271,32 @@ def test_validate_vancouver_evidence_command_json():
     assert result.exit_code == 0
     assert '"hardened_plant_list": 20' in result.stdout
     assert '"diagnostics": []' in result.stdout
+
+
+def test_generate_vancouver_usability_command_json(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "generate-vancouver-usability",
+            "data/poc/vancouver/evidence_hardening",
+            "--out-dir",
+            str(tmp_path / "usability"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"plant_table": 20' in result.stdout
+    assert '"view_summary": 6' in result.stdout
+    assert (tmp_path / "usability" / "index.html").exists()
+
+
+def test_validate_vancouver_usability_command_json():
+    result = runner.invoke(
+        app,
+        ["validate-vancouver-usability", "data/poc/vancouver/usability", "--json"],
+    )
+
+    assert result.exit_code == 0
+    assert '"use_case_views": 61' in result.stdout
+    assert '"diagnostics": []' in result.stdout

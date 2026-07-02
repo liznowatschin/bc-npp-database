@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vancouver Plant List PoC</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d2522;
+      --muted: #59645f;
+      --line: #d7ddd9;
+      --surface: #f7f9f6;
+      --accent: #1f7a5a;
+      --accent-2: #2f5f9f;
+      --warn: #9d6b1f;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      line-height: 1.45;
+    }
+    header, main { max-width: 1180px; margin: 0 auto; padding: 24px; }
+    header { border-bottom: 1px solid var(--line); }
+    h1 { margin: 0 0 8px; font-size: 2rem; letter-spacing: 0; }
+    h2 { margin: 24px 0 12px; font-size: 1.1rem; letter-spacing: 0; }
+    p { max-width: 880px; color: var(--muted); }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding: 16px 0;
+    }
+    input {
+      min-width: min(100%, 320px);
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font: inherit;
+    }
+    button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: inherit;
+      cursor: pointer;
+    }
+    button.active { border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+    button span { color: var(--muted); }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+      padding: 0;
+      list-style: none;
+    }
+    .summary li {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .table-wrap { overflow-x: auto; background: var(--white); border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; min-width: 980px; }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #eef3ef; position: sticky; top: 0; z-index: 1; }
+    .status {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e8f2ee;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .not-ready { color: var(--warn); }
+    .views { color: var(--accent-2); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vancouver Plant List PoC</h1>
+    <p>P8 usability views are candidate inspection aids. They preserve P7 evidence gaps and score-readiness blocks and are not final planting recommendations.</p>
+  </header>
+  <main>
+    <section>
+      <h2>Candidate Views</h2>
+      <ul class="summary">
+        <li><strong>Boulevard</strong>: 11 candidates. Candidate filter based on display fields with P7 evidence gaps preserved.</li>
+<li><strong>Rain Garden</strong>: 7 candidates. Candidate filter based on display fields with P7 evidence gaps preserved.</li>
+<li><strong>Dry Sun</strong>: 10 candidates. Candidate filter based on display fields with P7 evidence gaps preserved.</li>
+<li><strong>Shade</strong>: 13 candidates. Candidate filter based on display fields with P7 evidence gaps preserved.</li>
+<li><strong>Pollinator Review</strong>: 20 candidates. Not a PSI score and not a reviewed pollinator-support ranking.</li>
+<li><strong>Low Growing</strong>: 0 candidates. Do not infer low-growing suitability until stature data is reviewed.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Plant Table</h2>
+      <div class="toolbar">
+        <input id="search" type="search" aria-label="Search plants"
+               placeholder="Search species, family, use case">
+        <button type="button" data-view="all" class="active">
+          All <span>20</span>
+        </button>
+        <button type="button" data-view="boulevard">Boulevard <span>11</span></button>
+<button type="button" data-view="rain_garden">Rain Garden <span>7</span></button>
+<button type="button" data-view="dry_sun">Dry Sun <span>10</span></button>
+<button type="button" data-view="shade">Shade <span>13</span></button>
+<button type="button" data-view="pollinator_support">Pollinator Review <span>20</span></button>
+<button type="button" data-view="low_growing">Low Growing <span>0</span></button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Botanical Name</th>
+              <th>Common Name</th>
+              <th>Sun</th>
+              <th>Moisture</th>
+              <th>Views</th>
+              <th>Evidence</th>
+              <th>Scores</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-views="boulevard;dry_sun"><td>BCNPPD-0001</td><td><em>Achillea millefolium</em><br>Asteraceae</td><td>Common Yarrow</td><td>Full sun to part sun</td><td>Dry to mesic</td><td class="views">Boulevard;Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;dry_sun;shade"><td>BCNPPD-0002</td><td><em>Fragaria virginiana</em><br>Rosaceae</td><td>Wild Strawberry</td><td>Full sun to part shade</td><td>Dry to mesic</td><td class="views">Boulevard;Dry Sun;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;shade"><td>BCNPPD-0003</td><td><em>Prunella vulgaris var. lanceolata</em><br>Lamiaceae</td><td>Lanceleaf Self-heal</td><td>Sun to part shade</td><td>Mesic</td><td class="views">Boulevard;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;rain_garden;dry_sun"><td>BCNPPD-0004</td><td><em>Camassia quamash</em><br>Asparagaceae</td><td>Common Camas</td><td>Full sun</td><td>Winter wet / summer dry to mesic</td><td class="views">Boulevard;Rain Garden;Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;shade"><td>BCNPPD-0005</td><td><em>Aquilegia formosa</em><br>Ranunculaceae</td><td>Red Columbine</td><td>Part shade to sun</td><td>Mesic</td><td class="views">Boulevard;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="shade"><td>BCNPPD-0006</td><td><em>Tellima grandiflora</em><br>Saxifragaceae</td><td>Fringecup</td><td>Part shade to shade</td><td>Mesic</td><td class="views">Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="rain_garden;shade"><td>BCNPPD-0007</td><td><em>Tiarella trifoliata</em><br>Saxifragaceae</td><td>Foamflower</td><td>Part shade to shade</td><td>Mesic to moist</td><td class="views">Rain Garden;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;dry_sun;shade"><td>BCNPPD-0008</td><td><em>Viola adunca</em><br>Violaceae</td><td>Early Blue Violet</td><td>Sun to part shade</td><td>Dry to mesic</td><td class="views">Boulevard;Dry Sun;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="rain_garden;shade"><td>BCNPPD-0009</td><td><em>Viola glabella</em><br>Violaceae</td><td>Stream Violet</td><td>Part shade to shade</td><td>Moist</td><td class="views">Rain Garden;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="rain_garden;shade"><td>BCNPPD-0010</td><td><em>Dicentra formosa</em><br>Papaveraceae</td><td>Pacific Bleeding Heart</td><td>Part shade to shade</td><td>Mesic to moist</td><td class="views">Rain Garden;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;dry_sun"><td>BCNPPD-0011</td><td><em>Allium cernuum</em><br>Amaryllidaceae</td><td>Nodding Onion</td><td>Full sun</td><td>Dry to mesic</td><td class="views">Boulevard;Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;dry_sun"><td>BCNPPD-0012</td><td><em>Eriophyllum lanatum</em><br>Asteraceae</td><td>Oregon Sunshine</td><td>Full sun</td><td>Dry</td><td class="views">Boulevard;Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="dry_sun"><td>BCNPPD-0013</td><td><em>Lomatium nudicaule</em><br>Apiaceae</td><td>Bare-stem Desert-parsley</td><td>Full sun</td><td>Dry to mesic winter/spring</td><td class="views">Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;rain_garden;dry_sun"><td>BCNPPD-0014</td><td><em>Plectritis congesta</em><br>Caprifoliaceae</td><td>Sea Blush</td><td>Full sun</td><td>Vernal moist to summer dry</td><td class="views">Boulevard;Rain Garden;Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;dry_sun;shade"><td>BCNPPD-0015</td><td><em>Collinsia parviflora</em><br>Plantaginaceae</td><td>Small-flowered Blue-eyed Mary</td><td>Sun to part shade</td><td>Mesic spring; summer dry</td><td class="views">Boulevard;Dry Sun;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="shade"><td>BCNPPD-0016</td><td><em>Clinopodium douglasii</em><br>Lamiaceae</td><td>Yerba Buena</td><td>Part shade to shade</td><td>Mesic</td><td class="views">Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="boulevard;dry_sun"><td>BCNPPD-0017</td><td><em>Arctostaphylos uva-ursi</em><br>Ericaceae</td><td>Kinnikinnick</td><td>Full sun to part sun</td><td>Dry</td><td class="views">Boulevard;Dry Sun</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="shade"><td>BCNPPD-0018</td><td><em>Mahonia nervosa</em><br>Berberidaceae</td><td>Dull Oregon-grape</td><td>Part shade to shade</td><td>Dry to mesic</td><td class="views">Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="rain_garden;shade"><td>BCNPPD-0019</td><td><em>Maianthemum dilatatum</em><br>Asparagaceae</td><td>False Lily-of-the-Valley</td><td>Shade to part shade</td><td>Moist</td><td class="views">Rain Garden;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+<tr data-views="rain_garden;shade"><td>BCNPPD-0020</td><td><em>Carex obnupta</em><br>Cyperaceae</td><td>Slough Sedge</td><td>Sun to shade</td><td>Moist to wet</td><td class="views">Rain Garden;Shade</td><td><span class="status">4 reviewed / 5 gaps</span></td><td class="not-ready">not_ready</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    const search = document.querySelector("#search");
+    const buttons = [...document.querySelectorAll("button[data-view]")];
+    const rows = [...document.querySelectorAll("tbody tr")];
+    let activeView = "all";
+    function applyFilters() {
+      const query = search.value.trim().toLowerCase();
+      for (const row of rows) {
+        const matchesQuery = !query || row.textContent.toLowerCase().includes(query);
+        const views = row.dataset.views.split(";");
+        const matchesView = activeView === "all" || views.includes(activeView);
+        row.classList.toggle("hidden", !(matchesQuery && matchesView));
+      }
+    }
+    for (const button of buttons) {
+      button.addEventListener("click", () => {
+        activeView = button.dataset.view;
+        buttons.forEach((candidate) => candidate.classList.toggle("active", candidate === button));
+        applyFilters();
+      });
+    }
+    search.addEventListener("input", applyFilters);
+  </script>
+</body>
+</html>

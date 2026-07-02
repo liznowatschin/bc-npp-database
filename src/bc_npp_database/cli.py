@@ -39,6 +39,13 @@ from .sources import (
     validate_source_attribution_records,
     validate_source_records,
 )
+from .usability import (
+    generate_vancouver_usability,
+    validate_vancouver_usability,
+)
+from .usability import (
+    has_error_diagnostics as has_usability_error_diagnostics,
+)
 from .validate import find_excluded_sources
 from .vancouver_poc import (
     generate_vancouver_poc_list,
@@ -333,6 +340,46 @@ def validate_vancouver_evidence_command(
     else:
         typer.echo(f"Vancouver evidence hardening validation passed for {path}.")
     if has_evidence_hardening_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("generate-vancouver-usability")
+def generate_vancouver_usability_command(
+    hardening_dir: Path,
+    out_dir: Path = typer.Option(
+        ...,
+        "--out-dir",
+        help="Output directory for static usability artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Generate P8 static usability artifacts for the Vancouver PoC list."""
+    result = generate_vancouver_usability(hardening_dir, out_dir)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated Vancouver usability artifacts at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_usability_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-vancouver-usability")
+def validate_vancouver_usability_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate P8 Vancouver static usability artifacts."""
+    result = validate_vancouver_usability(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Vancouver usability validation passed for {path}.")
+    if has_usability_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 
