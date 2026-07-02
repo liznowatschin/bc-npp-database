@@ -38,6 +38,16 @@ POLLINATOR_REVIEW_FIELDS = (
     "next_review_action",
 )
 
+POLLINATOR_REQUIRED_REVIEW_FIELDS = (
+    "species_id",
+    "botanical_name",
+    "review_status",
+    "psi_readiness",
+    "pollinator_queue_reason",
+    "evidence_caveat",
+    "next_review_action",
+)
+
 POLLINATOR_GAP_FIELDS = (
     "species_id",
     "pollinator_field",
@@ -309,7 +319,7 @@ def _validate_review_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
         if species_id in seen:
             diagnostics.append(_diagnostic("duplicate_species_id", index, "species_id", species_id))
         seen.add(species_id)
-        for field in POLLINATOR_REVIEW_FIELDS:
+        for field in POLLINATOR_REQUIRED_REVIEW_FIELDS:
             if not row.get(field):
                 diagnostics.append(_diagnostic("missing_required_field", index, field))
         if row.get("review_status") not in REVIEW_STATUS_VALUES:

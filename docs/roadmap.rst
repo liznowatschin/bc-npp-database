@@ -27,7 +27,7 @@ Phase 5 prepares the v1.0.0a foundation scaffold: schema freeze manifest, one
 reviewed `Achillea millefolium` example record, source-attribution and
 score-input sidecars, release checklist artifacts, and dry-run workflow shapes.
 
-Phase 6 produces the first usable PoC artifact: a tracked, caveated
+Phase 6 produced the first usable PoC artifact: a tracked, caveated
 20-species Vancouver/CDF plant list with stable BC-NPPD IDs, source records,
 source-attribution rows, validation diagnostics, and inspection docs.
 
@@ -40,3 +40,12 @@ Phase 8 adds a static usability layer for the Vancouver PoC list. It generates
 self-contained inspection HTML, a display table, candidate use-case views,
 view summaries, diagnostics, CLI validation, and docs while preserving P7
 evidence caveats.
+
+Phase 11 adds a pollinator evidence-review module. It materializes the
+Vancouver PoC pollinator review queue as review rows, evidence gaps, source
+requirements, diagnostics, and CLI validation while keeping PSI ``not_ready``.
+
+Phase 12 expands the current tracked Vancouver PoC product to 52 species by
+adding unreviewed user-submitted expansion candidates, recording a request
+audit, and regenerating evidence-hardening, usability, and pollinator artifacts
+without treating the request as ecological evidence.

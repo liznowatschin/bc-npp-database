@@ -99,3 +99,163 @@ BCNPPD-0020,Life Cycle,Perennial graminoid,candidate_value_needs_field_review,Ad
 BCNPPD-0020,Sun,Sun to shade,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
 BCNPPD-0020,Soil Moisture,Moist to wet,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
 BCNPPD-0020,Urban Toughness,3,candidate_value_needs_field_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0023;SRC-0004
+BCNPPD-0021,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0021,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0021,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0021,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0021,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0022,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0022,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0022,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0022,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0022,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0023,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0023,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0023,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0023,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0023,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0024,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0024,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0024,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0024,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0024,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0025,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0025,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0025,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0025,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0025,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0026,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0026,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0026,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0026,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0026,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0027,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0027,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0027,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0027,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0027,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0028,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0028,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0028,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0028,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0028,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0029,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0029,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0029,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0029,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0029,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0030,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0030,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0030,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0030,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0030,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0031,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0031,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0031,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0031,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0031,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0032,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0032,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0032,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0032,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0032,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0033,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0033,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0033,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0033,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0033,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0034,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0034,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0034,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0034,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0034,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0035,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0035,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0035,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0035,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0035,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0036,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0036,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0036,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0036,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0036,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0037,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0037,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0037,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0037,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0037,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0038,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0038,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0038,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0038,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0038,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0039,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0039,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0039,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0039,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0039,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0040,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0040,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0040,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0040,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0040,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0041,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0041,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0041,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0041,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0041,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0042,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0042,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0042,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0042,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0042,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0043,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0043,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0043,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0043,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0043,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0044,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0044,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0044,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0044,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0044,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0045,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0045,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0045,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0045,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0045,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0046,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0046,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0046,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0046,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0046,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0047,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0047,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0047,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0047,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0047,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0048,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0048,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0048,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0048,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0048,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0049,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0049,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0049,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0049,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0049,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0050,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0050,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0050,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0050,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0050,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0051,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0051,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0051,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0051,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0051,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0052,Plant Type,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0052,Life Cycle,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0052,Sun,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0052,Soil Moisture,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025
+BCNPPD-0052,Urban Toughness,,missing_value_needs_review,Add field-specific reviewed source attribution before promoting this value or using it in scores.,SRC-0025

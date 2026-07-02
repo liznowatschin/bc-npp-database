@@ -267,3 +267,19 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #70 to `main` as merge commit `fd57abf`.
 - Closed Phase 11 as complete.
+- Started Phase 12 Vancouver species-list expansion on
+  `feature/p12-expand-vancouver-species-list`.
+- Created Phase 12 GitHub issue records: parent issue #71 and child issues
+  #72 through #74.
+- Added 32 unreviewed user-submitted expansion candidates to the tracked
+  Vancouver PoC list, increasing the current product artifact from 20 to 52
+  species.
+- Added `requested_species_additions.csv` to record submitted names,
+  deduplication disposition, assigned IDs, and caveats.
+- Added a Tier 3 traceability source and pending-review attribution rows for
+  the expansion candidates without treating the request as ecological evidence.
+- Regenerated the evidence-hardening, usability, and pollinator module
+  artifacts for the 52-species tracked PoC.
+- Completed Phase 12 local acceptance verification with Ruff, pytest, Sphinx,
+  build, twine, and all Vancouver PoC artifact validators passing.
+- Opened pull request #75 for Phase 12 closeout.

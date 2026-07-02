@@ -20,6 +20,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P9 Plant record detail interface | #56 | `feature/p9-plant-record-detail-interface` | Complete |
 | P10 v0.1.0a1 GitHub alpha release | #61 | `feature/p10-v0.1.0a1-release` | Complete |
 | P11 Pollinator evidence-review module | #66 | `feature/p11-pollinator-module` | Complete |
+| P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -659,3 +660,49 @@ Pull request #70 is the Phase 11 closeout PR against `main`.
 Pull request #70 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #70 merged to `main` as merge commit `fd57abf`.
+
+## Phase 12: Expand Vancouver Species List
+
+Parent issue: #71
+
+Branch: `feature/p12-expand-vancouver-species-list`
+
+Status: active
+
+Goal: add the user-submitted species list to the Vancouver PoC artifacts unless
+species are already present, preserving evidence boundaries and avoiding
+invented ecological claims.
+
+- [x] P12.1 Submitted species deduplication and audit record (#72)
+  - [x] Parse submitted species names and provided common names.
+  - [x] Match against existing PoC species and normalized duplicate request
+        lines.
+  - [x] Track `requested_species_additions.csv` with disposition and assigned
+        IDs.
+- [x] P12.2 Vancouver PoC artifact expansion and downstream regeneration (#73)
+  - [x] Add new species as unreviewed `poc_candidate` rows.
+  - [x] Add source and source-attribution traceability rows without treating
+        the request as ecological evidence.
+  - [x] Regenerate P7 evidence hardening, P8 usability, and P11 pollinator
+        artifacts.
+  - [x] Preserve `not_ready` score and PSI boundaries.
+- [ ] P12.3 Docs, tests, verification, and closeout (#74)
+  - [x] Update docs and README counts.
+  - [x] Update unit and CLI tests.
+  - [x] Run local acceptance and artifact validators.
+  - [x] Open PR and record the PR number (#75).
+  - [ ] Merge PR after green CI.
+
+Phase 12 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (83 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
+- `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+
+Pull request #75 is the Phase 12 closeout PR against `main`.

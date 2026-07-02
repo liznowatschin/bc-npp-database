@@ -32,9 +32,9 @@ def test_tracked_vancouver_poc_artifact_validates_cleanly():
     result = validate_vancouver_poc_list(POC_DIR)
 
     assert result.diagnostics == ()
-    assert result.counts["plant_list"] == 20
-    assert result.counts["sources"] == 24
-    assert result.counts["source_attribution"] == 41
+    assert result.counts["plant_list"] == 52
+    assert result.counts["sources"] == 25
+    assert result.counts["source_attribution"] == 73
 
 
 def test_vancouver_poc_validator_reports_missing_files(tmp_path):

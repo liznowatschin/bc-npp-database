@@ -9,7 +9,7 @@ original PoC rows.
 
 ## Files
 
-- `hardened_plant_list.csv`: the 20 PoC species with P7 hardening status,
+- `hardened_plant_list.csv`: the 52 PoC species with P7 hardening status,
   reviewed-field counts, evidence-gap counts, and score-readiness flags.
 - `reviewed_sources.csv`: P7 source review status for the source registry.
 - `reviewed_fields.csv`: field-level rows that are PoC-reviewed for

@@ -13,7 +13,7 @@ The tracked hardening artifacts live in
 ``data/poc/vancouver/evidence_hardening/``:
 
 ``hardened_plant_list.csv``
-   The 20 PoC species with reviewed-field counts, gap counts, hardening status,
+   The 52 PoC species with reviewed-field counts, gap counts, hardening status,
    and score-readiness flags.
 
 ``reviewed_sources.csv``

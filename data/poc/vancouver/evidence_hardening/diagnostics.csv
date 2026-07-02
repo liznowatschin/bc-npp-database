@@ -1,2 +1,2 @@
 severity,code,message,row_number,field,value,context
-warning,evidence_hardening_caveat,P7 hardening marks only identity/native-range display fields as PoC-reviewed where Tier 1/2 taxonomy attribution exists; horticultural and scoring fields remain candidate values pending field-level review.,,,,"{""species_count"": 20}"
+warning,evidence_hardening_caveat,P7 hardening marks only identity/native-range display fields as PoC-reviewed where Tier 1/2 taxonomy attribution exists; horticultural and scoring fields remain candidate values pending field-level review.,,,,"{""species_count"": 52}"
