@@ -690,7 +690,8 @@ invented ecological claims.
   - [x] Update docs and README counts.
   - [x] Update unit and CLI tests.
   - [x] Run local acceptance and artifact validators.
-  - [ ] Open and merge PR after green CI.
+  - [x] Open PR and record the PR number (#75).
+  - [ ] Merge PR after green CI.
 
 Phase 12 local verification passed with:
 
@@ -703,3 +704,5 @@ Phase 12 local verification passed with:
 - `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+
+Pull request #75 is the Phase 12 closeout PR against `main`.

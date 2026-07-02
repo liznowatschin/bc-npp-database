@@ -282,3 +282,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   artifacts for the 52-species tracked PoC.
 - Completed Phase 12 local acceptance verification with Ruff, pytest, Sphinx,
   build, twine, and all Vancouver PoC artifact validators passing.
+- Opened pull request #75 for Phase 12 closeout.
