@@ -784,7 +784,7 @@ between display labels and reviewed ecological evidence.
 - [ ] P14.3 Validation, PR, and closeout (#84)
   - [x] Update tests for new source and attribution counts.
   - [x] Run local acceptance.
-  - [ ] Open PR and record the PR number.
+  - [x] Open PR and record the PR number (#85).
   - [ ] Merge PR after green CI.
   - [ ] Close issues after merge.
 
@@ -799,3 +799,5 @@ Phase 14 local verification passed with:
 - `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+
+Pull request #85 is the Phase 14 closeout PR against `main`.

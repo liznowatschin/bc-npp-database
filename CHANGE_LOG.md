@@ -316,3 +316,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   artifacts while keeping ecological evidence, scores, and PSI `not_ready`.
 - Completed Phase 14 local acceptance verification with Ruff, pytest, Sphinx,
   build, twine, and all Vancouver PoC artifact validators passing.
+- Opened pull request #85 for Phase 14 closeout.
