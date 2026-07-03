@@ -36,11 +36,24 @@ def test_p21_powershell_runner_has_liz_friendly_defaults_and_guards():
     assert "Tracked product data was not modified." in text
 
 
+def test_p21_cmd_runner_bypasses_powershell_execution_policy():
+    text = Path("scripts/apply-downloaded-provider-approval.cmd").read_text(encoding="utf-8")
+
+    assert "apply-downloaded-provider-approval.ps1" in text
+    assert "-ExecutionPolicy Bypass" in text
+    assert "%*" in text
+    assert "exit /b %ERRORLEVEL%" in text
+
+
 def test_provider_review_docs_include_simple_runner_and_manual_fallback():
     text = Path("docs/provider-review-workflow.rst").read_text(encoding="utf-8")
 
     assert "Simple Apply Preview" in text
-    assert ".\\scripts\\apply-downloaded-provider-approval.ps1" in text
+    assert ".\\scripts\\apply-downloaded-provider-approval.cmd -OpenPreview" in text
+    assert (
+        "powershell -NoProfile -ExecutionPolicy Bypass -File "
+        ".\\scripts\\apply-downloaded-provider-approval.ps1 -OpenPreview"
+    ) in text
     assert "examples/p21_downloaded_provider_approval_freshforge.yaml" in text
     assert "bc-nppd validate-provider-approvals path/to/approval_manifest.csv --json" in text
     assert "bc-nppd apply-provider-approvals path/to/approval_manifest.csv" in text

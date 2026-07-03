@@ -491,3 +491,12 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #122 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #122 to `main` as merge commit `8921828`.
 - Closed Phase 21 as complete.
+- Started Phase 22 Windows runner execution-policy shim on
+  `feature/p22-windows-runner-shim` after the direct PowerShell runner was
+  blocked by the default Windows execution policy.
+- Added `scripts/apply-downloaded-provider-approval.cmd` to call the PowerShell
+  runner with `-ExecutionPolicy Bypass`, and updated docs to recommend the
+  `.cmd` command for the easiest Windows path.
+- Smoke-tested the `.cmd` wrapper against the downloaded Satinflower manifest:
+  2,316 approved rows applied into the ignored preview, producing 152 plant rows
+  and 115 supplier rows with all preview validators passing.

@@ -81,19 +81,25 @@ review app into the default Downloads folder, then run:
 
 .. code-block:: console
 
-   .\scripts\apply-downloaded-provider-approval.ps1
+   .\scripts\apply-downloaded-provider-approval.cmd -OpenPreview
 
-The script validates the downloaded manifest, copies it to an ignored scratch
-path, applies approved rows into ``outputs/provider_approved_vancouver``,
-regenerates downstream preview artifacts, and validates the preview. It prints
-the static preview app path:
+The command wrapper works on Windows systems that block direct PowerShell script
+execution. It validates the downloaded manifest, copies it to an ignored
+scratch path, applies approved rows into ``outputs/provider_approved_vancouver``,
+regenerates downstream preview artifacts, validates the preview, and opens the
+static preview app when ``-OpenPreview`` is included. It also prints the preview
+path:
 
 .. code-block:: text
 
    outputs/provider_approved_vancouver/usability/index.html
 
-Use ``-ManifestPath`` when the CSV was saved somewhere else. Use
-``-OpenPreview`` to open the preview app after validation passes.
+Use ``-ManifestPath`` when the CSV was saved somewhere else. The direct
+PowerShell fallback is:
+
+.. code-block:: console
+
+   powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\apply-downloaded-provider-approval.ps1 -OpenPreview
 
 Greg or an automation agent can use the dependency-free FreshForge workflow
 shape in ``examples/p21_downloaded_provider_approval_freshforge.yaml`` for the

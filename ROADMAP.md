@@ -30,6 +30,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P19 Provider source sweep workflow | #109 | `feature/p19-provider-source-sweep` | Complete |
 | P20 Satinflower product detail extraction | #115 | `feature/p20-satinflower-product-details` | Complete |
 | P21 Downloaded provider approval runner | #118 | `feature/p21-downloaded-provider-approval-runner` | Complete |
+| P22 Windows runner execution-policy shim | #123 | `feature/p22-windows-runner-shim` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1185,3 +1186,27 @@ P21 local verification passed with:
 - `python -m build`
 - `twine check dist/*`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\apply-downloaded-provider-approval.ps1`
+
+## Phase 22: Windows Runner Execution-Policy Shim
+
+Parent issue: #123
+
+Branch: `feature/p22-windows-runner-shim`
+
+Status: active
+
+Goal: make the downloaded provider approval runner work on Windows systems that
+block direct PowerShell script execution.
+
+- [x] Add `scripts/apply-downloaded-provider-approval.cmd`.
+- [x] Forward all arguments to the PowerShell runner with `-ExecutionPolicy Bypass`.
+- [x] Update docs to recommend the `.cmd` command first.
+- [x] Run focused verification and `.cmd` smoke test.
+- [ ] Open PR, merge after green CI, and close issue.
+
+P22 smoke verification ran:
+
+- `.\scripts\apply-downloaded-provider-approval.cmd`
+
+The wrapper applied 2,316 approved rows into the ignored preview, produced 152
+plant rows and 115 supplier rows, and all preview validators passed.
