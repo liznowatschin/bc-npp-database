@@ -16,11 +16,11 @@ def test_generate_vancouver_evidence_hardening_from_tracked_poc(tmp_path):
 
     assert not has_error_diagnostics(result.diagnostics)
     assert result.counts == {
-        "hardened_plant_list": 53,
-        "reviewed_sources": 35,
+        "hardened_plant_list": 54,
+        "reviewed_sources": 36,
         "reviewed_fields": 80,
-        "evidence_gaps": 265,
-        "score_readiness": 159,
+        "evidence_gaps": 270,
+        "score_readiness": 162,
     }
     assert (tmp_path / "hardening" / "reviewed_fields.csv").exists()
 
@@ -29,9 +29,9 @@ def test_tracked_vancouver_evidence_hardening_validates_cleanly():
     result = validate_vancouver_evidence_hardening(HARDENING_DIR)
 
     assert result.diagnostics == ()
-    assert result.counts["hardened_plant_list"] == 53
+    assert result.counts["hardened_plant_list"] == 54
     assert result.counts["reviewed_fields"] == 80
-    assert result.counts["score_readiness"] == 159
+    assert result.counts["score_readiness"] == 162
 
 
 def test_evidence_hardening_validator_reports_missing_files(tmp_path):

@@ -33,13 +33,28 @@ Record Detail Panel
 -------------------
 
 Click a plant row, or focus it with the keyboard and press Enter or Space, to
-open the plant record detail panel. The panel shows the current identity fields,
-candidate planting attributes, reviewed fields, evidence gaps, score-readiness
-rows, source records, source-attribution rows, use-case memberships, and
-caveats.
+open the plant record detail panel. The panel shows the current identity
+fields, candidate planting attributes, reviewed fields, evidence gaps,
+score-readiness rows, source records, source-attribution rows, provider
+supplier/mowability metadata, provider provenance rows, use-case memberships,
+and caveats.
 
 The detail panel is generated from tracked P6/P7/P8 artifacts embedded in the
 static page as JSON. It does not call a server or load external assets.
+
+Provider Filters
+----------------
+
+P18 adds provider-focused controls to the static table:
+
+* has supplier;
+* provider data;
+* mowability;
+* needs provider review.
+
+Supplier and mowability rows remain separate provider-data artifacts.
+Mowability is a provisional candidate signal and does not make UNI, PSI, or RVI
+ready.
 
 CLI
 ---

@@ -385,3 +385,20 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #102 to `main` as merge commit `c892391`.
 - Closed Phase 17 as complete.
+- Started Phase 18 provider data usability layer on
+  `feature/p18-provider-usability-layer`.
+- Created Phase 18 GitHub issue records: parent issue #103 and child issues
+  #104 through #107.
+- Applied a tracked, caveated demo provider approval manifest to the Vancouver
+  PoC, increasing the current user-test product to 54 species while excluding
+  the rejected vegetable demo row.
+- Added tracked provider-data supplier, mowability, provider attribution,
+  manifest, and diagnostics artifacts under `data/poc/vancouver/provider_data`.
+- Extended the static usability web app with provider summary columns, supplier
+  and mowability filters, provider-review filters, and provider provenance
+  detail-panel sections.
+- Hardened the Docs workflow by adding GitHub Pages configuration before
+  artifact upload.
+- Completed Phase 18 local acceptance verification with Ruff, pytest, provider
+  approval validation, tracked Vancouver validators, Sphinx, build, and twine
+  passing.

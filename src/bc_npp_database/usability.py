@@ -43,6 +43,11 @@ PLANT_TABLE_FIELDS = (
     "score_readiness",
     "Primary References",
     "candidate_views",
+    "provider_data",
+    "supplier_count",
+    "supplier_statuses",
+    "mowability_score",
+    "provider_review_status",
     "poc_caveat",
 )
 
@@ -127,10 +132,13 @@ def generate_vancouver_usability(
     output_dir.mkdir(parents=True, exist_ok=True)
     hardened_rows = _load_csv(hardening_dir / "hardened_plant_list.csv", [])
     poc_dir = hardening_dir.parent
+    provider_data = _load_provider_data(poc_dir)
     view_rows = _build_use_case_rows(hardened_rows)
     view_summary_rows = _build_view_summary(view_rows)
-    table_rows = _build_table_rows(hardened_rows, view_rows)
-    detail_records = _build_detail_records(poc_dir, hardening_dir, table_rows, view_rows)
+    table_rows = _build_table_rows(hardened_rows, view_rows, provider_data)
+    detail_records = _build_detail_records(
+        poc_dir, hardening_dir, table_rows, view_rows, provider_data
+    )
     diagnostics = (
         Diagnostic(
             code="usability_candidate_view_caveat",
@@ -155,6 +163,8 @@ def generate_vancouver_usability(
             "use_case_membership_count": len(view_rows),
             "view_count": len(view_summary_rows),
             "detail_record_count": len(detail_records),
+            "provider_supplier_count": len(provider_data["supplier_rows"]),
+            "provider_mowability_count": len(provider_data["mowability_rows"]),
             "public_hygiene": {
                 "raw_sources_tracked": False,
                 "external_downloads_required": False,
@@ -201,7 +211,7 @@ def validate_vancouver_usability(path: Path) -> UsabilityResult:
     diagnostics.extend(_validate_summary_rows(summary_rows))
     diagnostics.extend(_validate_manifest(manifest, counts))
     diagnostics.extend(_validate_html(html_text, counts))
-    diagnostics.extend(_validate_embedded_detail_records(html_text, species_ids))
+    diagnostics.extend(_validate_embedded_detail_records(html_text, species_ids, table_rows))
     diagnostics.extend(_validate_diagnostic_rows(diagnostic_rows))
 
     return UsabilityResult(str(path), counts, tuple(diagnostics), _paths(path))
@@ -215,27 +225,62 @@ def has_error_diagnostics(diagnostics: tuple[Diagnostic, ...]) -> bool:
 def _build_table_rows(
     hardened_rows: list[dict[str, str]],
     view_rows: list[dict[str, str]],
+    provider_data: dict[str, object],
 ) -> list[dict[str, str]]:
     views_by_species: dict[str, list[str]] = {}
     for row in view_rows:
         if row.get("candidate_status") == "candidate":
             views_by_species.setdefault(row.get("species_id", ""), []).append(row["use_case"])
+    suppliers = provider_data["suppliers_by_species"]
+    mowability = provider_data["mowability_by_species"]
+    provider_attribution = provider_data["attribution_by_species"]
 
     table_rows: list[dict[str, str]] = []
     for row in hardened_rows:
         species_id = row.get("Species ID", "")
+        supplier_rows = suppliers.get(species_id, [])
+        mowability_rows = mowability.get(species_id, [])
+        provider_attribution_rows = provider_attribution.get(species_id, [])
+        review_statuses = {
+            value
+            for value in (
+                [item.get("review_status", "") for item in supplier_rows]
+                + [item.get("review_status", "") for item in mowability_rows]
+                + [item.get("review_status", "") for item in provider_attribution_rows]
+            )
+            if value
+        }
         table_rows.append(
             {
                 field: row.get(field, "")
                 for field in PLANT_TABLE_FIELDS
-                if field not in {"candidate_views"}
+                if field
+                not in {
+                    "candidate_views",
+                    "provider_data",
+                    "supplier_count",
+                    "supplier_statuses",
+                    "mowability_score",
+                    "provider_review_status",
+                }
             }
             | {
                 "candidate_views": ";".join(
                     USE_CASE_LABELS[view]
                     for view in USE_CASE_ORDER
                     if view in views_by_species.get(species_id, [])
-                )
+                ),
+                "provider_data": (
+                    "yes" if supplier_rows or mowability_rows or provider_attribution_rows else "no"
+                ),
+                "supplier_count": str(len(supplier_rows)),
+                "supplier_statuses": ";".join(
+                    sorted({item.get("supplier_status", "") for item in supplier_rows if item})
+                ),
+                "mowability_score": ";".join(
+                    item.get("mowability_score", "") for item in mowability_rows
+                ),
+                "provider_review_status": ";".join(sorted(review_statuses)),
             }
         )
     return table_rows
@@ -268,6 +313,7 @@ def _build_detail_records(
     hardening_dir: Path,
     table_rows: list[dict[str, str]],
     view_rows: list[dict[str, str]],
+    provider_data: dict[str, object],
 ) -> dict[str, dict[str, object]]:
     sources = _rows_by_key(_load_csv(poc_dir / "sources.csv", []), "source_id")
     attributions = _group_rows(
@@ -281,6 +327,10 @@ def _build_detail_records(
     gaps = _group_rows(_load_csv(hardening_dir / "evidence_gap_report.csv", []), "species_id")
     scores = _group_rows(_load_csv(hardening_dir / "score_readiness.csv", []), "species_id")
     views = _group_rows(view_rows, "species_id")
+    suppliers = provider_data["suppliers_by_species"]
+    mowability = provider_data["mowability_by_species"]
+    provider_attribution = provider_data["attribution_by_species"]
+    provider_manifest = provider_data["manifest"]
 
     detail_records: dict[str, dict[str, object]] = {}
     for row in table_rows:
@@ -312,6 +362,17 @@ def _build_detail_records(
             "sources": [sources[source_id] for source_id in source_ids if source_id in sources],
             "source_attribution": attributions.get(species_id, []),
             "use_case_views": views.get(species_id, []),
+            "provider_data": {
+                "has_provider_data": row.get("provider_data", "no"),
+                "supplier_count": row.get("supplier_count", "0"),
+                "supplier_statuses": row.get("supplier_statuses", ""),
+                "mowability_score": row.get("mowability_score", ""),
+                "provider_review_status": row.get("provider_review_status", ""),
+                "suppliers": suppliers.get(species_id, []),
+                "mowability": mowability.get(species_id, []),
+                "source_attribution": provider_attribution.get(species_id, []),
+                "manifest_caveat": provider_manifest.get("caveat", ""),
+            },
             "caveats": {
                 "poc_caveat": row.get("poc_caveat", ""),
                 "usability_caveat": USABILITY_CAVEAT,
@@ -428,6 +489,10 @@ def _render_html(
     )
     body_rows = "\n".join(_render_table_row(row) for row in table_rows)
     detail_json = html.escape(json.dumps(detail_records, sort_keys=True), quote=False)
+    provider_count = sum(1 for row in table_rows if row.get("provider_data") == "yes")
+    supplier_count = sum(1 for row in table_rows if row.get("supplier_count") not in {"", "0"})
+    mowability_count = sum(1 for row in table_rows if row.get("mowability_score"))
+    review_count = sum(1 for row in table_rows if row.get("provider_review_status"))
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -485,6 +550,16 @@ def _render_html(
     }}
     button.active {{ border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }}
     button span {{ color: var(--muted); }}
+    .toggle {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+    }}
     .summary {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -517,6 +592,14 @@ def _render_html(
     }}
     .not-ready {{ color: var(--warn); }}
     .views {{ color: var(--accent-2); }}
+    .provider-pill {{
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #eef2fb;
+      color: var(--accent-2);
+      white-space: nowrap;
+    }}
     .hidden {{ display: none; }}
     tr[data-species-id] {{ cursor: pointer; }}
     tr[data-species-id]:focus {{ outline: 3px solid var(--accent-2); outline-offset: -3px; }}
@@ -566,6 +649,22 @@ def _render_html(
           All <span>{len(table_rows)}</span>
         </button>
         {buttons}
+        <label class="toggle">
+          <input type="checkbox" id="filter-supplier">
+          Has supplier <span>{supplier_count}</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="filter-provider">
+          Provider data <span>{provider_count}</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="filter-mowability">
+          Mowability <span>{mowability_count}</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="filter-provider-review">
+          Needs provider review <span>{review_count}</span>
+        </label>
       </div>
       <div class="table-wrap">
         <table>
@@ -578,6 +677,7 @@ def _render_html(
               <th>Moisture</th>
               <th>Views</th>
               <th>Evidence</th>
+              <th>Provider</th>
               <th>Scores</th>
             </tr>
           </thead>
@@ -589,7 +689,7 @@ def _render_html(
       <aside id="record-detail" class="detail-shell" aria-live="polite">
         <h2>Plant Record Detail</h2>
         <p>Select a plant row to inspect all current attributes, metadata,
-        sources, evidence gaps, score readiness, and caveats.</p>
+        sources, evidence gaps, provider data, score readiness, and caveats.</p>
       </aside>
     </section>
   </main>
@@ -597,6 +697,10 @@ def _render_html(
   <script>
     const search = document.querySelector("#search");
     const buttons = [...document.querySelectorAll("button[data-view]")];
+    const providerFilter = document.querySelector("#filter-provider");
+    const supplierFilter = document.querySelector("#filter-supplier");
+    const mowabilityFilter = document.querySelector("#filter-mowability");
+    const providerReviewFilter = document.querySelector("#filter-provider-review");
     const rows = [...document.querySelectorAll("tbody tr")];
     const detailPanel = document.querySelector("#record-detail");
     const detailRecords = JSON.parse(document.querySelector("#record-data").textContent);
@@ -627,6 +731,7 @@ def _render_html(
       const identity = record.identity;
       const attributes = record.attributes;
       const evidence = record.evidence;
+      const providerData = record.provider_data || {{}};
       detailPanel.innerHTML = `
         <h2><em>${{escapeHtml(identity.botanical_name)}}</em></h2>
         <p>${{escapeHtml(identity.common_name)}} · ${{escapeHtml(identity.species_id)}}</p>
@@ -694,6 +799,49 @@ def _render_html(
           )}}
         </section>
         <section class="detail-section">
+          <h3>Provider Data</h3>
+          ${{keyValues([
+            ["Provider Data", providerData.has_provider_data === "yes" ? "Present" : "None"],
+            ["Supplier Rows", providerData.supplier_count || "0"],
+            ["Supplier Statuses", providerData.supplier_statuses || "None"],
+            ["Mowability Score", providerData.mowability_score || "None"],
+            ["Provider Review Status", providerData.provider_review_status || "None"]
+          ])}}
+          <p>${{escapeHtml(
+            providerData.manifest_caveat || "Provider values are candidate data."
+          )}}</p>
+        </section>
+        <section class="detail-section">
+          <h3>Supplier Availability</h3>
+          ${{listRows(providerData.suppliers, (row) =>
+            `<li><strong>${{escapeHtml(row.provider_id)}}</strong>: ` +
+            `${{escapeHtml(row.supplier_status)}}. ` +
+            `${{escapeHtml(row.product_url)}} ` +
+            `<span class="status">${{escapeHtml(row.review_status)}}</span></li>`,
+            "No supplier rows recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Mowability</h3>
+          ${{listRows(providerData.mowability, (row) =>
+            `<li><strong>${{escapeHtml(row.provider_id)}}</strong>: score ` +
+            `${{escapeHtml(row.mowability_score)}}. ` +
+            `${{escapeHtml(row.caveat)}} ` +
+            `<span class="status">${{escapeHtml(row.review_status)}}</span></li>`,
+            "No mowability rows recorded."
+          )}}
+        </section>
+        <section class="detail-section">
+          <h3>Provider Source Attribution</h3>
+          ${{listRows(providerData.source_attribution, (row) =>
+            `<li><strong>${{escapeHtml(row.claim_field)}}</strong> from ` +
+            `${{escapeHtml(row.source_id)}}; value ` +
+            `${{escapeHtml(row.claim_value)}}; status ` +
+            `${{escapeHtml(row.review_status)}}.</li>`,
+            "No provider-specific source attribution rows recorded."
+          )}}
+        </section>
+        <section class="detail-section">
           <h3>Use-Case Views</h3>
           ${{listRows(record.use_case_views, (row) =>
             `<li><strong>${{escapeHtml(row.use_case)}}</strong>: ` +
@@ -716,7 +864,20 @@ def _render_html(
         const matchesQuery = !query || row.textContent.toLowerCase().includes(query);
         const views = row.dataset.views.split(";");
         const matchesView = activeView === "all" || views.includes(activeView);
-        row.classList.toggle("hidden", !(matchesQuery && matchesView));
+        const matchesProvider = !providerFilter.checked || row.dataset.providerData === "yes";
+        const matchesSupplier =
+          !supplierFilter.checked || Number(row.dataset.supplierCount || "0") > 0;
+        const matchesMowability = !mowabilityFilter.checked || Boolean(row.dataset.mowabilityScore);
+        const matchesProviderReview =
+          !providerReviewFilter.checked || Boolean(row.dataset.providerReviewStatus);
+        row.classList.toggle("hidden", !(
+          matchesQuery &&
+          matchesView &&
+          matchesProvider &&
+          matchesSupplier &&
+          matchesMowability &&
+          matchesProviderReview
+        ));
       }}
     }}
     for (const button of buttons) {{
@@ -736,6 +897,10 @@ def _render_html(
       }});
     }}
     search.addEventListener("input", applyFilters);
+    providerFilter.addEventListener("change", applyFilters);
+    supplierFilter.addEventListener("change", applyFilters);
+    mowabilityFilter.addEventListener("change", applyFilters);
+    providerReviewFilter.addEventListener("change", applyFilters);
   </script>
 </body>
 </html>
@@ -750,9 +915,14 @@ def _render_table_row(row: dict[str, str]) -> str:
     ]
     views = row.get("candidate_views", "") or "None"
     evidence = f"{row.get('reviewed_field_count', '0')} reviewed / {row.get('gap_count', '0')} gaps"
+    provider_summary = _provider_summary(row)
     return (
         f'<tr data-views="{html.escape(";".join(view_slugs))}" '
         f'data-species-id="{html.escape(row.get("Species ID", ""))}" '
+        f'data-provider-data="{html.escape(row.get("provider_data", "no"))}" '
+        f'data-supplier-count="{html.escape(row.get("supplier_count", "0"))}" '
+        f'data-mowability-score="{html.escape(row.get("mowability_score", ""))}" '
+        f'data-provider-review-status="{html.escape(row.get("provider_review_status", ""))}" '
         'tabindex="0">'
         f"<td>{html.escape(row.get('Species ID', ''))}</td>"
         f"<td><em>{html.escape(row.get('Botanical Name', ''))}</em><br>"
@@ -762,9 +932,21 @@ def _render_table_row(row: dict[str, str]) -> str:
         f"<td>{html.escape(row.get('Soil Moisture', ''))}</td>"
         f'<td class="views">{html.escape(views)}</td>'
         f'<td><span class="status">{html.escape(evidence)}</span></td>'
+        f'<td><span class="provider-pill">{html.escape(provider_summary)}</span></td>'
         f'<td class="not-ready">{html.escape(row.get("score_readiness", ""))}</td>'
         "</tr>"
     )
+
+
+def _provider_summary(row: dict[str, str]) -> str:
+    parts: list[str] = []
+    if row.get("supplier_count") not in {"", "0"}:
+        parts.append(f"{row.get('supplier_count')} supplier")
+    if row.get("mowability_score"):
+        parts.append(f"mow {row.get('mowability_score')}")
+    if not parts:
+        return "None"
+    return "; ".join(parts)
 
 
 def _validate_table_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
@@ -781,6 +963,16 @@ def _validate_table_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
             )
         if not row.get("poc_caveat"):
             diagnostics.append(_diagnostic("missing_poc_caveat", row_number, "poc_caveat"))
+        if row.get("provider_data") not in {"yes", "no"}:
+            diagnostics.append(
+                _diagnostic("invalid_provider_data_flag", row_number, "provider_data")
+            )
+        if row.get("mowability_score"):
+            for value in row.get("mowability_score", "").split(";"):
+                if value and value not in {"0", "1", "2", "3", "4", "5"}:
+                    diagnostics.append(
+                        _diagnostic("invalid_mowability_score", row_number, "mowability_score")
+                    )
     return diagnostics
 
 
@@ -851,6 +1043,18 @@ def _validate_html(html_text: str, counts: dict[str, int]) -> list[Diagnostic]:
         diagnostics.append(_diagnostic("missing_detail_panel", field="index.html"))
     if "renderDetail" not in html_text or "data-species-id" not in html_text:
         diagnostics.append(_diagnostic("missing_detail_behavior", field="index.html"))
+    for marker in (
+        "filter-supplier",
+        "filter-provider",
+        "filter-mowability",
+        "filter-provider-review",
+        "Provider Data",
+        "Supplier Availability",
+        "Mowability",
+        "Provider Source Attribution",
+    ):
+        if marker not in html_text:
+            diagnostics.append(_diagnostic("missing_provider_usability_marker", field=marker))
     if html_text.count("<tr data-views=") != counts["plant_table"]:
         diagnostics.append(_diagnostic("html_row_count_mismatch", field="index.html"))
     external_load_markers = ('src="http://', 'src="https://', 'href="http://', 'href="https://')
@@ -862,6 +1066,7 @@ def _validate_html(html_text: str, counts: dict[str, int]) -> list[Diagnostic]:
 def _validate_embedded_detail_records(
     html_text: str,
     species_ids: set[str],
+    table_rows: list[dict[str, str]],
 ) -> list[Diagnostic]:
     diagnostics: list[Diagnostic] = []
     marker = '<script id="record-data" type="application/json">'
@@ -880,6 +1085,7 @@ def _validate_embedded_detail_records(
         return [_diagnostic("invalid_detail_data", field="index.html")]
     if set(payload) != species_ids:
         diagnostics.append(_diagnostic("detail_species_mismatch", field="index.html"))
+    table_by_species = {row.get("Species ID", ""): row for row in table_rows}
     for species_id, record in payload.items():
         if not isinstance(record, dict):
             diagnostics.append(_diagnostic("invalid_detail_record", field="index.html"))
@@ -891,10 +1097,28 @@ def _validate_embedded_detail_records(
             "sources",
             "source_attribution",
             "use_case_views",
+            "provider_data",
             "caveats",
         ):
             if key not in record:
                 diagnostics.append(_diagnostic("missing_detail_section", field=key))
+        provider_data = record.get("provider_data", {})
+        table_row = table_by_species.get(species_id, {})
+        if isinstance(provider_data, dict):
+            supplier_rows = provider_data.get("suppliers", [])
+            mowability_rows = provider_data.get("mowability", [])
+            provider_attribution_rows = provider_data.get("source_attribution", [])
+            if table_row.get("provider_data") == "yes" and not (
+                supplier_rows or mowability_rows or provider_attribution_rows
+            ):
+                diagnostics.append(_diagnostic("provider_detail_missing_rows", field=species_id))
+            if str(len(supplier_rows)) != table_row.get("supplier_count", "0"):
+                diagnostics.append(
+                    _diagnostic("provider_supplier_count_mismatch", field=species_id)
+                )
+            mowability_text = ";".join(row.get("mowability_score", "") for row in mowability_rows)
+            if mowability_text != table_row.get("mowability_score", ""):
+                diagnostics.append(_diagnostic("provider_mowability_mismatch", field=species_id))
         identity = record.get("identity", {})
         if isinstance(identity, dict) and identity.get("species_id") != species_id:
             diagnostics.append(_diagnostic("detail_species_id_mismatch", field="species_id"))
@@ -922,6 +1146,23 @@ def _validate_diagnostic_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
 
 def _empty_counts() -> dict[str, int]:
     return {"plant_table": 0, "use_case_views": 0, "view_summary": 0}
+
+
+def _load_provider_data(poc_dir: Path) -> dict[str, object]:
+    provider_dir = poc_dir / "provider_data"
+    supplier_rows = _load_csv(provider_dir / "supplier_availability.csv", [])
+    mowability_rows = _load_csv(provider_dir / "mowability.csv", [])
+    attribution_rows = _load_csv(provider_dir / "source_attribution.csv", [])
+    manifest = _load_json(provider_dir / "manifest.json", []) if provider_dir.exists() else {}
+    return {
+        "supplier_rows": supplier_rows,
+        "mowability_rows": mowability_rows,
+        "source_attribution_rows": attribution_rows,
+        "manifest": manifest,
+        "suppliers_by_species": _group_rows(supplier_rows, "species_id"),
+        "mowability_by_species": _group_rows(mowability_rows, "species_id"),
+        "attribution_by_species": _group_rows(attribution_rows, "species_id"),
+    }
 
 
 def _group_rows(rows: list[dict[str, str]], key: str) -> dict[str, list[dict[str, str]]]:

@@ -5,6 +5,10 @@ P17 adds the approval gate between provider sandbox outputs and the tracked
 Vancouver PoC product. Provider observations are not facts by default. They
 enter the PoC only when an approval manifest marks a row ``approved``.
 
+P18 tracks a small demo approval manifest under
+``data/poc/vancouver/provider_data`` so the provider-data workflow can be
+user-tested in the public PoC. These rows remain candidate/demo observations.
+
 Approval Manifest
 -----------------
 
@@ -56,3 +60,12 @@ Apply approved rows to a Vancouver PoC output directory:
 
 Use ``--skip-regeneration`` for fast dry runs that do not regenerate evidence,
 usability, or pollinator artifacts.
+
+Tracked Demo
+------------
+
+The current Vancouver PoC includes a P18 demo provider-data slice with one
+supplier row, one provisional mowability row, and one added provider candidate
+species. The rejected vegetable demo row remains excluded. This demo exists for
+interface testing and does not promote provider values to reviewed ecological
+facts.
