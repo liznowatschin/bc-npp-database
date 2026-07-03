@@ -34,6 +34,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P23 Northwest Meadowscapes source sweep | #125 | `feature/p23-nwm-source-sweep` | Complete |
 | P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | Complete |
 | P25 Cumulative provider approval previews | #129 | `feature/p25-cumulative-provider-approvals` | Complete |
+| P26 Provider approval ID namespacing | #131 | `feature/p26-provider-approval-id-namespacing` | PR pending |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1377,3 +1378,58 @@ P25 smoke test:
 Important product rule: a preview is cumulative only when all reviewed
 manifests are supplied to the sequence command, or when previous approvals have
 already been promoted into the tracked `data/poc/vancouver` base.
+
+## Phase 26: Provider Approval ID Namespacing
+
+Parent issue: #131
+
+Branch: `feature/p26-provider-approval-id-namespacing`
+
+Status: PR pending
+
+Goal: allow approved manifests exported from separate provider review apps to
+be applied cumulatively even when each static app generated local
+`PA-DRAFT-*` approval IDs.
+
+Problem diagnosed: the Satinflower, Northwest Meadowscapes, and West Coast
+Seeds approval manifests each contained IDs such as `PA-DRAFT-0001`. Once P25
+made provider-data manifests cumulative, those local IDs collided in the
+combined audit manifest.
+
+- [x] Namespace incoming approval IDs when they collide with existing
+      provider-data approval IDs.
+- [x] Ensure provider approval source-attribution external IDs use the
+      namespaced IDs.
+- [x] Make the Windows runner split comma-separated `-ManifestPaths`.
+- [x] Add regression coverage for cumulative manifests with colliding
+      `PA-DRAFT-*` IDs.
+- [x] Build the cumulative Satinflower + NWM + WCS preview.
+- [x] Validate provider data, plant list, evidence hardening, usability, and
+      pollinator module outputs.
+- [x] Run full acceptance.
+- [ ] Open PR.
+- [ ] Merge after green CI and close issue.
+
+P26 cumulative preview command:
+
+- `scripts/apply-downloaded-provider-approval.cmd -ManifestPaths outputs/provider_approval_review/PROV-SATIN/approval_manifest.csv,outputs/provider_approval_review/PROV-NWM/approval_manifest.csv,outputs/provider_approval_review/PROV-WCS/approval_manifest.csv -PreviewDir outputs/provider_approved_vancouver`
+
+P26 cumulative preview counts:
+
+- 345 plant rows.
+- 365 sources.
+- 3,749 source-attribution rows.
+- 3,666 approval manifest rows.
+- 3,665 approved provider rows.
+- 396 supplier availability rows.
+- 1 provisional mowability row.
+- 345 usability plant-table rows.
+- 345 pollinator-review rows.
+
+P26 local acceptance passed:
+
+- `python -m ruff check .`
+- `python -m pytest` (`121 passed`)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
