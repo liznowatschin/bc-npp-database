@@ -25,7 +25,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Complete |
 | P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Complete |
 | P16 Provider scraping sandbox MVP | #91 | `feature/p16-provider-scraping-sandbox` | Complete |
-| P17 Approved provider data integration | TBD | `feature/p17-provider-approval-integration` | Planned |
+| P17 Approved provider data integration | #97 | `feature/p17-provider-approval-integration` | Active |
 | P18 Provider data usability layer | TBD | `feature/p18-provider-usability-layer` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
@@ -917,23 +917,56 @@ Pull request #96 merged to `main` as merge commit `98fe0bd`.
 
 ## Phase 17: Approved Provider Data Integration
 
-Parent issue: TBD
+Parent issue: #97
 
 Branch: `feature/p17-provider-approval-integration`
 
-Status: planned
+Status: active
 
 Goal: import only user-approved sandbox rows into the tracked Vancouver PoC,
 preserving provider provenance, review status, supplier rows, candidate
 mowability, and source-attribution boundaries.
 
-- [ ] P17.1 Approval manifest and review statuses
-- [ ] P17.2 Approved species and attribute import
-- [ ] P17.3 Supplier and mowability artifacts
-- [ ] P17.4 Regeneration, validation, and closeout
+- [x] P17.1 Approval manifest and review statuses (#98)
+  - [x] Add approval manifest schema, statuses, validation API, and CLI.
+  - [x] Reject malformed approval rows and excluded-source values.
+  - [x] Ensure rejected/deferred/review-needed rows do not import.
+- [x] P17.2 Approved species and attribute import (#99)
+  - [x] Add provider approval importer.
+  - [x] Assign next stable `BCNPPD-*` and `CDF-*` IDs for approved new species.
+  - [x] Add source records and source-attribution rows for approved observations.
+- [x] P17.3 Supplier and mowability artifacts (#100)
+  - [x] Write separate provider-data supplier and mowability tables.
+  - [x] Preserve candidate caveats and keep mowability score readiness blocked.
+  - [x] Add docs, schema contract, example manifest, and tests.
+- [ ] P17.4 Regeneration, validation, and closeout (#101)
+  - [x] Regenerate downstream artifacts when approvals are applied.
+  - [x] Run local acceptance.
+  - [ ] Open PR and record the PR number.
+  - [ ] Merge PR after green CI.
+  - [ ] Close issues after merge.
 
 Provider-derived data remains candidate/pending review unless separately
 reviewed. Mowability does not make UNI, PSI, or RVI score readiness ready.
+
+P17 issue records were created as parent issue #97 and child issues #98 through
+#101.
+
+Phase 17 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (106 passed)
+- `bc-nppd validate-provider-approvals examples/provider_approval_manifest.csv --json`
+- `bc-nppd apply-provider-approvals tests/fixtures/provider_approvals/approval_manifest.csv --poc-dir data/poc/vancouver --out-dir outputs/provider_approved_vancouver --json`
+- `bc-nppd validate-provider-approvals outputs/provider_approved_vancouver/provider_data --json`
+- `bc-nppd validate-vancouver-poc-list outputs/provider_approved_vancouver --json`
+- `bc-nppd validate-vancouver-evidence outputs/provider_approved_vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability outputs/provider_approved_vancouver/usability --json`
+- `bc-nppd validate-vancouver-pollinator-module outputs/provider_approved_vancouver/pollinator_module --json`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- Existing tracked Vancouver PoC, evidence, usability, and pollinator validators.
 
 ## Phase 18: Provider Data Usability Layer
 

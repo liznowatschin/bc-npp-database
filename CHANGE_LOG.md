@@ -365,3 +365,18 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #96 to `main` as merge commit `98fe0bd`.
 - Closed Phase 16 as complete.
+- Started Phase 17 approved provider data integration on
+  `feature/p17-provider-approval-integration`.
+- Created Phase 17 GitHub issue records: parent issue #97 and child issues
+  #98 through #101.
+- Added provider approval manifest validation and application surfaces so only
+  rows marked `approved` can enter Vancouver PoC outputs.
+- Added separate provider-data supplier and provisional mowability artifacts,
+  keeping mowability caveated and blocked from UNI, PSI, and RVI readiness.
+- Added `bc-nppd validate-provider-approvals` and
+  `bc-nppd apply-provider-approvals` CLI commands.
+- Added provider approval schema docs, an example approval manifest, synthetic
+  approval fixtures, and P17 tests.
+- Completed Phase 17 local acceptance verification with Ruff, pytest, provider
+  approval CLI checks, regenerated ignored provider-approved Vancouver outputs,
+  Sphinx, build, twine, and tracked Vancouver validators passing.

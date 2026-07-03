@@ -1,0 +1,19 @@
+column,required,description
+approval_id,yes,Stable approval row ID such as PA-0001.
+sandbox_table,yes,Provider sandbox table that produced the observation.
+provider_id,yes,Provider ID such as PROV-SATIN.
+botanical_name,yes,Botanical name from the provider sandbox row.
+common_name,no,Common name from the provider sandbox row or reviewer.
+species_id,no,Existing BCNPPD species ID when applying to an existing PoC row.
+approval_status,yes,approved/rejected/deferred/needs_source_review/needs_taxonomy_review.
+target_action,yes,update_existing/add_species/record_supplier/record_mowability or another review action.
+attribute_name,no,Provider attribute name for candidate_attributes.csv rows.
+attribute_value,no,Provider attribute value for candidate_attributes.csv rows.
+evidence_confidence,no,BC-NPPD evidence confidence for the candidate observation.
+source_url,yes,Provider page URL supporting the observation.
+supplier_status,no,Supplier status for supplier_availability.csv rows.
+product_url,no,Provider product URL for supplier rows.
+mowability_score,no,Provisional 0-5 mowability score for mowability.csv rows.
+reviewer,no,Reviewer name or role.
+review_date,no,Review date.
+review_notes,no,Reviewer notes and caveats.

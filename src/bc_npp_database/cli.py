@@ -34,6 +34,13 @@ from .pollinators import (
 from .pollinators import (
     has_error_diagnostics as has_pollinator_error_diagnostics,
 )
+from .provider_approvals import (
+    apply_provider_approvals,
+    validate_provider_approvals,
+)
+from .provider_approvals import (
+    has_error_diagnostics as has_provider_approval_error_diagnostics,
+)
 from .provider_scraping import (
     build_provider_review,
     scrape_provider_sandbox,
@@ -226,6 +233,53 @@ def build_provider_review_command(
         for name, path in result.paths.items():
             typer.echo(f"- {name}: {path}")
     if has_provider_scraping_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-provider-approvals")
+def validate_provider_approvals_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate a provider approval manifest or provider-data directory."""
+    result = validate_provider_approvals(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Provider approval validation passed for {path}.")
+    if has_provider_approval_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("apply-provider-approvals")
+def apply_provider_approvals_command(
+    approvals_path: Path,
+    poc_dir: Path = typer.Option(..., "--poc-dir", help="Input Vancouver PoC directory."),
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output Vancouver PoC directory."),
+    skip_regeneration: bool = typer.Option(
+        False,
+        "--skip-regeneration",
+        help="Do not regenerate evidence, usability, or pollinator artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Apply approved provider observations to the Vancouver PoC."""
+    result = apply_provider_approvals(
+        approvals_path,
+        poc_dir,
+        out_dir,
+        regenerate_downstream=not skip_regeneration,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Applied provider approvals to {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_approval_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

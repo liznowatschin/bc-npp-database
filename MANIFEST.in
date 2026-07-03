@@ -3,3 +3,4 @@ include CHANGE_LOG.md
 include LICENSE
 recursive-include schemas *.csv
 recursive-include tests/fixtures *.html
+recursive-include tests/fixtures *.csv

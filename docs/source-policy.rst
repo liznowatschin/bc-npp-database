@@ -29,6 +29,11 @@ availability, cultivation clues, candidate discovery, and candidate mowability
 observations. They do not independently establish native status, ecological
 scores, pollinator scores, or final planting recommendations.
 
+Provider sandbox rows must pass through an explicit approval manifest before
+they enter a tracked Vancouver PoC output. Approval does not make provider
+values reviewed ecological facts; imported rows remain candidate observations
+with source attribution and caveats.
+
 Excluded sources
 ----------------
 

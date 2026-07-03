@@ -76,3 +76,11 @@ P16 fixture-backed sandbox generation:
 Raw provider HTML, screenshots, downloads, and scrape caches must remain under
 ignored directories such as ``local/``, ``tmp/``, ``data/raw/``, or
 ``outputs/``.
+
+Approval Boundary
+-----------------
+
+P16 review bundles do not update the Vancouver PoC. P17 consumes a separate
+``approval_manifest.csv`` and imports only rows marked ``approved``. Supplier
+and mowability observations stay in separate provider-data tables, and
+mowability remains a provisional candidate signal.

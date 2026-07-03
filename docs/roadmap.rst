@@ -58,3 +58,8 @@ Phase 15 introduces the source-provider registry and provider sandbox
 contracts for future supplier website scraping. P15 validates provider records,
 Vancouver eligibility rules, supplier rows, and provisional mowability
 observations without live scraping or PoC integration.
+
+Phase 17 adds the approval gate for provider observations. Approved rows can be
+applied to a Vancouver PoC output directory with separate supplier and
+provisional mowability artifacts, while rejected, deferred, and review-needed
+rows remain excluded from the product.
