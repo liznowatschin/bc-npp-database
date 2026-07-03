@@ -39,6 +39,12 @@ twine check dist/*
 - Keep `CHANGE_LOG.md`, roadmap checklists, issue comments, and PR descriptions
   synchronized with completed work.
 - Keep CLI commands thin wrappers over importable Python APIs.
+- Use FreshForge YAML for reusable multi-step workflows. Do not create
+  package-specific mini-orchestrators, custom DAG runners, sidecar overlay
+  engines, or hidden command sequencers when a workflow belongs in FreshForge.
+- Keep BC-NPPD focused on domain commands and data contracts; thin local
+  launchers may make FreshForge workflows easier to run, but they should not
+  reimplement FreshForge.
 - Do not commit private data, raw transcripts, credentials, generated local
   outputs, or machine-specific paths.
 - Do not invent ecological values or citations.

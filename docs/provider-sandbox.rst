@@ -111,9 +111,49 @@ Satinflower-style product bodies, it extracts product descriptions plus
 ``outputs`` and must remain untracked unless a later phase explicitly approves a
 public-safe derivative.
 
-The dependency-free FreshForge workflow shape for this process lives at
-``examples/p19_provider_source_sweep_freshforge.yaml``. It can be copied or
-overlaid per provider by changing ``provider_id`` and ``catalog_url``.
+FreshForge Source-Review Workflow
+---------------------------------
+
+P29 makes FreshForge the canonical workflow runner for repeated provider source
+sweeps. Install the workflow extra when FreshForge is not already available:
+
+.. code-block:: console
+
+   python -m pip install -e .[workflow]
+
+Then build a provider review package with the Windows launcher:
+
+.. code-block:: console
+
+   .\scripts\build-provider-source-review.cmd PROV-SATIN -OpenReview
+
+To create a new provider-specific workflow file with the correct FreshForge
+node shape, use the BC-NPPD authoring helper:
+
+.. code-block:: console
+
+   bc-nppd generate-provider-source-workflow PROV-PREMIER \
+     --catalog-url https://premierpacificseeds.ca \
+     --out-path examples/workflows/providers/PROV-PREMIER.yaml \
+     --force
+
+This helper only writes FreshForge-compatible YAML. It does not validate, plan,
+or execute the workflow; FreshForge still owns those steps.
+
+The launcher calls ``freshforge run`` on a provider-specific workflow YAML. It
+does not reimplement the scrape/validate/review sequence itself. Provider
+workflow files live under ``examples/workflows/providers/``:
+
+* ``PROV-SATIN.yaml``
+* ``PROV-NWM.yaml``
+* ``PROV-WCS.yaml``
+* ``PROV-PREMIER.yaml``
+
+The generic workflow shape lives at
+``examples/workflows/provider_source_review.yaml``. The historical
+``examples/p19_provider_source_sweep_freshforge.yaml`` path remains as a
+compatibility example, but the P29 workflow files are the preferred surface.
+Use lower-level ``bc-nppd`` commands only for debugging or manual fallback.
 
 The expert review walkthrough lives in ``provider-review-workflow``. It explains
 how to inspect the local approval app, export ``approval_manifest.csv``,

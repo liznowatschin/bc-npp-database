@@ -1,13 +1,7 @@
-﻿# Backward-compatible P19 example.
-#
-# P29 makes examples/workflows/provider_source_review.yaml and
-# examples/workflows/providers/*.yaml the canonical FreshForge workflow assets.
-# This file remains as a stable historical example path.
-
-workflow:
-  id: p19_provider_source_sweep
-  name: Provider source sweep example
-  description: FreshForge workflow using BC-NPPD provider nodes.
+﻿workflow:
+  id: provider_source_review_satinflower
+  name: Satinflower provider source-review package
+  description: Sweep the Satinflower seed collection into BC-NPPD review artifacts.
 
 nodes:
   - id: source_sweep

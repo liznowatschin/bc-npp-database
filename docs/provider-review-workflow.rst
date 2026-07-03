@@ -8,7 +8,39 @@ can be validated and applied.
 Generate Review Inputs
 ----------------------
 
-Run or reuse a provider sandbox. For the Satinflower seed source sweep:
+The preferred P29 path is to let FreshForge run the provider source-review
+workflow. Install the workflow extra if needed:
+
+.. code-block:: console
+
+   python -m pip install -e .[workflow]
+
+Then run the provider review package launcher:
+
+.. code-block:: console
+
+   .\scripts\build-provider-source-review.cmd PROV-SATIN -OpenReview
+
+The launcher invokes ``freshforge run`` against
+``examples/workflows/providers/PROV-SATIN.yaml`` and opens
+``outputs/provider_approval_review/PROV-SATIN/index.html`` when
+``-OpenReview`` is included. Use ``PROV-NWM``, ``PROV-WCS``, or
+``PROV-PREMIER`` to select a different provider workflow.
+
+When adding or revising a provider workflow, generate a correctly shaped
+FreshForge YAML file rather than hand-building a command sequence:
+
+.. code-block:: console
+
+   bc-nppd generate-provider-source-workflow PROV-PREMIER \
+     --catalog-url https://premierpacificseeds.ca \
+     --out-path examples/workflows/providers/PROV-PREMIER.yaml \
+     --force
+
+Then validate or run that file with FreshForge.
+
+The lower-level manual fallback is to run or reuse a provider sandbox. For the
+Satinflower seed source sweep:
 
 .. code-block:: console
 
@@ -116,9 +148,10 @@ The direct PowerShell fallback is:
 
    powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\apply-downloaded-provider-approval.ps1 -OpenPreview
 
-Greg or an automation agent can use the dependency-free FreshForge workflow
-shape in ``examples/p21_downloaded_provider_approval_freshforge.yaml`` for the
-same validate/apply/validate-preview sequence.
+Greg or an automation agent can use the FreshForge workflow shape in
+``examples/p21_downloaded_provider_approval_freshforge.yaml`` for the same
+validate/apply/validate-preview sequence. Reusable workflow sequencing should
+stay in FreshForge YAML; direct ``bc-nppd`` commands are fallback primitives.
 
 The script does not promote reviewed manifests into tracked product data. Only
 after human inspection should a reviewed manifest be copied into a tracked input

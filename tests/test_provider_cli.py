@@ -130,6 +130,69 @@ def test_build_provider_approval_review_command_json(tmp_path):
     assert (tmp_path / "approval_review" / "approval_manifest_draft.csv").exists()
 
 
+def test_generate_provider_source_workflow_command_json(tmp_path):
+    workflow_path = tmp_path / "premier.yaml"
+    result = runner.invoke(
+        app,
+        [
+            "generate-provider-source-workflow",
+            "PROV-PREMIER",
+            "--out-path",
+            str(workflow_path),
+            "--reviewer",
+            "tester",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"provider_id": "PROV-PREMIER"' in result.stdout
+    text = workflow_path.read_text(encoding="utf-8")
+    assert "provider: bc_npp_database.source_sweep" in text
+    assert "provider_id: PROV-PREMIER" in text
+    assert "reviewer: \"tester\"" in text
+
+
+def test_generate_provider_source_workflow_has_defaults_for_all_requested_providers(tmp_path):
+    expected = {
+        "PROV-SATIN": "https://satinflower.ca/collections/seed",
+        "PROV-NWM": "https://northwestmeadowscapes.com",
+        "PROV-WCS": "https://www.westcoastseeds.com/collections/wildflower-seeds",
+        "PROV-PREMIER": "https://premierpacificseeds.ca",
+    }
+    for provider_id, expected_url in expected.items():
+        workflow_path = tmp_path / f"{provider_id}.yaml"
+        result = runner.invoke(
+            app,
+            [
+                "generate-provider-source-workflow",
+                provider_id,
+                "--out-path",
+                str(workflow_path),
+                "--json",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert expected_url in workflow_path.read_text(encoding="utf-8")
+
+
+def test_generate_provider_source_workflow_rejects_unknown_provider(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "generate-provider-source-workflow",
+            "PROV-NOPE",
+            "--out-path",
+            str(tmp_path / "bad.yaml"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "provider_workflow.unknown_provider" in result.stdout
+
+
 def test_validate_provider_approvals_command_json():
     result = runner.invoke(
         app,

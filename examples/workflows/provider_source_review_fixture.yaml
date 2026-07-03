@@ -1,0 +1,57 @@
+﻿# Fixture-backed FreshForge provider source-review workflow for tests and smoke checks.
+
+workflow:
+  id: provider_source_review_fixture
+  name: Fixture provider source-review package
+  description: Build provider review artifacts from local synthetic provider fixtures.
+
+nodes:
+  - id: source_sweep
+    provider: bc_npp_database.source_sweep
+    parameters:
+      provider_id: PROV-SATIN
+      database_instance: vancouver
+      live_fetch: false
+      source_sweep: false
+      input_dir: tests/fixtures/providers
+      max_pages: 1
+      raw_dir: local/provider_raw
+    outputs:
+      sandbox_dir: outputs/provider_workflow_fixture/PROV-SATIN/sandbox
+    artifacts:
+      sandbox_dir: outputs/provider_workflow_fixture/PROV-SATIN/sandbox
+
+  - id: validate_sandbox
+    provider: bc_npp_database.validate_sandbox
+    needs:
+      - source_sweep
+    inputs:
+      sandbox_dir: outputs/provider_workflow_fixture/PROV-SATIN/sandbox
+
+  - id: build_review
+    provider: bc_npp_database.build_review
+    needs:
+      - validate_sandbox
+    inputs:
+      sandbox_dir: outputs/provider_workflow_fixture/PROV-SATIN/sandbox
+    outputs:
+      review_dir: outputs/provider_workflow_fixture/PROV-SATIN/review
+    artifacts:
+      review_dir: outputs/provider_workflow_fixture/PROV-SATIN/review
+
+  - id: build_approval_review
+    provider: bc_npp_database.build_approval_review
+    needs:
+      - build_review
+    inputs:
+      sandbox_dir: outputs/provider_workflow_fixture/PROV-SATIN/sandbox
+      poc_dir: data/poc/vancouver
+    parameters:
+      reviewer: workflow fixture
+    outputs:
+      approval_review_dir: outputs/provider_workflow_fixture/PROV-SATIN/approval_review
+    artifacts:
+      approval_review_dir: outputs/provider_workflow_fixture/PROV-SATIN/approval_review
+
+
+

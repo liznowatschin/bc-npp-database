@@ -4,3 +4,6 @@ include LICENSE
 recursive-include schemas *.csv
 recursive-include tests/fixtures *.html
 recursive-include tests/fixtures *.csv
+recursive-include examples *.yaml
+recursive-include scripts *.cmd
+recursive-include scripts *.ps1

@@ -1,13 +1,13 @@
-﻿# Backward-compatible P19 example.
+﻿# Generic FreshForge provider source-review workflow.
 #
-# P29 makes examples/workflows/provider_source_review.yaml and
-# examples/workflows/providers/*.yaml the canonical FreshForge workflow assets.
-# This file remains as a stable historical example path.
+# Copy one of the provider-specific files in examples/workflows/providers/
+# before running a live provider sweep. This generic file documents the node
+# shape and uses Satinflower defaults as a concrete, valid example.
 
 workflow:
-  id: p19_provider_source_sweep
-  name: Provider source sweep example
-  description: FreshForge workflow using BC-NPPD provider nodes.
+  id: provider_source_review_demo
+  name: Provider source-review package
+  description: Sweep a provider catalogue into a sandbox and build review apps.
 
 nodes:
   - id: source_sweep

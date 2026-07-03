@@ -63,9 +63,15 @@ release = [
 test = [
     "pytest>=8",
 ]
+workflow = [
+    "freshforge @ git+https://github.com/UBC-FRESH/freshforge.git@v0.1.0a2",
+]
 
 [project.scripts]
 bc-nppd = "bc_npp_database.cli:app"
+
+[project.entry-points."freshforge.providers"]
+bc_npp_database = "bc_npp_database.freshforge_provider:provider_factory"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

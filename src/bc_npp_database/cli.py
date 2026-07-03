@@ -55,6 +55,12 @@ from .provider_scraping import (
 from .provider_scraping import (
     has_error_diagnostics as has_provider_scraping_error_diagnostics,
 )
+from .provider_workflows import (
+    generate_provider_source_workflow,
+)
+from .provider_workflows import (
+    has_error_diagnostics as has_provider_workflow_error_diagnostics,
+)
 from .providers import (
     has_error_diagnostics as has_provider_error_diagnostics,
 )
@@ -291,6 +297,57 @@ def build_provider_approval_review_command(
         for name, path in result.paths.items():
             typer.echo(f"- {name}: {path}")
     if has_provider_approval_review_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("generate-provider-source-workflow")
+def generate_provider_source_workflow_command(
+    provider_id: str,
+    out_path: Path | None = typer.Option(
+        None,
+        "--out-path",
+        "--out",
+        help="Optional output path for the generated FreshForge YAML workflow.",
+    ),
+    catalog_url: str | None = typer.Option(
+        None,
+        "--catalog-url",
+        help="Optional provider catalogue URL override.",
+    ),
+    max_pages: int | None = typer.Option(
+        None,
+        "--max-pages",
+        help="Optional maximum catalogue pages override.",
+    ),
+    reviewer: str = typer.Option(
+        "expert reviewer",
+        "--reviewer",
+        help="Reviewer name or role for draft approval rows.",
+    ),
+    database_instance: str = typer.Option("vancouver", "--database-instance"),
+    force: bool = typer.Option(False, "--force", help="Overwrite an existing output workflow."),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Generate a FreshForge YAML provider source-review workflow."""
+    result = generate_provider_source_workflow(
+        provider_id,
+        output_path=out_path,
+        catalog_url=catalog_url,
+        max_pages=max_pages,
+        reviewer=reviewer,
+        database_instance=database_instance,
+        force=force,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    elif out_path is not None:
+        typer.echo(f"Generated FreshForge provider workflow at {out_path}.")
+    else:
+        typer.echo(result.workflow_text)
+    if has_provider_workflow_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 
