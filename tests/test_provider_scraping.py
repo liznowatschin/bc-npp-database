@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 
 from bc_npp_database.provider_scraping import (
@@ -73,26 +74,35 @@ def test_scrape_provider_sandbox_parses_shopify_product_json_fixture(tmp_path):
     fixture_dir = tmp_path / "fixtures" / "PROV-SATIN"
     fixture_dir.mkdir(parents=True)
     (fixture_dir / "products.json").write_text(
-        """
-        {
-          "products": [
+        json.dumps(
             {
-              "title": "Achillea millefolium (Yarrow)",
-              "handle": "achillea-millefolium",
-              "product_type": "Seed Packet",
-              "tags": ["native", "pollinator"],
-              "variants": [{"available": true}]
-            },
-            {
-              "title": "Gift Card",
-              "handle": "gift-card",
-              "product_type": "Gift Card",
-              "tags": [],
-              "variants": [{"available": true}]
+                "products": [
+                    {
+                        "title": "Achillea millefolium (Yarrow)",
+                        "handle": "achillea-millefolium",
+                        "body_html": (
+                            "<p>Useful full-sun meadow species.</p>"
+                            "<button>Plant Details</button>"
+                            "<table><tr><th>habitat</th><td>Meadow</td></tr>"
+                            "<tr><th>light</th><td>Full sun</td></tr></table>"
+                            "<button>Seed Details</button>"
+                            "<table><tr><th>seeds/ packet</th><td>184</td></tr>"
+                            "<tr><th>sowing time</th><td>Sow in fall</td></tr></table>"
+                        ),
+                        "product_type": "Seed Packet",
+                        "tags": ["native", "pollinator"],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": "Gift Card",
+                        "handle": "gift-card",
+                        "product_type": "Gift Card",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                ]
             }
-          ]
-        }
-        """,
+        ),
         encoding="utf-8",
     )
 
@@ -108,7 +118,19 @@ def test_scrape_provider_sandbox_parses_shopify_product_json_fixture(tmp_path):
     assert [row["botanical_name"] for row in rows] == ["Achillea millefolium"]
     assert rows[0]["source_url"] == "https://satinflower.ca/products/achillea-millefolium"
     attributes = _read_csv(tmp_path / "sandbox" / "candidate_attributes.csv")
-    assert {row["attribute_name"] for row in attributes} >= {"product title", "tags"}
+    values = {row["attribute_name"]: row["attribute_value"] for row in attributes}
+    assert set(values) >= {
+        "product title",
+        "tags",
+        "description",
+        "plant details habitat",
+        "plant details light",
+        "seed details seeds packet",
+        "seed details sowing time",
+    }
+    assert values["description"] == "Useful full-sun meadow species."
+    assert values["plant details habitat"] == "Meadow"
+    assert values["seed details seeds packet"] == "184"
     supplier = _read_csv(tmp_path / "sandbox" / "supplier_availability.csv")
     assert supplier[0]["supplier_status"] == "available"
 

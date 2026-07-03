@@ -28,6 +28,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P17 Approved provider data integration | #97 | `feature/p17-provider-approval-integration` | Complete |
 | P18 Provider data usability layer | #103 | `feature/p18-provider-usability-layer` | Complete |
 | P19 Provider source sweep workflow | #109 | `feature/p19-provider-source-sweep` | Complete |
+| P20 Satinflower product detail extraction | #115 | `feature/p20-satinflower-product-details` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -153,6 +154,46 @@ bc-nppd build-provider-review outputs/provider_sandbox_source_sweep/PROV-SATIN \
   --out-dir outputs/provider_review_source_sweep/PROV-SATIN \
   --json
 ```
+
+## Phase 20: Satinflower Product Detail Extraction
+
+Parent issue: #115
+
+Branch: `feature/p20-satinflower-product-details`
+
+Status: active
+
+Goal: extract Satinflower product-page `Plant Details` and `Seed Details`
+content into provider sandbox attributes so expert reviewers see the full
+product evidence, not only title/type/tag metadata.
+
+- [x] P20.1 Product body details into review attributes (#116)
+  - [x] Parse Shopify `body_html` description text.
+  - [x] Parse `Plant Details` table rows into candidate attributes.
+  - [x] Parse `Seed Details` table rows into candidate attributes.
+  - [x] Regenerate ignored Satinflower sandbox and approval-review outputs.
+  - [x] Run full acceptance and open PR (#117).
+  - [ ] Merge after green CI and close issues.
+
+P20 issue records were created as parent issue #115 and child issue #116.
+
+Pull request #117 is the Phase 20 closeout PR against `main`.
+
+The regenerated Satinflower seed sweep now produces 115 candidate species,
+2,086 candidate attribute rows, 115 supplier rows, and 0 mowability rows. The
+approval-review draft contains 2,316 rows and validates cleanly.
+
+Phase 20 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (110 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd scrape-provider-sandbox PROV-SATIN --database-instance vancouver --live-fetch --source-sweep --catalog-url https://satinflower.ca/collections/seed --max-pages 5 --raw-dir local/provider_raw --out-dir outputs/provider_sandbox_source_sweep/PROV-SATIN --json`
+- `bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-SATIN --json`
+- `bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-SATIN --poc-dir data/poc/vancouver --out-dir outputs/provider_approval_review/PROV-SATIN --reviewer "expert reviewer" --json`
+- `bc-nppd validate-provider-approvals outputs/provider_approval_review/PROV-SATIN/approval_manifest_draft.csv --json`
 
 Branch push completed for `feature/p0-bootstrap-scaffold`. Pull request #6 is
 the Phase 0 closeout PR against `main`.

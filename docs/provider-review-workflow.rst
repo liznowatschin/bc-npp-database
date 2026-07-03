@@ -43,7 +43,8 @@ detail panel to inspect:
 
 * whether the candidate already matches a Vancouver PoC species;
 * supplier availability rows;
-* candidate attribute rows;
+* candidate attribute rows, including product descriptions and extracted
+  ``Plant Details`` / ``Seed Details`` values when available;
 * provisional mowability rows, if present;
 * provider URLs and taxonomy/source-review flags.
 

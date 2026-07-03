@@ -536,6 +536,7 @@ def _parse_shopify_products_json(
         tags = product.get("tags", [])
         tag_text = ", ".join(str(tag) for tag in tags) if isinstance(tags, list) else str(tags)
         product_type = str(product.get("product_type", "")).strip()
+        body_attributes = _parse_shopify_body_attributes(str(product.get("body_html", "")))
         variants = product.get("variants", [])
         supplier_status = "unknown"
         if isinstance(variants, list) and variants:
@@ -555,9 +556,18 @@ def _parse_shopify_products_json(
                 "attribute_tags": tag_text,
                 "candidate_reason": _shopify_candidate_reason(provider_id),
                 "notes": "Source-sweep catalogue observation; pending user review.",
+                **body_attributes,
             }
         )
     return records
+
+
+def _parse_shopify_body_attributes(body_html: str) -> dict[str, str]:
+    if not body_html.strip():
+        return {}
+    parser = _ShopifyBodyParser()
+    parser.feed(body_html)
+    return parser.attributes()
 
 
 def _shopify_product_count(payload: str) -> int:
@@ -793,3 +803,84 @@ class _ProviderSpeciesParser(HTMLParser):
                     record[field] = value.strip()
         record.setdefault("source_url", self.page_url)
         self.records.append(record)
+
+
+class _ShopifyBodyParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.current_section = "description"
+        self.in_button = False
+        self.in_th = False
+        self.in_td = False
+        self.current_header: list[str] = []
+        self.current_value: list[str] = []
+        self.description_parts: list[str] = []
+        self.rows: list[tuple[str, str, str]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "button":
+            self.in_button = True
+            self.current_value = []
+        elif tag == "th":
+            self.in_th = True
+            self.current_header = []
+        elif tag == "td":
+            self.in_td = True
+            self.current_value = []
+        elif tag == "br":
+            self._append_text(" ")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "button":
+            section = _clean_whitespace(" ".join(self.current_value))
+            if section:
+                self.current_section = section
+            self.in_button = False
+            self.current_value = []
+        elif tag == "th":
+            self.in_th = False
+        elif tag == "td":
+            value = _clean_whitespace(" ".join(self.current_value))
+            header = _clean_whitespace(" ".join(self.current_header))
+            if header and value:
+                self.rows.append((self.current_section, header, value))
+            self.in_td = False
+            self.current_value = []
+            self.current_header = []
+        elif tag == "p" and self.current_section == "description":
+            self.description_parts.append(" ")
+
+    def handle_data(self, data: str) -> None:
+        text = _clean_whitespace(data)
+        if not text:
+            return
+        self._append_text(text)
+
+    def attributes(self) -> dict[str, str]:
+        attributes: dict[str, str] = {}
+        description = _clean_whitespace(" ".join(self.description_parts))
+        if description:
+            attributes["attribute_description"] = description
+        for section, header, value in self.rows:
+            normalized_section = _attribute_token(section)
+            normalized_header = _attribute_token(header)
+            if normalized_section and normalized_header:
+                attributes[f"attribute_{normalized_section}_{normalized_header}"] = value
+        return attributes
+
+    def _append_text(self, text: str) -> None:
+        if self.in_button or self.in_td:
+            self.current_value.append(text)
+        elif self.in_th:
+            self.current_header.append(text)
+        elif self.current_section == "description":
+            self.description_parts.append(text)
+
+
+def _attribute_token(value: str) -> str:
+    token = re.sub(r"[^a-z0-9]+", "_", value.casefold()).strip("_")
+    return token
+
+
+def _clean_whitespace(value: str) -> str:
+    return re.sub(r"\s+", " ", value).strip()

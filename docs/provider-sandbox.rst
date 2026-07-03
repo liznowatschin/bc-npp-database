@@ -103,10 +103,13 @@ The Satinflower seed-collection entrypoint is:
      --reviewer "expert reviewer" \
      --json
 
-The source sweep currently supports Shopify-style product catalog feeds. Raw
-catalog JSON is written only under ``local/provider_raw``. Review CSV and HTML
-bundles are written under ``outputs`` and must remain untracked unless a later
-phase explicitly approves a public-safe derivative.
+The source sweep currently supports Shopify-style product catalog feeds. For
+Satinflower-style product bodies, it extracts product descriptions plus
+``Plant Details`` and ``Seed Details`` table rows into
+``candidate_attributes.csv``. Raw catalog JSON is written only under
+``local/provider_raw``. Review CSV and HTML bundles are written under
+``outputs`` and must remain untracked unless a later phase explicitly approves a
+public-safe derivative.
 
 The dependency-free FreshForge workflow shape for this process lives at
 ``examples/p19_provider_source_sweep_freshforge.yaml``. It can be copied or

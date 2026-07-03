@@ -443,3 +443,16 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #114 to `main` as merge commit `949c5e5`.
 - Closed Phase 19 as complete.
+- Started Phase 20 Satinflower product detail extraction on
+  `feature/p20-satinflower-product-details`.
+- Created Phase 20 GitHub issue records: parent issue #115 and child issue
+  #116.
+- Confirmed the P19 scraper captured product title/type/tags but did not parse
+  Satinflower product `Plant Details` or `Seed Details` sections.
+- Added Shopify `body_html` parsing for product descriptions, `Plant Details`
+  table rows, and `Seed Details` table rows.
+- Regenerated ignored Satinflower source-sweep and approval-review outputs:
+  115 candidate species, 2,086 candidate attribute rows, 115 supplier rows, 0
+  mowability rows, and a 2,316-row draft approval manifest that validates
+  cleanly.
+- Opened pull request #117 for Phase 20 closeout.
