@@ -27,7 +27,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P16 Provider scraping sandbox MVP | #91 | `feature/p16-provider-scraping-sandbox` | Complete |
 | P17 Approved provider data integration | #97 | `feature/p17-provider-approval-integration` | Complete |
 | P18 Provider data usability layer | #103 | `feature/p18-provider-usability-layer` | Complete |
-| P19 Provider source sweep workflow | #109 | `feature/p19-provider-source-sweep` | Active |
+| P19 Provider source sweep workflow | #109 | `feature/p19-provider-source-sweep` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -82,7 +82,7 @@ Parent issue: #109
 
 Branch: `feature/p19-provider-source-sweep`
 
-Status: active
+Status: complete
 
 Goal: run targeted provider catalogue sweeps into ignored sandbox/review
 outputs so the team can inspect the full candidate catch before approving any
@@ -102,7 +102,7 @@ provider-derived data.
   - [x] Document the Satinflower seed sweep workflow in user-facing docs.
   - [x] Run focused Ruff, provider tests, and Sphinx docs verification.
   - [x] Open PR and record the PR number (#114).
-  - [ ] Merge after green CI and close issues.
+  - [x] Merge after green CI and close issues.
 - [x] P19.4 Expert provider review and approval interface (#113)
   - [x] Add a static approval-review app builder and CLI command.
   - [x] Generate `review_items.csv` and a valid `approval_manifest_draft.csv`.
@@ -113,6 +113,8 @@ P19 issue records were created as parent issue #109 and child issues #110
 through #113.
 
 Pull request #114 is the Phase 19 closeout PR against `main`.
+It passed CI for Python 3.11 and Python 3.12 and merged to `main` as merge
+commit `949c5e5`.
 
 Phase 19 focused verification passed with:
 
