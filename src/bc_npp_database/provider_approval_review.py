@@ -402,9 +402,14 @@ def _render_review_app(
     .toolbar {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }}
     .toolbar input[type="search"] {{ flex: 1 1 220px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; }}
     .filters {{ display: flex; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 12px; color: var(--muted); }}
-    .card {{ width: 100%; text-align: left; margin: 0 0 8px; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }}
+    .batch {{ border: 1px solid var(--line); border-radius: 6px; padding: 10px; margin-bottom: 12px; background: #fff; }}
+    .batch-actions {{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }}
+    .batch-actions select {{ width: auto; min-width: 190px; }}
+    .card {{ width: 100%; text-align: left; margin: 0 0 8px; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; }}
     .card.active {{ border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }}
     .card-title {{ display: flex; justify-content: space-between; gap: 10px; font-weight: 700; }}
+    .card-row {{ display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; }}
+    .species-select {{ margin-top: 3px; }}
     .badges {{ display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }}
     .badge {{ border: 1px solid var(--line); border-radius: 999px; padding: 2px 7px; color: var(--muted); background: var(--soft); font-size: 12px; }}
     .detail-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }}
@@ -438,6 +443,28 @@ def _render_review_app(
         <label><input type="checkbox" id="filter-source"> Source review</label>
         <label><input type="checkbox" id="filter-unavailable"> Unavailable supplier</label>
       </div>
+      <div class="batch">
+        <strong>Batch Review</strong>
+        <div class="muted" id="selected-count">0 selected</div>
+        <div class="batch-actions">
+          <button id="select-visible">Select visible</button>
+          <button id="clear-selection">Clear selected</button>
+          <select id="batch-status">
+            <option value="approved">approved</option>
+            <option value="rejected">rejected</option>
+            <option value="deferred">deferred</option>
+            <option value="needs_source_review">needs_source_review</option>
+            <option value="needs_taxonomy_review">needs_taxonomy_review</option>
+          </select>
+          <button id="apply-status">Set selected status</button>
+          <button id="batch-attrs-on">Include attributes</button>
+          <button id="batch-attrs-off">Defer attributes</button>
+          <button id="batch-mow-on">Include mowability</button>
+          <button id="batch-mow-off">Defer mowability</button>
+          <button id="batch-supplier-on">Include supplier</button>
+          <button id="batch-supplier-off">Defer supplier</button>
+        </div>
+      </div>
       <div id="summary" class="muted"></div>
       <div id="list"></div>
     </section>
@@ -465,6 +492,7 @@ def _render_review_app(
       includeMowability: false,
       notes: item.review_notes || ''
     }}]));
+    const selected = new Set();
     let activeName = payload.reviewItems[0]?.botanical_name || '';
     const bySpecies = new Map();
     for (const row of payload.approvalRows) {{
@@ -489,21 +517,46 @@ def _render_review_app(
     function renderList() {{
       const items = filteredItems();
       document.getElementById('summary').textContent = `${{items.length}} visible of ${{payload.reviewItems.length}} species candidates`;
+      document.getElementById('selected-count').textContent = `${{selected.size}} selected`;
       document.getElementById('list').innerHTML = items.map(item => `
-        <button class="card ${{item.botanical_name === activeName ? 'active' : ''}}" data-name="${{escapeAttr(item.botanical_name)}}">
-          <div class="card-title"><span>${{escapeHtml(item.botanical_name)}}</span><span>${{escapeHtml(state.get(item.botanical_name).status)}}</span></div>
-          <div class="muted">${{escapeHtml(item.common_name || '')}}</div>
-          <div class="badges">
-            <span class="badge">${{item.existing_status}}</span>
-            <span class="badge">${{item.supplier_count}} supplier</span>
-            <span class="badge">${{item.attribute_count}} attributes</span>
-            ${{item.taxonomy_flag === 'yes' ? '<span class="badge">taxonomy review</span>' : ''}}
+        <div class="card ${{item.botanical_name === activeName ? 'active' : ''}}" data-name="${{escapeAttr(item.botanical_name)}}" role="button" tabindex="0">
+          <div class="card-row">
+            <input class="species-select" type="checkbox" data-select-name="${{escapeAttr(item.botanical_name)}}" aria-label="Select ${{escapeAttr(item.botanical_name)}}" ${{selected.has(item.botanical_name) ? 'checked' : ''}}>
+            <div>
+              <div class="card-title"><span>${{escapeHtml(item.botanical_name)}}</span><span>${{escapeHtml(state.get(item.botanical_name).status)}}</span></div>
+              <div class="muted">${{escapeHtml(item.common_name || '')}}</div>
+              <div class="badges">
+                <span class="badge">${{item.existing_status}}</span>
+                <span class="badge">${{item.supplier_count}} supplier</span>
+                <span class="badge">${{item.attribute_count}} attributes</span>
+                ${{state.get(item.botanical_name).includeAttributes ? '<span class="badge">attrs included</span>' : ''}}
+                ${{state.get(item.botanical_name).includeMowability ? '<span class="badge">mow included</span>' : ''}}
+                ${{item.taxonomy_flag === 'yes' ? '<span class="badge">taxonomy review</span>' : ''}}
+              </div>
+            </div>
           </div>
-        </button>`).join('');
-      document.querySelectorAll('.card').forEach(button => button.addEventListener('click', () => {{
-        activeName = button.dataset.name;
+        </div>`).join('');
+      document.querySelectorAll('.species-select').forEach(input => input.addEventListener('change', event => {{
+        event.stopPropagation();
+        const name = event.target.dataset.selectName;
+        if (event.target.checked) selected.add(name);
+        else selected.delete(name);
         render();
       }}));
+      document.querySelectorAll('.card').forEach(card => {{
+        card.addEventListener('click', event => {{
+          if (event.target.classList.contains('species-select')) return;
+          activeName = card.dataset.name;
+          render();
+        }});
+        card.addEventListener('keydown', event => {{
+          if (event.key === 'Enter' || event.key === ' ') {{
+            event.preventDefault();
+            activeName = card.dataset.name;
+            render();
+          }}
+        }});
+      }});
     }}
 
     function renderDetail() {{
@@ -568,6 +621,15 @@ def _render_review_app(
       document.getElementById('decision-notes').addEventListener('input', event => {{ decision.notes = event.target.value; updatePreview(); }});
     }}
 
+    function selectedNames() {{
+      return Array.from(selected).filter(name => state.has(name));
+    }}
+
+    function applyToSelected(callback) {{
+      for (const name of selectedNames()) callback(state.get(name), name);
+      render();
+    }}
+
     function approvalRowsForExport() {{
       return payload.approvalRows.map(row => {{
         const decision = state.get(row.botanical_name);
@@ -614,6 +676,24 @@ def _render_review_app(
     document.getElementById('search').addEventListener('input', renderList);
     document.querySelectorAll('.filters input').forEach(input => input.addEventListener('change', renderList));
     document.getElementById('sort-name').addEventListener('click', renderList);
+    document.getElementById('select-visible').addEventListener('click', () => {{
+      for (const item of filteredItems()) selected.add(item.botanical_name);
+      render();
+    }});
+    document.getElementById('clear-selection').addEventListener('click', () => {{
+      selected.clear();
+      render();
+    }});
+    document.getElementById('apply-status').addEventListener('click', () => {{
+      const status = document.getElementById('batch-status').value;
+      applyToSelected(decision => {{ decision.status = status; }});
+    }});
+    document.getElementById('batch-attrs-on').addEventListener('click', () => applyToSelected(decision => {{ decision.includeAttributes = true; }}));
+    document.getElementById('batch-attrs-off').addEventListener('click', () => applyToSelected(decision => {{ decision.includeAttributes = false; }}));
+    document.getElementById('batch-mow-on').addEventListener('click', () => applyToSelected(decision => {{ decision.includeMowability = true; }}));
+    document.getElementById('batch-mow-off').addEventListener('click', () => applyToSelected(decision => {{ decision.includeMowability = false; }}));
+    document.getElementById('batch-supplier-on').addEventListener('click', () => applyToSelected(decision => {{ decision.includeSupplier = true; }}));
+    document.getElementById('batch-supplier-off').addEventListener('click', () => applyToSelected(decision => {{ decision.includeSupplier = false; }}));
     document.getElementById('download').addEventListener('click', () => {{
       const blob = new Blob([csvText()], {{type: 'text/csv'}});
       const url = URL.createObjectURL(blob);

@@ -29,6 +29,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P18 Provider data usability layer | #103 | `feature/p18-provider-usability-layer` | Complete |
 | P19 Provider source sweep workflow | #109 | `feature/p19-provider-source-sweep` | Complete |
 | P20 Satinflower product detail extraction | #115 | `feature/p20-satinflower-product-details` | Complete |
+| P21 Downloaded provider approval runner | #118 | `feature/p21-downloaded-provider-approval-runner` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1131,4 +1132,53 @@ Phase 20 local verification passed with:
 - `bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-SATIN --json`
 - `bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-SATIN --poc-dir data/poc/vancouver --out-dir outputs/provider_approval_review/PROV-SATIN --reviewer "expert reviewer" --json`
 - `bc-nppd validate-provider-approvals outputs/provider_approval_review/PROV-SATIN/approval_manifest_draft.csv --json`
+
+## Phase 21: Downloaded Provider Approval Runner
+
+Parent issue: #118
+
+Branch: `feature/p21-downloaded-provider-approval-runner`
+
+Status: active
+
+Goal: provide a Liz-friendly downstream workflow after an expert downloads
+`approval_manifest.csv` from the static provider review app, while preserving
+the auditable validation/apply/preview boundary.
+
+- [x] P21.1 FreshForge approval-apply workflow template (#119)
+  - [x] Add dependency-free workflow shape for downloaded approval manifests.
+  - [x] Validate/apply into ignored preview outputs.
+  - [x] Include downstream preview validators and run summary node.
+- [x] P21.2 Liz-friendly PowerShell runner (#120)
+  - [x] Add `scripts/apply-downloaded-provider-approval.ps1`.
+  - [x] Default to `$HOME/Downloads/approval_manifest.csv`.
+  - [x] Print plain-language preview output paths.
+- [x] P21.3 Docs, tests, and closeout (#121)
+  - [x] Document the simple runner path and manual fallback.
+  - [x] Add static tests for the workflow template, script, and docs.
+  - [x] Roll approval-review batch controls and success-pattern notes into P21.
+  - [x] Run focused verification and smoke test.
+  - [ ] Open PR, merge after green CI, and close issues.
+
+P21 smoke verification used the downloaded manifest at
+`C:/Users/now25/Downloads/approval_manifest.csv` and generated an ignored
+preview under `outputs/provider_approved_vancouver`.
+
+Smoke-test counts:
+
+- 2,316 approved manifest rows.
+- 152 preview plant-list rows.
+- 149 preview source rows.
+- 2,404 preview source-attribution rows.
+- 115 supplier availability rows.
+- 0 mowability rows.
+
+P21 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (113 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\apply-downloaded-provider-approval.ps1`
 

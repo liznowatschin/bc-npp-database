@@ -63,6 +63,14 @@ def test_build_provider_approval_review_flags_new_taxonomy_candidates(tmp_path):
     assert "Download approval_manifest.csv" in html
     assert "needs_taxonomy_review" in html
     assert "Provider source" in html
+    assert "Batch Review" in html
+    assert 'id="select-visible"' in html
+    assert 'class="species-select"' in html
+    assert 'id="apply-status"' in html
+    assert 'id="batch-attrs-on"' in html
+    assert 'id="batch-mow-on"' in html
+    assert "Include attributes" in html
+    assert "Include mowability" in html
 
 
 def _write_taxonomy_sandbox(tmp_path: Path) -> Path:
