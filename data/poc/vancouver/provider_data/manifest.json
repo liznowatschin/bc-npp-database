@@ -1,0 +1,14 @@
+{
+  "artifact_name": "Vancouver Provider Approval Data",
+  "approval_manifest": "data\\poc\\vancouver\\provider_data\\approval_manifest.csv",
+  "approved_observation_count": 4,
+  "supplier_availability_count": 1,
+  "mowability_count": 1,
+  "source_attribution_count": 4,
+  "public_hygiene": {
+    "raw_provider_html_tracked": false,
+    "external_downloads_required": false,
+    "private_data_tracked": false
+  },
+  "caveat": "Provider-approved observation remains candidate PoC data pending source, taxonomy, and ecological review."
+}

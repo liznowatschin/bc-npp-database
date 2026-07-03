@@ -50,9 +50,9 @@ adding unreviewed user-submitted expansion candidates, recording a request
 audit, and regenerating evidence-hardening, usability, and pollinator artifacts
 without treating the request as ecological evidence.
 
-Phase 13 adds ``Matricaria discoidea`` as an additional unreviewed
-user-requested expansion candidate and regenerates the current PoC product to
-53 species.
+Phase 13 added ``Matricaria discoidea`` as an additional unreviewed
+user-requested expansion candidate and regenerated the PoC product to 53
+species.
 
 Phase 15 introduces the source-provider registry and provider sandbox
 contracts for future supplier website scraping. P15 validates provider records,
@@ -63,3 +63,8 @@ Phase 17 adds the approval gate for provider observations. Approved rows can be
 applied to a Vancouver PoC output directory with separate supplier and
 provisional mowability artifacts, while rejected, deferred, and review-needed
 rows remain excluded from the product.
+
+Phase 18 applies a caveated demo provider approval manifest to the tracked
+Vancouver PoC for user testing, bringing the current product to 54 species and
+exposing supplier, mowability, and provider provenance metadata in the static
+web interface.

@@ -1,0 +1,2 @@
+species_id,provider_id,botanical_name,supplier_status,product_url,source_id,review_status,notes
+BCNPPD-0001,PROV-SATIN,Achillea millefolium,available,https://satinflower.ca/products/achillea-millefolium,SRC-0002,pending_review,Demo supplier observation for user testing only.

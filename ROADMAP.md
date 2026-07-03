@@ -26,7 +26,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Complete |
 | P16 Provider scraping sandbox MVP | #91 | `feature/p16-provider-scraping-sandbox` | Complete |
 | P17 Approved provider data integration | #97 | `feature/p17-provider-approval-integration` | Complete |
-| P18 Provider data usability layer | TBD | `feature/p18-provider-usability-layer` | Planned |
+| P18 Provider data usability layer | #103 | `feature/p18-provider-usability-layer` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -974,16 +974,49 @@ Pull request #102 merged to `main` as merge commit `c892391`.
 
 ## Phase 18: Provider Data Usability Layer
 
-Parent issue: TBD
+Parent issue: #103
 
 Branch: `feature/p18-provider-usability-layer`
 
-Status: planned
+Status: active
 
 Goal: expose approved provider-derived supplier and mowability metadata in the
 static Vancouver PoC interface with filters, detail-panel provenance, and
 explicit caveats.
 
-- [ ] P18.1 Supplier and mowability display
-- [ ] P18.2 Provider provenance detail panels
-- [ ] P18.3 Filters, validation, docs, and closeout
+- [x] P18.1 Demo provider approval integration for user testing (#104)
+  - [x] Track a caveated demo approval manifest under `data/poc/vancouver/provider_data`.
+  - [x] Apply approved demo provider rows into the tracked Vancouver PoC.
+  - [x] Regenerate evidence, usability, and pollinator artifacts.
+- [x] P18.2 Supplier and mowability display (#105)
+  - [x] Add provider summary columns to `plant_table.csv`.
+  - [x] Display supplier status and provisional mowability in the web app.
+  - [x] Preserve mowability as candidate data that does not make scores ready.
+- [x] P18.3 Provider provenance detail panels and filters (#106)
+  - [x] Embed provider data in plant detail JSON.
+  - [x] Add supplier, provider-data, mowability, and provider-review filters.
+  - [x] Add provider provenance detail-panel sections.
+- [ ] P18.4 Docs deploy hardening, validation, and closeout (#107)
+  - [x] Add GitHub Pages configuration before artifact upload.
+  - [x] Run local acceptance.
+  - [x] Open PR and record the PR number (#108).
+  - [ ] Merge PR after green CI.
+  - [ ] Close issues after merge.
+
+P18 issue records were created as parent issue #103 and child issues #104
+through #107.
+
+Pull request #108 is the Phase 18 closeout PR against `main`.
+
+Phase 18 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (106 passed)
+- `bc-nppd validate-provider-approvals data/poc/vancouver/provider_data --json`
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
+- `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`

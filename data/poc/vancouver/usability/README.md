@@ -3,9 +3,10 @@
 This directory contains the Phase 8 static usability layer for the Vancouver
 plant list proof of concept.
 
-Open `index.html` directly in a browser to inspect the 53-species PoC list with
-search, candidate use-case filters, and click-to-open plant record details. No
-local server, external assets, or external data calls are required.
+Open `index.html` directly in a browser to inspect the 54-species PoC list with
+search, candidate use-case filters, provider-data filters, and click-to-open
+plant record details. No local server, external assets, or external data calls
+are required.
 
 ## Files
 
@@ -17,6 +18,9 @@ local server, external assets, or external data calls are required.
   view.
 - `manifest.json`: row counts, provenance, status, and public-hygiene flags.
 - `diagnostics.csv`: non-error caveats for the usability layer.
+
+P18 provider supplier and provisional mowability rows remain in
+`../provider_data/` and are embedded into the static detail JSON.
 
 ## View Boundaries
 
@@ -34,7 +38,8 @@ All rows preserve evidence gaps and `not_ready` score readiness from P7.
 Click a plant row, or focus it with the keyboard and press Enter or Space, to
 open a full current-detail panel. The panel includes identity fields, candidate
 attributes, reviewed fields, evidence gaps, score-readiness rows, sources,
-source attribution, use-case memberships, and caveats.
+source attribution, provider supplier/mowability metadata, provider provenance,
+use-case memberships, and caveats.
 
 ## CLI
 

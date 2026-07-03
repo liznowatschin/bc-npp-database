@@ -1,0 +1,2 @@
+species_id,provider_id,botanical_name,mowability_score,source_url,source_id,review_status,caveat,notes
+BCNPPD-0001,PROV-SATIN,Achillea millefolium,3,https://satinflower.ca/products/achillea-millefolium,SRC-0002,pending_review,"Mowability is a provisional 0-5 provider-derived candidate signal and does not make UNI, PSI, or RVI score inputs ready.",Demo provisional mowability observation for user testing only.

@@ -1,0 +1,5 @@
+source_id,species_id,claim_field,claim_value,claim_scope,evidence_confidence,external_id,review_status,notes
+SRC-0002,BCNPPD-0001,Plant Type,Forb,species,Pending review,provider_approval:PA-DEMO-001,pending_review,Demo provider observation for user testing only; remains candidate pending review.
+SRC-0002,BCNPPD-0001,mowability_score,3,species,Pending review,provider_approval:PA-DEMO-003,pending_review,Demo provisional mowability observation for user testing only.
+SRC-0002,BCNPPD-0001,supplier_availability,available,species,Pending review,provider_approval:PA-DEMO-002,pending_review,Demo supplier observation for user testing only.
+SRC-0036,BCNPPD-0054,provider_candidate,Festuca rubra,species,Pending review,provider_approval:PA-DEMO-004,pending_review,Demo new provider candidate pending taxonomy and Vancouver suitability review.
