@@ -1633,7 +1633,7 @@ Parent issue: #143
 
 Branch: `feature/p30-oak-summit-provider-bootstrap`
 
-Status: active
+Status: complete
 
 Goal: exercise the P29 FreshForge provider workflow lane on a new provider
 candidate, Oak Summit Nursery, using tracked provider metadata and a generated
@@ -1656,7 +1656,7 @@ FreshForge workflow file while keeping live/raw/generated outputs ignored.
   - [x] Update provider docs and tests.
   - [x] Run local acceptance.
   - [x] Open PR (#147) after P30 tasks are complete.
-  - [ ] Merge after green CI and close issue.
+  - [x] Merge after green CI and close issue.
 
 P30 source-review smoke generated ignored outputs:
 
@@ -1684,6 +1684,9 @@ P30 local acceptance passed:
 - `freshforge validate examples/workflows/providers/PROV-OAKSUMMIT.yaml --json`
 - `freshforge run examples/workflows/providers/PROV-OAKSUMMIT.yaml --workdir . --json`
 - `bc-nppd validate-provider-approvals outputs/provider_approval_review/PROV-OAKSUMMIT/approval_manifest_draft.csv --json`
+
+Pull request #147 passed CI for Python 3.11 and Python 3.12 and merged to
+`main` as merge commit `fab205d`.
 
 ## Future Candidate: Premier Pacific Source Sweep
 
