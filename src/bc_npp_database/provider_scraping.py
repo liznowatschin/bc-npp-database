@@ -453,20 +453,21 @@ def _append_species_tables(
     category = record.get("product_category", "")
     eligibility = _vancouver_eligibility(provider_id, record)
     candidate_status = "excluded" if eligibility in {"excluded", "ineligible"} else "candidate"
-    tables["candidate_species.csv"].append(
-        {
-            "provider_id": provider_id,
-            "botanical_name": botanical_name,
-            "common_name": record.get("common_name", ""),
-            "candidate_status": candidate_status,
-            "vancouver_eligibility_status": eligibility,
-            "source_url": source_url,
-            "review_status": ReviewStatus.PENDING.value,
-            "product_category": category,
-            "candidate_reason": _candidate_reason(provider_id, eligibility, record),
-            "notes": record.get("notes", ""),
-        }
-    )
+    if not _candidate_species_exists(tables["candidate_species.csv"], botanical_name):
+        tables["candidate_species.csv"].append(
+            {
+                "provider_id": provider_id,
+                "botanical_name": botanical_name,
+                "common_name": record.get("common_name", ""),
+                "candidate_status": candidate_status,
+                "vancouver_eligibility_status": eligibility,
+                "source_url": source_url,
+                "review_status": ReviewStatus.PENDING.value,
+                "product_category": category,
+                "candidate_reason": _candidate_reason(provider_id, eligibility, record),
+                "notes": record.get("notes", ""),
+            }
+        )
     for attribute_name, attribute_value in _attribute_records(record):
         tables["candidate_attributes.csv"].append(
             {
@@ -502,6 +503,12 @@ def _append_species_tables(
         )
 
 
+def _candidate_species_exists(rows: list[dict[str, str]], botanical_name: str) -> bool:
+    return any(
+        row.get("botanical_name", "").casefold() == botanical_name.casefold() for row in rows
+    )
+
+
 def _attribute_records(record: dict[str, str]) -> list[tuple[str, str]]:
     attributes: list[tuple[str, str]] = []
     for key, value in record.items():
@@ -527,7 +534,7 @@ def _parse_shopify_products_json(
         if not isinstance(product, dict):
             continue
         title = str(product.get("title", "")).strip()
-        parsed = _parse_botanical_product_title(title)
+        parsed = _parse_botanical_product_title(title, provider_id)
         if not parsed:
             continue
         botanical_name, common_name = parsed
@@ -579,18 +586,57 @@ def _shopify_product_count(payload: str) -> int:
     return len(products) if isinstance(products, list) else 0
 
 
-def _parse_botanical_product_title(title: str) -> tuple[str, str] | None:
+def _parse_botanical_product_title(title: str, provider_id: str = "") -> tuple[str, str] | None:
+    parenthetical = re.search(r"\(([^)]+)\)", title)
+    if parenthetical:
+        botanical_name = _clean_botanical_name(parenthetical.group(1))
+        if _looks_like_botanical_name(botanical_name):
+            common_name = re.sub(r"\s*\([^)]*\)", "", title)
+            common_name = re.sub(
+                r"\b(Seeds?|Bulbs?|Rhizomes?|Tubers?)\b.*$",
+                "",
+                common_name,
+                flags=re.IGNORECASE,
+            )
+            common_name = re.sub(r"\bOrganic\b", "", common_name, flags=re.IGNORECASE)
+            common_name = " ".join(common_name.replace("-", " ").split())
+            return botanical_name, common_name
+
+    if provider_id == "PROV-NWM":
+        return None
+
     match = re.match(
         r"^\s*([A-Z][a-z-]+(?:\s+(?:x\s+)?[a-z][a-z.-]+){1,4})(?:\s+\(([^)]+)\))?",
         title,
     )
     if not match:
         return None
-    botanical_name = " ".join(match.group(1).replace(".", "").split())
+    botanical_name = _clean_botanical_name(match.group(1))
     common_name = (match.group(2) or "").strip()
-    if _looks_like_non_species_title(botanical_name):
+    if _looks_like_non_species_title(botanical_name) or not _looks_like_botanical_name(
+        botanical_name
+    ):
         return None
     return botanical_name, common_name
+
+
+def _clean_botanical_name(value: str) -> str:
+    return " ".join(value.replace(".", "").split())
+
+
+def _looks_like_botanical_name(botanical_name: str) -> bool:
+    parts = botanical_name.split()
+    if len(parts) < 2:
+        return False
+    if not re.match(r"^[A-Z][a-z-]+$", parts[0]):
+        return False
+    allowed_rank_markers = {"ssp", "subsp", "var", "x"}
+    for part in parts[1:]:
+        if part in allowed_rank_markers:
+            continue
+        if not re.match(r"^x?[a-z][a-z-]+$", part):
+            return False
+    return True
 
 
 def _looks_like_non_species_title(botanical_name: str) -> bool:

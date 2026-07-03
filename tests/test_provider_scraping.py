@@ -135,6 +135,131 @@ def test_scrape_provider_sandbox_parses_shopify_product_json_fixture(tmp_path):
     assert supplier[0]["supplier_status"] == "available"
 
 
+def test_nwm_shopify_titles_use_botanical_parentheses_and_skip_non_species(tmp_path):
+    fixture_dir = tmp_path / "fixtures" / "PROV-NWM"
+    fixture_dir.mkdir(parents=True)
+    (fixture_dir / "products.json").write_text(
+        json.dumps(
+            {
+                "products": [
+                    {
+                        "title": "Western Yarrow Seeds (Achillea millefolium)",
+                        "handle": "western-yarrow-achillea-millefolium",
+                        "body_html": "<p>Mowable eco-lawn component.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": "Roemer's Fescue Seeds (Festuca idahoensis ssp. romeri)",
+                        "handle": "roemers-fescue-seed",
+                        "body_html": "<p>Low native bunchgrass.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": (
+                            "Common Camas Bulbs Pre Order for Nov 2026 Shipping "
+                            "(Camassia quamash)"
+                        ),
+                        "handle": "common-camas-bulbs-camassia-quamash",
+                        "body_html": "<p>Bulb product.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": "Cocozella di Napoli Seeds",
+                        "handle": "cocozella-di-napoli-seeds",
+                        "body_html": "<p>Vegetable squash.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": (
+                            "Farming with Native Beneficial Insects "
+                            "(A Xerces Society Guide Book)"
+                        ),
+                        "handle": (
+                            "farming-with-native-beneficial-insects-a-xerces-society-guide-book"
+                        ),
+                        "body_html": "<p>Book.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = scrape_provider_sandbox(
+        "PROV-NWM",
+        "vancouver",
+        tmp_path / "sandbox",
+        input_dir=tmp_path / "fixtures",
+    )
+
+    assert result.diagnostics == ()
+    species = _read_csv(tmp_path / "sandbox" / "candidate_species.csv")
+    names = {row["botanical_name"]: row for row in species}
+    assert set(names) == {
+        "Achillea millefolium",
+        "Camassia quamash",
+        "Festuca idahoensis ssp romeri",
+    }
+    assert names["Achillea millefolium"]["common_name"] == "Western Yarrow"
+    assert names["Camassia quamash"]["common_name"] == "Common Camas"
+    assert names["Festuca idahoensis ssp romeri"]["common_name"] == "Roemer's Fescue"
+    assert all(row["vancouver_eligibility_status"] == "needs_northward_review" for row in species)
+
+
+def test_provider_sandbox_deduplicates_species_but_keeps_supplier_rows(tmp_path):
+    fixture_dir = tmp_path / "fixtures" / "PROV-NWM"
+    fixture_dir.mkdir(parents=True)
+    (fixture_dir / "products.json").write_text(
+        json.dumps(
+            {
+                "products": [
+                    {
+                        "title": "Common Camas Seeds (Camassia quamash)",
+                        "handle": "common-camas-seeds",
+                        "body_html": "<p>Packet.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": "Common Camas Bulbs (Camassia quamash)",
+                        "handle": "common-camas-bulbs",
+                        "body_html": "<p>Bulbs.</p>",
+                        "product_type": "",
+                        "tags": [],
+                        "variants": [{"available": False}],
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = scrape_provider_sandbox(
+        "PROV-NWM",
+        "vancouver",
+        tmp_path / "sandbox",
+        input_dir=tmp_path / "fixtures",
+    )
+
+    assert result.diagnostics == ()
+    species = _read_csv(tmp_path / "sandbox" / "candidate_species.csv")
+    suppliers = _read_csv(tmp_path / "sandbox" / "supplier_availability.csv")
+    assert [row["botanical_name"] for row in species] == ["Camassia quamash"]
+    assert [row["supplier_status"] for row in suppliers] == ["available", "unavailable"]
+
+
 def test_build_provider_review_creates_static_html_and_copies_csvs(tmp_path):
     scrape_provider_sandbox(
         "PROV-SATIN",
