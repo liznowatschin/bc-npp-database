@@ -9,6 +9,7 @@ WORKFLOW_FILES = [
     Path("examples/workflows/providers/PROV-NWM.yaml"),
     Path("examples/workflows/providers/PROV-WCS.yaml"),
     Path("examples/workflows/providers/PROV-PREMIER.yaml"),
+    Path("examples/workflows/providers/PROV-OAKSUMMIT.yaml"),
     Path("examples/p19_provider_source_sweep_freshforge.yaml"),
 ]
 
@@ -25,7 +26,13 @@ def test_p29_provider_workflows_use_freshforge_provider_nodes():
 
 
 def test_p29_provider_overlay_paths_are_ignored_output_locations():
-    for provider_id in ("PROV-SATIN", "PROV-NWM", "PROV-WCS", "PROV-PREMIER"):
+    for provider_id in (
+        "PROV-SATIN",
+        "PROV-NWM",
+        "PROV-WCS",
+        "PROV-PREMIER",
+        "PROV-OAKSUMMIT",
+    ):
         text = Path(f"examples/workflows/providers/{provider_id}.yaml").read_text(
             encoding="utf-8"
         )

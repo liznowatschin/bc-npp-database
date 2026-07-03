@@ -17,7 +17,13 @@ from .validate import diagnose_excluded_sources
 
 PROVIDER_ID_PATTERN = re.compile(r"^PROV-[A-Z0-9]+(?:-[A-Z0-9]+)*$")
 MOWABILITY_VALUES = {"0", "1", "2", "3", "4", "5"}
-KNOWN_PROVIDER_IDS = {"PROV-SATIN", "PROV-NWM", "PROV-WCS", "PROV-PREMIER"}
+KNOWN_PROVIDER_IDS = {
+    "PROV-SATIN",
+    "PROV-NWM",
+    "PROV-WCS",
+    "PROV-PREMIER",
+    "PROV-OAKSUMMIT",
+}
 VANCOUVER_ELIGIBILITY_STATUSES = {
     "candidate",
     "eligible",

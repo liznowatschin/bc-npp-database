@@ -24,8 +24,9 @@ Then run the provider review package launcher:
 The launcher invokes ``freshforge run`` against
 ``examples/workflows/providers/PROV-SATIN.yaml`` and opens
 ``outputs/provider_approval_review/PROV-SATIN/index.html`` when
-``-OpenReview`` is included. Use ``PROV-NWM``, ``PROV-WCS``, or
-``PROV-PREMIER`` to select a different provider workflow.
+``-OpenReview`` is included. Use ``PROV-NWM``, ``PROV-WCS``,
+``PROV-PREMIER``, or ``PROV-OAKSUMMIT`` to select a different provider
+workflow.
 
 When adding or revising a provider workflow, generate a correctly shaped
 FreshForge YAML file rather than hand-building a command sequence:
@@ -38,6 +39,12 @@ FreshForge YAML file rather than hand-building a command sequence:
      --force
 
 Then validate or run that file with FreshForge.
+
+For a new provider bootstrap smoke test, Oak Summit can be run with:
+
+.. code-block:: console
+
+   .\scripts\build-provider-source-review.cmd PROV-OAKSUMMIT -OpenReview
 
 The lower-level manual fallback is to run or reuse a provider sandbox. For the
 Satinflower seed source sweep:

@@ -159,6 +159,7 @@ def test_generate_provider_source_workflow_has_defaults_for_all_requested_provid
         "PROV-NWM": "https://northwestmeadowscapes.com",
         "PROV-WCS": "https://www.westcoastseeds.com/collections/wildflower-seeds",
         "PROV-PREMIER": "https://premierpacificseeds.ca",
+        "PROV-OAKSUMMIT": "https://oaksummitnursery.ca/collections/native-seeds",
     }
     for provider_id, expected_url in expected.items():
         workflow_path = tmp_path / f"{provider_id}.yaml"

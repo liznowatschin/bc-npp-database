@@ -781,6 +781,7 @@ def _provider_name(provider_id: str) -> str:
         "PROV-NWM": "Northwest Meadowscapes",
         "PROV-WCS": "West Coast Seeds",
         "PROV-PREMIER": "Premier Pacific Seeds",
+        "PROV-OAKSUMMIT": "Oak Summit Nursery",
     }.get(provider_id, provider_id)
 
 

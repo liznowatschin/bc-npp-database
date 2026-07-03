@@ -1627,21 +1627,71 @@ P29 main-branch verification:
   with the generic `Deployment failed, try again later` error. Follow-up issue
   #142 tracks the Pages deploy failure.
 
-## Phase 30: Premier Pacific Source Sweep
+## Phase 30: Oak Summit Provider Workflow Bootstrap
 
-Parent issue: TBD
+Parent issue: #143
 
-Branch: `feature/p30-premier-source-sweep`
+Branch: `feature/p30-oak-summit-provider-bootstrap`
+
+Status: active
+
+Goal: exercise the P29 FreshForge provider workflow lane on a new provider
+candidate, Oak Summit Nursery, using tracked provider metadata and a generated
+FreshForge workflow file while keeping live/raw/generated outputs ignored.
+
+- [x] P30.1 Oak Summit provider registry and workflow defaults (#144)
+  - [x] Add `PROV-OAKSUMMIT` to the Tier 3 provider registry.
+  - [x] Add Oak Summit defaults to the FreshForge workflow authoring helper.
+  - [x] Generate `examples/workflows/providers/PROV-OAKSUMMIT.yaml`.
+- [ ] P30.2 FreshForge workflow generation and Oak Summit source-review smoke
+      (#145)
+  - [x] Validate the generated FreshForge workflow.
+  - [x] Run a local FreshForge source-review smoke against the Oak Summit
+        native-seed collection.
+  - [x] Add allowed collection-HTML fallback when `products.json` is blocked by
+        provider robots policy.
+  - [x] Reject genus-only `sp`/`spp` placeholders as species candidates.
+  - [x] Record generated review output paths and counts.
+- [ ] P30.3 Docs, tests, and closeout (#146)
+  - [x] Update provider docs and tests.
+  - [x] Run local acceptance.
+  - [ ] Open PR after P30 tasks are complete.
+  - [ ] Merge after green CI and close issue.
+
+P30 source-review smoke generated ignored outputs:
+
+- `outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT`
+- `outputs/provider_review_source_sweep/PROV-OAKSUMMIT`
+- `outputs/provider_approval_review/PROV-OAKSUMMIT`
+
+P30 Oak Summit smoke counts:
+
+- 78 species-first review items.
+- 73 new species candidates.
+- 5 existing Vancouver PoC species matches.
+- 390 candidate attribute rows.
+- 80 supplier availability rows.
+- 548 draft approval-manifest audit rows.
+
+P30 local acceptance passed:
+
+- `python -m ruff check .`
+- `python -m pytest` (`131 passed`)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-source-providers data/source_providers/provider_registry.csv --json`
+- `freshforge validate examples/workflows/providers/PROV-OAKSUMMIT.yaml --json`
+- `freshforge run examples/workflows/providers/PROV-OAKSUMMIT.yaml --workdir . --json`
+- `bc-nppd validate-provider-approvals outputs/provider_approval_review/PROV-OAKSUMMIT/approval_manifest_draft.csv --json`
+
+## Future Candidate: Premier Pacific Source Sweep
 
 Status: planned
 
-Goal: use the P29 FreshForge provider workflow lane against Premier Pacific,
+Goal: use the FreshForge provider workflow lane against Premier Pacific,
 tuning only provider-shape parsing where needed, and stop at an ignored,
 reviewable candidate package.
-
-- [ ] P30.1 Premier overlay and adapter tuning.
-- [ ] P30.2 Premier sandbox and review package generation.
-- [ ] P30.3 Approval-review validation, docs, and closeout.
 
 ## Phase 31: One-Command Reviewed Provider Preview
 

@@ -1,0 +1,52 @@
+workflow:
+  id: provider_source_review_oaksummit
+  name: "oaksummit provider source-review package"
+  description: "Sweep PROV-OAKSUMMIT into BC-NPPD review artifacts."
+
+nodes:
+  - id: source_sweep
+    provider: bc_npp_database.source_sweep
+    parameters:
+      provider_id: PROV-OAKSUMMIT
+      database_instance: vancouver
+      live_fetch: true
+      source_sweep: true
+      catalog_url: "https://oaksummitnursery.ca/collections/native-seeds"
+      max_pages: 3
+      raw_dir: local/provider_raw
+    outputs:
+      sandbox_dir: outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT
+    artifacts:
+      sandbox_dir: outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT
+
+  - id: validate_sandbox
+    provider: bc_npp_database.validate_sandbox
+    needs:
+      - source_sweep
+    inputs:
+      sandbox_dir: outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT
+
+  - id: build_review
+    provider: bc_npp_database.build_review
+    needs:
+      - validate_sandbox
+    inputs:
+      sandbox_dir: outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT
+    outputs:
+      review_dir: outputs/provider_review_source_sweep/PROV-OAKSUMMIT
+    artifacts:
+      review_dir: outputs/provider_review_source_sweep/PROV-OAKSUMMIT
+
+  - id: build_approval_review
+    provider: bc_npp_database.build_approval_review
+    needs:
+      - build_review
+    inputs:
+      sandbox_dir: outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT
+      poc_dir: data/poc/vancouver
+    parameters:
+      reviewer: "expert reviewer"
+    outputs:
+      approval_review_dir: outputs/provider_approval_review/PROV-OAKSUMMIT
+    artifacts:
+      approval_review_dir: outputs/provider_approval_review/PROV-OAKSUMMIT

@@ -15,8 +15,9 @@ The tracked provider registry lives at
 * ``PROV-NWM``: Northwest Meadowscapes.
 * ``PROV-WCS``: West Coast Seeds.
 * ``PROV-PREMIER``: Premier Pacific Seeds.
+* ``PROV-OAKSUMMIT``: Oak Summit Nursery.
 
-All four providers are treated as Tier 3 commercial or practitioner sources.
+All providers are treated as Tier 3 commercial or practitioner sources.
 They may support supplier availability, cultivation clues, candidate species
 discovery, and candidate mowability observations. They are not sole authority
 for native status, ecological scoring, pollinator scoring, or final planting
@@ -106,7 +107,10 @@ The Satinflower seed-collection entrypoint is:
 The source sweep currently supports Shopify-style product catalog feeds. For
 Satinflower-style product bodies, it extracts product descriptions plus
 ``Plant Details`` and ``Seed Details`` table rows into
-``candidate_attributes.csv``. Raw catalog JSON is written only under
+``candidate_attributes.csv``. If a provider allows public collection HTML but
+disallows the Shopify ``products.json`` catalogue endpoint, the scraper falls
+back to the collection HTML and extracts product titles, product URLs, and
+product types only. Raw catalog JSON or HTML is written only under
 ``local/provider_raw``. Review CSV and HTML bundles are written under
 ``outputs`` and must remain untracked unless a later phase explicitly approves a
 public-safe derivative.
@@ -148,12 +152,18 @@ workflow files live under ``examples/workflows/providers/``:
 * ``PROV-NWM.yaml``
 * ``PROV-WCS.yaml``
 * ``PROV-PREMIER.yaml``
+* ``PROV-OAKSUMMIT.yaml``
 
 The generic workflow shape lives at
 ``examples/workflows/provider_source_review.yaml``. The historical
 ``examples/p19_provider_source_sweep_freshforge.yaml`` path remains as a
 compatibility example, but the P29 workflow files are the preferred surface.
 Use lower-level ``bc-nppd`` commands only for debugging or manual fallback.
+
+P30 uses ``PROV-OAKSUMMIT`` as the first post-P29 new-provider bootstrap
+exercise. Its generated workflow points at the Oak Summit Nursery native-seed
+collection and routes all observations through the same ignored sandbox,
+review, and approval-review directories as the other providers.
 
 The expert review walkthrough lives in ``provider-review-workflow``. It explains
 how to inspect the local approval app, export ``approval_manifest.csv``,

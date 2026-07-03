@@ -323,10 +323,23 @@ def _load_shopify_product_catalog_pages(
             if not _robots_allows(url):
                 diagnostics.append(
                     _diagnostic(
-                        "provider_robots_disallowed",
-                        "Provider robots.txt does not allow the configured product catalogue URL.",
+                        "provider_catalog_json_disallowed",
+                        (
+                            "Provider robots.txt does not allow the Shopify products.json "
+                            "catalogue URL; attempting collection HTML fallback."
+                        ),
+                        Severity.WARNING,
                         field="catalog_url",
                         value=url,
+                    )
+                )
+                pages.extend(
+                    _load_shopify_collection_html_pages(
+                        catalog_base_url,
+                        raw_root,
+                        diagnostics,
+                        catalog_index,
+                        page_limit,
                     )
                 )
                 break
@@ -372,6 +385,54 @@ def _load_shopify_product_catalog_pages(
     return pages
 
 
+def _load_shopify_collection_html_pages(
+    catalog_base_url: str,
+    raw_root: Path,
+    diagnostics: list[Diagnostic],
+    catalog_index: int,
+    page_limit: int,
+) -> list[dict[str, str]]:
+    pages: list[dict[str, str]] = []
+    for page_number in range(1, page_limit + 1):
+        url = _shopify_collection_html_page_url(catalog_base_url, page_number)
+        if not _robots_allows(url):
+            diagnostics.append(
+                _diagnostic(
+                    "provider_collection_html_disallowed",
+                    "Provider robots.txt does not allow the configured collection HTML URL.",
+                    field="catalog_url",
+                    value=url,
+                )
+            )
+            break
+        try:
+            text = _fetch_url(url)
+        except OSError as exc:
+            diagnostics.append(
+                _diagnostic(
+                    "provider_collection_fetch_failed",
+                    "Provider collection HTML fetch failed.",
+                    field="catalog_url",
+                    value=f"{url}: {exc}",
+                )
+            )
+            break
+        raw_filename = f"products_collection_{catalog_index:02d}_page_{page_number:03d}.html"
+        (raw_root / raw_filename).write_text(text, encoding="utf-8")
+        records = _parse_shopify_collection_html("", url, text)
+        pages.append(
+            {
+                "url": url,
+                "html": text,
+                "fetch_status": "fetched_collection_html",
+                "page_type": "shopify_collection_html",
+            }
+        )
+        if not records:
+            break
+    return pages
+
+
 def _shopify_catalog_base_urls(
     provider_id: str,
     homepage_url: str,
@@ -397,6 +458,14 @@ def _shopify_catalog_page_url(catalog_base_url: str, page_number: int) -> str:
     return f"{base}/products.json?limit=250&page={page_number}"
 
 
+def _shopify_collection_html_page_url(catalog_base_url: str, page_number: int) -> str:
+    base = catalog_base_url.rstrip("/")
+    if page_number <= 1:
+        return base
+    separator = "&" if "?" in base else "?"
+    return f"{base}{separator}page={page_number}"
+
+
 def _parse_provider_page(provider_id: str, page: dict[str, str]) -> dict[str, object]:
     if page.get("json"):
         return {
@@ -405,6 +474,14 @@ def _parse_provider_page(provider_id: str, page: dict[str, str]) -> dict[str, ob
             "fetch_status": page["fetch_status"],
             "page_type": page.get("page_type", "json"),
             "records": _parse_shopify_products_json(provider_id, page["url"], page["json"]),
+        }
+    if page.get("page_type") == "shopify_collection_html":
+        return {
+            "provider_id": provider_id,
+            "page_url": page["url"],
+            "fetch_status": page["fetch_status"],
+            "page_type": "shopify_collection_html",
+            "records": _parse_shopify_collection_html(provider_id, page["url"], page["html"]),
         }
     parser = _ProviderSpeciesParser(provider_id, page["url"])
     parser.feed(page["html"])
@@ -594,6 +671,51 @@ def _parse_shopify_products_json(
     return records
 
 
+def _parse_shopify_collection_html(
+    provider_id: str,
+    page_url: str,
+    page_html: str,
+) -> list[dict[str, str]]:
+    normalized = html.unescape(page_html).replace('\\"', '"').replace("\\/", "/")
+    product_pattern = re.compile(
+        r'"product"\s*:\s*\{.*?'
+        r'"title"\s*:\s*"(?P<title>(?:\\.|[^"])*)".*?'
+        r'"url"\s*:\s*"(?P<url>(?:\\.|[^"])*)".*?'
+        r'"type"\s*:\s*"(?P<product_type>(?:\\.|[^"])*)"',
+        re.DOTALL,
+    )
+    records: list[dict[str, str]] = []
+    seen_urls: set[str] = set()
+    for match in product_pattern.finditer(normalized):
+        title = _decode_jsonish_text(match.group("title")).strip()
+        product_url = urljoin(page_url, _decode_jsonish_text(match.group("url")).strip())
+        product_type = _decode_jsonish_text(match.group("product_type")).strip()
+        if not title or product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+        candidates = _shopify_product_species_candidates(provider_id, title, "")
+        for botanical_name, common_name, observation_type in candidates:
+            records.append(
+                {
+                    "botanical_name": botanical_name,
+                    "common_name": common_name,
+                    "source_url": product_url,
+                    "product_category": product_type,
+                    "supplier_status": "unknown",
+                    "attribute_product_title": title,
+                    "attribute_product_type": product_type,
+                    "attribute_provider_observation_type": "collection_html_"
+                    + observation_type,
+                    "candidate_reason": _shopify_candidate_reason(
+                        provider_id,
+                        observation_type,
+                    ),
+                    "notes": "Collection HTML source-sweep observation; pending user review.",
+                }
+            )
+    return records
+
+
 def _shopify_product_species_candidates(
     provider_id: str,
     title: str,
@@ -667,6 +789,13 @@ def _plain_text_from_html(value: str) -> str:
     )
 
 
+def _decode_jsonish_text(value: str) -> str:
+    try:
+        return json.loads(f'"{value}"')
+    except json.JSONDecodeError:
+        return value.replace("\\u0026", "&").replace("\\/", "/")
+
+
 def _clean_wcs_common_name(value: str) -> str:
     value = re.sub(r"[\[\],.;:]+", " ", value)
     value = re.sub(r"\b(Blend Ingredients|Ingredients|and|or)\b", " ", value, flags=re.IGNORECASE)
@@ -703,7 +832,7 @@ def _shopify_product_count(payload: str) -> int:
 def _parse_botanical_product_title(title: str, provider_id: str = "") -> tuple[str, str] | None:
     parenthetical = re.search(r"\(([^)]+)\)", title)
     if parenthetical:
-        botanical_name = _clean_botanical_name(parenthetical.group(1))
+        botanical_name = _clean_botanical_name(parenthetical.group(1).split(",", maxsplit=1)[0])
         if _looks_like_botanical_name(botanical_name):
             common_name = re.sub(r"\s*\([^)]*\)", "", title)
             common_name = re.sub(
@@ -735,7 +864,17 @@ def _parse_botanical_product_title(title: str, provider_id: str = "") -> tuple[s
 
 
 def _clean_botanical_name(value: str) -> str:
-    return " ".join(value.replace(".", "").split())
+    parts = value.replace(".", "").split()
+    normalized: list[str] = []
+    rank_markers = {"ssp", "subsp", "var", "x"}
+    for index, part in enumerate(parts):
+        if index == 0:
+            normalized.append(part[:1].upper() + part[1:].lower())
+        elif part.casefold() in rank_markers:
+            normalized.append(part.casefold())
+        else:
+            normalized.append(part.lower())
+    return " ".join(normalized)
 
 
 def _looks_like_botanical_name(botanical_name: str) -> bool:
@@ -746,6 +885,8 @@ def _looks_like_botanical_name(botanical_name: str) -> bool:
         return False
     allowed_rank_markers = {"ssp", "subsp", "var", "x"}
     for part in parts[1:]:
+        if part in {"sp", "spp"}:
+            return False
         if part in allowed_rank_markers:
             continue
         if not re.match(r"^x?[a-z][a-z-]+$", part):
@@ -791,6 +932,8 @@ def _vancouver_eligibility(provider_id: str, record: dict[str, str]) -> str:
     if provider_id == "PROV-WCS":
         return "needs_review"
     if provider_id == "PROV-NWM":
+        return "needs_northward_review"
+    if provider_id == "PROV-OAKSUMMIT":
         return "needs_northward_review"
     return record.get("vancouver_eligibility_status") or "candidate"
 

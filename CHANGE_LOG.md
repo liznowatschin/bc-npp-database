@@ -671,3 +671,24 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Confirmed the Docs workflow Sphinx build passed after P29 closeout, but
   GitHub Pages deploy failed twice with the generic GitHub deploy error.
   Opened follow-up maintenance issue #142 for Pages deploy investigation.
+- Started Phase 30 Oak Summit provider workflow bootstrap on
+  `feature/p30-oak-summit-provider-bootstrap`.
+- Created Phase 30 GitHub issue records: parent issue #143 and child issues
+  #144, #145, and #146.
+- Added `PROV-OAKSUMMIT` as a Tier 3 provider candidate for the P29/P30
+  FreshForge source-review lane, with Vancouver/BC suitability caveats.
+- Generated `examples/workflows/providers/PROV-OAKSUMMIT.yaml` through
+  `bc-nppd generate-provider-source-workflow` instead of hand-writing a
+  workflow sequence.
+- Added a Shopify collection-HTML fallback for providers that allow public
+  collection HTML but disallow the `products.json` catalogue endpoint.
+- Tightened botanical title parsing to reject genus-only `sp`/`spp`
+  placeholders as species-level candidates.
+- Ran the Oak Summit FreshForge source-review workflow successfully. The
+  ignored approval-review package contains 78 species-first review items, 73 new
+  species candidates, 5 existing Vancouver PoC matches, 390 candidate attribute
+  rows, 80 supplier rows, and 548 draft approval-manifest rows.
+- Completed P30 local acceptance with Ruff, 131 pytest tests, Sphinx docs,
+  package build, twine metadata check, source-provider validation, FreshForge
+  workflow validation, FreshForge Oak Summit execution, and draft approval
+  manifest validation passing.

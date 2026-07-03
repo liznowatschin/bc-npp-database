@@ -31,6 +31,10 @@ _PROVIDER_WORKFLOW_DEFAULTS = {
         "catalog_url": "https://premierpacificseeds.ca",
         "max_pages": 5,
     },
+    "PROV-OAKSUMMIT": {
+        "catalog_url": "https://oaksummitnursery.ca/collections/native-seeds",
+        "max_pages": 3,
+    },
 }
 
 

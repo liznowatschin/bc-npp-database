@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from bc_npp_database.provider_scraping import (
+    _parse_shopify_collection_html,
     build_provider_review,
     scrape_provider_sandbox,
 )
@@ -287,6 +288,43 @@ def test_wcs_shopify_body_extracts_single_species_and_blend_components(tmp_path)
     }
     assert ("Eriophyllum lanatum", "product_body") in observation_types
     assert ("Gaillardia aristata", "blend_ingredient") in observation_types
+
+
+def test_oak_summit_collection_html_extracts_product_records():
+    products = [
+        {
+            "title": "Jerusalem Artichoke Seeds (Helianthus tuberosus, Sunchoke) - 15+ Seeds",
+            "url": "/products/jerusalem-artichoke-seeds-helianthus-tuberosus-sunchoke-15-seeds",
+            "type": "Seeds",
+        },
+        {
+            "title": "Wild Rose Seeds (Rosa Woodsii) - 30+ Seeds",
+            "url": "/products/wild-rose-rosa-woodsii",
+            "type": "Seeds",
+        },
+        {
+            "title": "Goldenrod Seeds (Solidago sp.) - 100+ Seeds",
+            "url": "/products/goldenrod-solidago-sp",
+            "type": "Seeds",
+        },
+    ]
+    html = "\n".join(
+        json.dumps({"product": product}).replace('"', r"\"") for product in products
+    )
+
+    records = _parse_shopify_collection_html(
+        "PROV-OAKSUMMIT",
+        "https://oaksummitnursery.ca/collections/native-seeds",
+        html,
+    )
+
+    names = {record["botanical_name"]: record for record in records}
+    assert set(names) == {"Helianthus tuberosus", "Rosa woodsii"}
+    assert names["Helianthus tuberosus"]["common_name"] == "Jerusalem Artichoke"
+    assert names["Rosa woodsii"]["source_url"] == (
+        "https://oaksummitnursery.ca/products/wild-rose-rosa-woodsii"
+    )
+    assert all(record["supplier_status"] == "unknown" for record in records)
 
 
 def test_provider_sandbox_deduplicates_species_but_keeps_supplier_rows(tmp_path):
