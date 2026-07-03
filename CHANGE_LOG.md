@@ -570,3 +570,6 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed P25 local acceptance with Ruff, 120 pytest tests, Sphinx docs,
   package build, and twine metadata check passing.
 - Opened pull request #130 for Phase 25 closeout.
+- Verified pull request #130 passed CI for Python 3.11 and Python 3.12.
+- Merged pull request #130 to `main` as merge commit `2bd4903`.
+- Closed Phase 25 as complete.

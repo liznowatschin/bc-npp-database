@@ -33,7 +33,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P22 Windows runner execution-policy shim | #123 | `feature/p22-windows-runner-shim` | Complete |
 | P23 Northwest Meadowscapes source sweep | #125 | `feature/p23-nwm-source-sweep` | Complete |
 | P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | Complete |
-| P25 Cumulative provider approval previews | #129 | `feature/p25-cumulative-provider-approvals` | PR #130 |
+| P25 Cumulative provider approval previews | #129 | `feature/p25-cumulative-provider-approvals` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1329,7 +1329,7 @@ Parent issue: #129
 
 Branch: `feature/p25-cumulative-provider-approvals`
 
-Status: PR #130
+Status: complete
 
 Goal: fix provider approval previews so successive approved manifests can be
 applied cumulatively, and prevent downloaded manifests from being copied into
@@ -1354,7 +1354,10 @@ Satinflower scratch path.
       sequence application.
 - [x] Run full acceptance.
 - [x] Open PR (#130).
-- [ ] Merge after green CI and close issue.
+- [x] Merge after green CI and close issue.
+
+Pull request #130 passed CI for Python 3.11 and Python 3.12 and merged to
+`main` as merge commit `2bd4903`.
 
 P25 local acceptance passed:
 
