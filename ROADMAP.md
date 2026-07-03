@@ -34,7 +34,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P23 Northwest Meadowscapes source sweep | #125 | `feature/p23-nwm-source-sweep` | Complete |
 | P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | Complete |
 | P25 Cumulative provider approval previews | #129 | `feature/p25-cumulative-provider-approvals` | Complete |
-| P26 Provider approval ID namespacing | #131 | `feature/p26-provider-approval-id-namespacing` | PR pending |
+| P26 Provider approval ID namespacing | #131 | `feature/p26-provider-approval-id-namespacing` | PR #132 |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1385,7 +1385,7 @@ Parent issue: #131
 
 Branch: `feature/p26-provider-approval-id-namespacing`
 
-Status: PR pending
+Status: PR #132
 
 Goal: allow approved manifests exported from separate provider review apps to
 be applied cumulatively even when each static app generated local
@@ -1407,7 +1407,7 @@ combined audit manifest.
 - [x] Validate provider data, plant list, evidence hardening, usability, and
       pollinator module outputs.
 - [x] Run full acceptance.
-- [ ] Open PR.
+- [x] Open PR (#132).
 - [ ] Merge after green CI and close issue.
 
 P26 cumulative preview command:
