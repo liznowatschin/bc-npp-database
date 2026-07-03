@@ -119,6 +119,38 @@ The expert review walkthrough lives in ``provider-review-workflow``. It explains
 how to inspect the local approval app, export ``approval_manifest.csv``,
 validate it, and dry-run approved rows into ignored PoC outputs.
 
+Northwest Meadowscapes Source Sweep
+-----------------------------------
+
+Northwest Meadowscapes uses common-name-first Shopify product titles such as
+``Western Yarrow Seeds (Achillea millefolium)``. The provider adapter parses
+botanical names from parentheticals and skips NWM products without botanical
+parentheticals, such as tools, books, and vegetables. NWM rows remain
+``needs_northward_review`` until Vancouver or BC suitability is reviewed.
+
+Run the NWM source sweep with:
+
+.. code-block:: bash
+
+   bc-nppd scrape-provider-sandbox PROV-NWM \
+     --database-instance vancouver \
+     --live-fetch \
+     --source-sweep \
+     --catalog-url https://northwestmeadowscapes.com \
+     --max-pages 5 \
+     --raw-dir local/provider_raw \
+     --out-dir outputs/provider_sandbox_source_sweep/PROV-NWM \
+     --json
+   bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-NWM --json
+   bc-nppd build-provider-review outputs/provider_sandbox_source_sweep/PROV-NWM \
+     --out-dir outputs/provider_review_source_sweep/PROV-NWM \
+     --json
+   bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-NWM \
+     --poc-dir data/poc/vancouver \
+     --out-dir outputs/provider_approval_review/PROV-NWM \
+     --reviewer "expert reviewer" \
+     --json
+
 Raw provider HTML, screenshots, downloads, and scrape caches must remain under
 ignored directories such as ``local/``, ``tmp/``, ``data/raw/``, or
 ``outputs/``.

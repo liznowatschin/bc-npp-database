@@ -504,3 +504,19 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #124 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #124 to `main` as merge commit `905d9b3`.
 - Closed Phase 22 as complete.
+- Started Phase 23 Northwest Meadowscapes source sweep on
+  `feature/p23-nwm-source-sweep`.
+- Created Phase 23 GitHub issue record: parent issue #125.
+- Added NWM Shopify title parsing for `Common Name Seeds (Botanical name)`
+  products, skipped NWM products without botanical parentheticals, and
+  deduplicated candidate species while preserving multiple supplier rows.
+- Ran the live NWM source sweep from `https://northwestmeadowscapes.com` into
+  ignored local/output directories.
+- Generated ignored NWM sandbox, review, and approval-review outputs with 203
+  unique candidate species, 447 attribute rows, 208 supplier rows, 0 mowability
+  rows, 19 existing PoC matches, 184 new candidates, and 858 draft approval
+  rows.
+- Completed P23 local acceptance with Ruff, 116 pytest tests, Sphinx docs,
+  package build, twine metadata check, NWM sandbox validation, and NWM approval
+  draft validation passing.
+- Opened pull request #126 for Phase 23 closeout.

@@ -31,6 +31,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P20 Satinflower product detail extraction | #115 | `feature/p20-satinflower-product-details` | Complete |
 | P21 Downloaded provider approval runner | #118 | `feature/p21-downloaded-provider-approval-runner` | Complete |
 | P22 Windows runner execution-policy shim | #123 | `feature/p22-windows-runner-shim` | Complete |
+| P23 Northwest Meadowscapes source sweep | #125 | `feature/p23-nwm-source-sweep` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1214,3 +1215,46 @@ P22 smoke verification ran:
 
 The wrapper applied 2,316 approved rows into the ignored preview, produced 152
 plant rows and 115 supplier rows, and all preview validators passed.
+
+## Phase 23: Northwest Meadowscapes Source Sweep
+
+Parent issue: #125
+
+Branch: `feature/p23-nwm-source-sweep`
+
+Status: active
+
+Goal: deploy the provider source-sweep and approval-review workflow on
+Northwest Meadowscapes while preserving the required Vancouver/BC suitability
+review boundary.
+
+- [x] Add NWM title parsing for `Common Name Seeds (Botanical name)` products.
+- [x] Skip NWM products without botanical parentheticals.
+- [x] Deduplicate candidate species while preserving multiple supplier rows.
+- [x] Preserve `needs_northward_review` on all NWM candidate species.
+- [x] Generate ignored NWM sandbox, review, and approval-review outputs.
+- [x] Validate NWM sandbox and approval draft.
+- [x] Run full acceptance.
+- [x] Open PR (#126).
+- [ ] Merge after green CI and close issue.
+
+P23 NWM source-sweep command:
+
+- `bc-nppd scrape-provider-sandbox PROV-NWM --database-instance vancouver --live-fetch --source-sweep --catalog-url https://northwestmeadowscapes.com --max-pages 5 --raw-dir local/provider_raw --out-dir outputs/provider_sandbox_source_sweep/PROV-NWM --json`
+
+P23 generated ignored outputs:
+
+- `outputs/provider_sandbox_source_sweep/PROV-NWM`
+- `outputs/provider_review_source_sweep/PROV-NWM`
+- `outputs/provider_approval_review/PROV-NWM`
+
+P23 current catch counts:
+
+- 203 unique candidate species.
+- 447 candidate attribute rows.
+- 208 supplier availability rows.
+- 0 mowability rows.
+- 203 species flagged `needs_northward_review`.
+- 19 existing Vancouver PoC matches.
+- 184 new candidate species.
+- 858 draft approval rows.
