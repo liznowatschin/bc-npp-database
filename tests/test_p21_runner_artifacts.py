@@ -25,6 +25,7 @@ def test_p21_powershell_runner_has_liz_friendly_defaults_and_guards():
     assert 'Join-Path $HOME "Downloads\\approval_manifest.csv"' in text
     assert 'Get-ManifestProviderId' in text
     assert 'provider_id' in text
+    assert '.Split(",")' in text
     assert '$PreviewDir = "outputs/provider_approved_vancouver"' in text
     assert "Approval manifest not found" in text
     assert "validate-provider-approvals" in text

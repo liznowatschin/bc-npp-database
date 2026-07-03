@@ -192,18 +192,6 @@ def apply_provider_approvals(
     if _has_errors(diagnostics):
         return ProviderApprovalResult(str(output_dir), _empty_counts(), tuple(diagnostics), {})
 
-    output_dir.mkdir(parents=True, exist_ok=True)
-    approved_rows = [
-        row for row in approval_rows if row.get("approval_status") == IMPORTABLE_APPROVAL_STATUS
-    ]
-    species_by_name = {
-        row.get("Botanical Name", "").casefold(): row
-        for row in plant_rows
-        if row.get("Botanical Name")
-    }
-    next_species_index = _next_numeric_id(plant_rows, "Species ID", "BCNPPD")
-    next_legacy_index = _next_numeric_id(plant_rows, "Legacy ID", "CDF")
-    source_registry = _source_registry(source_rows)
     provider_data_input = poc_dir / "provider_data"
     existing_approval_rows = (
         _load_csv(provider_data_input / "approval_manifest.csv", diagnostics)
@@ -225,6 +213,20 @@ def apply_provider_approvals(
         if (provider_data_input / "source_attribution.csv").exists()
         else []
     )
+    approval_rows = _namespace_colliding_approval_ids(approval_rows, existing_approval_rows)
+    approved_rows = [
+        row for row in approval_rows if row.get("approval_status") == IMPORTABLE_APPROVAL_STATUS
+    ]
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    species_by_name = {
+        row.get("Botanical Name", "").casefold(): row
+        for row in plant_rows
+        if row.get("Botanical Name")
+    }
+    next_species_index = _next_numeric_id(plant_rows, "Species ID", "BCNPPD")
+    next_legacy_index = _next_numeric_id(plant_rows, "Legacy ID", "CDF")
+    source_registry = _source_registry(source_rows)
 
     for row in approved_rows:
         plant_row = _resolve_or_create_species(
@@ -335,13 +337,24 @@ def apply_provider_approvals(
         [diagnostic.to_dict() for diagnostic in diagnostics],
         DIAGNOSTIC_FIELDS,
     )
-    _write_json(
-        output_dir / "manifest.json",
-        _poc_manifest(poc_dir, plant_rows, source_rows, attribution_rows, len(approved_rows)),
-    )
     provider_data_dir = output_dir / "provider_data"
     provider_data_dir.mkdir(parents=True, exist_ok=True)
     combined_approval_rows = [*existing_approval_rows, *approval_rows]
+    combined_approved_count = sum(
+        1
+        for row in combined_approval_rows
+        if row.get("approval_status") == IMPORTABLE_APPROVAL_STATUS
+    )
+    _write_json(
+        output_dir / "manifest.json",
+        _poc_manifest(
+            poc_dir,
+            plant_rows,
+            source_rows,
+            attribution_rows,
+            combined_approved_count,
+        ),
+    )
     _write_csv(
         provider_data_dir / "approval_manifest.csv",
         combined_approval_rows,
@@ -357,7 +370,7 @@ def apply_provider_approvals(
         {
             "artifact_name": "Vancouver Provider Approval Data",
             "approval_manifest": str(approval_manifest),
-            "approved_observation_count": len(approved_rows),
+            "approved_observation_count": combined_approved_count,
             "supplier_availability_count": len(supplier_rows),
             "mowability_count": len(mowability_rows),
             "source_attribution_count": len(provider_attribution_rows),
@@ -387,7 +400,7 @@ def apply_provider_approvals(
 
     counts = {
         "approval_manifest": len(combined_approval_rows),
-        "approved_rows": len(approved_rows),
+        "approved_rows": combined_approved_count,
         "plant_list": len(plant_rows),
         "sources": len(source_rows),
         "source_attribution": len(attribution_rows),
@@ -456,6 +469,34 @@ def apply_provider_approval_sequence(
 def has_error_diagnostics(diagnostics: tuple[Diagnostic, ...] | list[Diagnostic]) -> bool:
     """Return whether diagnostics include an error."""
     return _has_errors(diagnostics)
+
+
+def _namespace_colliding_approval_ids(
+    rows: list[dict[str, str]],
+    existing_rows: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    used_ids = {
+        row.get("approval_id", "").strip()
+        for row in existing_rows
+        if row.get("approval_id", "").strip()
+    }
+    namespaced_rows: list[dict[str, str]] = []
+    for row in rows:
+        copied = dict(row)
+        approval_id = copied.get("approval_id", "").strip()
+        provider_id = copied.get("provider_id", "").strip()
+        if approval_id in used_ids and provider_id:
+            candidate = f"{provider_id}-{approval_id}"
+            suffix = 2
+            while candidate in used_ids:
+                candidate = f"{provider_id}-{approval_id}-{suffix}"
+                suffix += 1
+            copied["approval_id"] = candidate
+            approval_id = candidate
+        if approval_id:
+            used_ids.add(approval_id)
+        namespaced_rows.append(copied)
+    return namespaced_rows
 
 
 def _validate_approval_rows(

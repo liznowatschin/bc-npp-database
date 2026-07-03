@@ -573,3 +573,21 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #130 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #130 to `main` as merge commit `2bd4903`.
 - Closed Phase 25 as complete.
+- Started Phase 26 provider approval ID namespacing on
+  `feature/p26-provider-approval-id-namespacing`.
+- Created Phase 26 GitHub issue record: parent issue #131.
+- Diagnosed that provider approval manifests exported from separate static
+  review apps reused local `PA-DRAFT-*` approval IDs, causing duplicate IDs in
+  cumulative provider-data audit manifests.
+- Added approval-ID namespacing during apply when incoming approval IDs collide
+  with existing provider-data approval IDs, and ensured provider source
+  attribution external IDs use the namespaced IDs.
+- Updated the Windows runner to split comma-separated `-ManifestPaths`.
+- Built the cumulative Satinflower + Northwest Meadowscapes + West Coast Seeds
+  preview from the provider-wise reviewed manifests.
+- Validated the cumulative preview: 345 plant rows, 365 sources, 3,749
+  source-attribution rows, 3,666 approval manifest rows, 3,665 approved
+  provider rows, 396 supplier rows, and 1 provisional mowability row.
+- Completed P26 local acceptance with Ruff, 121 pytest tests, Sphinx docs,
+  package build, and twine metadata check passing.
+- Opened pull request #132 for Phase 26 closeout.

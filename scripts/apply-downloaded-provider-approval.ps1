@@ -46,6 +46,9 @@ try {
     if ($ManifestPaths.Count -eq 0) {
         $ManifestPaths = @($ManifestPath)
     }
+    elseif ($ManifestPaths.Count -eq 1 -and $ManifestPaths[0].Contains(",")) {
+        $ManifestPaths = @($ManifestPaths[0].Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    }
 
     $ScratchManifests = @()
     foreach ($InputManifest in $ManifestPaths) {

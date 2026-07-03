@@ -123,6 +123,35 @@ def test_apply_provider_approval_sequence_cumulates_manifests(tmp_path):
     assert any(row["Botanical Name"] == "Festuca rubra" for row in plants)
 
 
+def test_apply_provider_approval_sequence_namespaces_colliding_approval_ids(tmp_path):
+    poc_dir = _clean_poc_dir(tmp_path)
+    rows = _read_csv(APPROVALS)
+    satin_row = next(row for row in rows if row["provider_id"] == "PROV-SATIN")
+    premier_row = next(row for row in rows if row["provider_id"] == "PROV-PREMIER")
+    satin_row = {**satin_row, "approval_id": "PA-DRAFT-0001"}
+    premier_row = {**premier_row, "approval_id": "PA-DRAFT-0001"}
+    satin_path = tmp_path / "satin.csv"
+    premier_path = tmp_path / "premier.csv"
+    _write_csv(satin_path, [satin_row])
+    _write_csv(premier_path, [premier_row])
+
+    result = apply_provider_approval_sequence(
+        [satin_path, premier_path],
+        poc_dir,
+        tmp_path / "sequence",
+        regenerate_downstream=False,
+    )
+
+    assert not [diagnostic for diagnostic in result.diagnostics if diagnostic.severity == "error"]
+    approval_rows = _read_csv(tmp_path / "sequence" / "provider_data" / "approval_manifest.csv")
+    approval_ids = {row["approval_id"] for row in approval_rows}
+    assert "PA-DRAFT-0001" in approval_ids
+    assert "PROV-PREMIER-PA-DRAFT-0001" in approval_ids
+    attribution = _read_csv(tmp_path / "sequence" / "provider_data" / "source_attribution.csv")
+    external_ids = {row["external_id"] for row in attribution}
+    assert "provider_approval:PROV-PREMIER-PA-DRAFT-0001" in external_ids
+
+
 def test_provider_approval_validation_rejects_bad_status_and_mowability(tmp_path):
     path = tmp_path / "approval_manifest.csv"
     path.write_text(
