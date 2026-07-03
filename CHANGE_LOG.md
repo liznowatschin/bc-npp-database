@@ -569,3 +569,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   path.
 - Completed P25 local acceptance with Ruff, 120 pytest tests, Sphinx docs,
   package build, and twine metadata check passing.
+- Opened pull request #130 for Phase 25 closeout.
