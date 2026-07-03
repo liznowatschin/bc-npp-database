@@ -337,3 +337,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed Phase 15 local acceptance verification with Ruff, pytest, provider
   registry validation, Sphinx, build, twine, and all Vancouver validators
   passing.
+- Opened pull request #90 for Phase 15 closeout.

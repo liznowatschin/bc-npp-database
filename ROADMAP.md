@@ -840,7 +840,7 @@ Vancouver PoC integration in this phase.
   - [x] Add `bc-nppd validate-provider-sandbox`.
   - [x] Add docs and synthetic fixture tests.
   - [x] Run local acceptance.
-  - [ ] Open PR and record the PR number.
+  - [x] Open PR and record the PR number (#90).
   - [ ] Merge PR after green CI.
   - [ ] Close issues after merge.
 
@@ -856,6 +856,8 @@ Phase 15 local verification passed with:
 - `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+
+Pull request #90 is the Phase 15 closeout PR against `main`.
 
 ## Phase 16: Provider Scraping Sandbox MVP
 
