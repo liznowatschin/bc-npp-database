@@ -34,6 +34,13 @@ from .pollinators import (
 from .pollinators import (
     has_error_diagnostics as has_pollinator_error_diagnostics,
 )
+from .provider_scraping import (
+    build_provider_review,
+    scrape_provider_sandbox,
+)
+from .provider_scraping import (
+    has_error_diagnostics as has_provider_scraping_error_diagnostics,
+)
 from .providers import (
     has_error_diagnostics as has_provider_error_diagnostics,
 )
@@ -160,6 +167,65 @@ def validate_provider_sandbox_command(
     else:
         typer.echo(f"Provider sandbox validation passed for {path}.")
     if has_provider_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("scrape-provider-sandbox")
+def scrape_provider_sandbox_command(
+    provider_id: str,
+    database_instance: str = typer.Option("vancouver", "--database-instance"),
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output provider sandbox directory."),
+    input_dir: Path | None = typer.Option(
+        None,
+        "--input-dir",
+        help="Directory of fixture or previously materialized provider HTML files.",
+    ),
+    live_fetch: bool = typer.Option(
+        False,
+        "--live-fetch",
+        help="Fetch the provider homepage into ignored raw storage before parsing.",
+    ),
+    raw_dir: Path = typer.Option(
+        Path("local/provider_raw"),
+        "--raw-dir",
+        help="Ignored directory for live-fetched raw provider HTML.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Generate a provider sandbox from fixture HTML or an optional live fetch."""
+    result = scrape_provider_sandbox(
+        provider_id,
+        database_instance,
+        out_dir,
+        input_dir=input_dir,
+        live_fetch=live_fetch,
+        raw_dir=raw_dir,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated provider sandbox at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_scraping_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("build-provider-review")
+def build_provider_review_command(
+    sandbox_dir: Path,
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output provider review directory."),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Build a static provider review page and CSV bundle."""
+    result = build_provider_review(sandbox_dir, out_dir)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated provider review bundle at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_scraping_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

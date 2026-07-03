@@ -66,6 +66,13 @@ Validate a future provider sandbox directory:
 
    bc-nppd validate-provider-sandbox outputs/provider_sandbox/PROV-SATIN --json
 
+P16 fixture-backed sandbox generation:
+
+.. code-block:: bash
+
+   bc-nppd scrape-provider-sandbox PROV-SATIN --input-dir tests/fixtures/providers --out-dir outputs/provider_sandbox/PROV-SATIN --json
+   bc-nppd build-provider-review outputs/provider_sandbox/PROV-SATIN --out-dir outputs/provider_review/PROV-SATIN --json
+
 Raw provider HTML, screenshots, downloads, and scrape caches must remain under
 ignored directories such as ``local/``, ``tmp/``, ``data/raw/``, or
 ``outputs/``.

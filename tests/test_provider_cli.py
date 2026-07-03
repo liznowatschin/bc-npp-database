@@ -44,6 +44,56 @@ def test_validate_provider_sandbox_command_json(tmp_path):
     assert '"diagnostics": []' in result.stdout
 
 
+def test_scrape_provider_sandbox_command_json(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "scrape-provider-sandbox",
+            "PROV-SATIN",
+            "--input-dir",
+            "tests/fixtures/providers",
+            "--out-dir",
+            str(tmp_path / "sandbox"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"candidate_species": 1' in result.stdout
+    assert (tmp_path / "sandbox" / "candidate_species.csv").exists()
+
+
+def test_build_provider_review_command_json(tmp_path):
+    scrape_result = runner.invoke(
+        app,
+        [
+            "scrape-provider-sandbox",
+            "PROV-SATIN",
+            "--input-dir",
+            "tests/fixtures/providers",
+            "--out-dir",
+            str(tmp_path / "sandbox"),
+            "--json",
+        ],
+    )
+    assert scrape_result.exit_code == 0
+
+    result = runner.invoke(
+        app,
+        [
+            "build-provider-review",
+            str(tmp_path / "sandbox"),
+            "--out-dir",
+            str(tmp_path / "review"),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"candidate_species": 1' in result.stdout
+    assert (tmp_path / "review" / "index.html").exists()
+
+
 def _write_minimal_sandbox(tmp_path) -> Path:
     sandbox = tmp_path / "sandbox"
     sandbox.mkdir()

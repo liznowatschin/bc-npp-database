@@ -342,3 +342,22 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #90 to `main` as merge commit `2a500f8`.
 - Closed Phase 15 as complete.
+- Started Phase 16 provider scraping sandbox MVP on
+  `feature/p16-provider-scraping-sandbox`.
+- Created Phase 16 GitHub issue records: parent issue #91 and child issues
+  #92 through #95.
+- Added planning notes for provisional mowability scoring and the P16 provider
+  scraping sandbox implementation path before adding scraper code.
+- Added fixture-backed provider sandbox generation for all four configured
+  providers, with optional live-fetch plumbing that writes raw HTML only to
+  ignored local storage.
+- Added provider review bundle generation with static HTML and copied review
+  CSVs for user approval.
+- Added `bc-nppd scrape-provider-sandbox` and `bc-nppd build-provider-review`
+  CLI commands.
+- Added synthetic provider fixture HTML and tests for WCS vegetable exclusion,
+  NWM northward review, supplier rows, and provisional mowability rows.
+- Completed Phase 16 local acceptance verification with Ruff, pytest, provider
+  sandbox CLI checks, Sphinx, build, twine, and all Vancouver validators
+  passing.
+- Opened pull request #96 for Phase 16 closeout.

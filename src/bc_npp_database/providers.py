@@ -360,7 +360,11 @@ def _validate_candidate_species(rows: list[dict[str, str]]) -> list[Diagnostic]:
                     status,
                 )
             )
-        if provider_id == "PROV-WCS" and _is_vegetable_row(row):
+        is_excluded = row.get("candidate_status") == "excluded" or status in {
+            "excluded",
+            "ineligible",
+        }
+        if provider_id == "PROV-WCS" and _is_vegetable_row(row) and not is_excluded:
             diagnostics.append(
                 _diagnostic(
                     "wcs_vegetable_excluded",
