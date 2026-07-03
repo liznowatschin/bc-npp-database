@@ -667,3 +667,7 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #141 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #141 to `main` as merge commit `c54922b`.
 - Closed Phase 29 as complete.
+- Verified `main` CI passed after the P29 closeout commit.
+- Confirmed the Docs workflow Sphinx build passed after P29 closeout, but
+  GitHub Pages deploy failed twice with the generic GitHub deploy error.
+  Opened follow-up maintenance issue #142 for Pages deploy investigation.

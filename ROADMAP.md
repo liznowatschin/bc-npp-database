@@ -1620,6 +1620,13 @@ P29 local acceptance passed:
 - `scripts/build-provider-source-review.cmd -WorkflowPath
   examples/workflows/provider_source_review_fixture.yaml` passed.
 
+P29 main-branch verification:
+
+- CI passed on `main` after the P29 closeout commit.
+- The Docs workflow Sphinx build passed, but GitHub Pages deploy failed twice
+  with the generic `Deployment failed, try again later` error. Follow-up issue
+  #142 tracks the Pages deploy failure.
+
 ## Phase 30: Premier Pacific Source Sweep
 
 Parent issue: TBD
