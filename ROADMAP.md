@@ -889,7 +889,7 @@ parse provider inventories into reviewable sandbox CSV and static HTML outputs.
 - [ ] P16.4 Verification, docs, and closeout (#95)
   - [x] Add docs and tests.
   - [x] Run local acceptance.
-  - [ ] Open PR and record the PR number.
+  - [x] Open PR and record the PR number (#96).
   - [ ] Merge PR after green CI.
   - [ ] Close issues after merge.
 
@@ -910,6 +910,8 @@ Phase 16 local verification passed with:
 - `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+
+Pull request #96 is the Phase 16 closeout PR against `main`.
 
 ## Phase 17: Approved Provider Data Integration
 

@@ -360,3 +360,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed Phase 16 local acceptance verification with Ruff, pytest, provider
   sandbox CLI checks, Sphinx, build, twine, and all Vancouver validators
   passing.
+- Opened pull request #96 for Phase 16 closeout.
