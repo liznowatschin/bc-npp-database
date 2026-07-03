@@ -338,3 +338,7 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   registry validation, Sphinx, build, twine, and all Vancouver validators
   passing.
 - Opened pull request #90 for Phase 15 closeout.
+- Verified that pull request #90 passed CI for Python 3.11 and Python 3.12
+  before merge.
+- Merged pull request #90 to `main` as merge commit `2a500f8`.
+- Closed Phase 15 as complete.

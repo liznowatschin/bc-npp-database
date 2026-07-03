@@ -23,7 +23,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Complete |
 | P13 Add Matricaria discoidea | #76 | `feature/p13-add-matricaria-discoidea` | Complete |
 | P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Complete |
-| P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Active |
+| P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Complete |
 | P16 Provider scraping sandbox MVP | TBD | `feature/p16-provider-scraping-sandbox` | Planned |
 | P17 Approved provider data integration | TBD | `feature/p17-provider-approval-integration` | Planned |
 | P18 Provider data usability layer | TBD | `feature/p18-provider-usability-layer` | Planned |
@@ -816,7 +816,7 @@ Parent issue: #86
 
 Branch: `feature/p15-source-provider-registry`
 
-Status: active
+Status: complete
 
 Goal: add a tracked source-provider registry and provider sandbox validation
 contracts for future supplier website scraping, without live scraping or
@@ -835,14 +835,14 @@ Vancouver PoC integration in this phase.
   - [x] Add Vancouver eligibility rules for provider observations.
   - [x] Validate WCS vegetable exclusion and NWM northward suitability review.
   - [x] Validate provisional 0-5 mowability observations.
-- [ ] P15.3 CLI, docs, tests, and closeout (#89)
+- [x] P15.3 CLI, docs, tests, and closeout (#89)
   - [x] Add `bc-nppd validate-source-providers`.
   - [x] Add `bc-nppd validate-provider-sandbox`.
   - [x] Add docs and synthetic fixture tests.
   - [x] Run local acceptance.
   - [x] Open PR and record the PR number (#90).
-  - [ ] Merge PR after green CI.
-  - [ ] Close issues after merge.
+  - [x] Merge PR after green CI.
+  - [x] Close issues after merge.
 
 Phase 15 local verification passed with:
 
@@ -858,6 +858,10 @@ Phase 15 local verification passed with:
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
 
 Pull request #90 is the Phase 15 closeout PR against `main`.
+
+Pull request #90 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #90 merged to `main` as merge commit `2a500f8`.
 
 ## Phase 16: Provider Scraping Sandbox MVP
 
