@@ -34,6 +34,12 @@ from .pollinators import (
 from .pollinators import (
     has_error_diagnostics as has_pollinator_error_diagnostics,
 )
+from .provider_approval_review import (
+    build_provider_approval_review,
+)
+from .provider_approval_review import (
+    has_error_diagnostics as has_provider_approval_review_error_diagnostics,
+)
 from .provider_approvals import (
     apply_provider_approvals,
     validate_provider_approvals,
@@ -251,6 +257,39 @@ def build_provider_review_command(
         for name, path in result.paths.items():
             typer.echo(f"- {name}: {path}")
     if has_provider_scraping_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("build-provider-approval-review")
+def build_provider_approval_review_command(
+    sandbox_dir: Path,
+    poc_dir: Path = typer.Option(
+        Path("data/poc/vancouver"),
+        "--poc-dir",
+        help="Vancouver PoC directory used for existing-species matching.",
+    ),
+    out_dir: Path = typer.Option(
+        ...,
+        "--out-dir",
+        help="Output provider approval review directory.",
+    ),
+    reviewer: str = typer.Option("", "--reviewer", help="Reviewer name or role for draft rows."),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Build a static expert approval app and draft approval manifest."""
+    result = build_provider_approval_review(
+        sandbox_dir,
+        poc_dir,
+        out_dir,
+        reviewer=reviewer,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated provider approval review app at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_approval_review_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

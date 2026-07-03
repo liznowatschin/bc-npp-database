@@ -17,6 +17,8 @@ parameters:
   raw_dir: local/provider_raw
   sandbox_dir: outputs/provider_sandbox_source_sweep/PROV-SATIN
   review_dir: outputs/provider_review_source_sweep/PROV-SATIN
+  approval_review_dir: outputs/provider_approval_review/PROV-SATIN
+  reviewer: expert reviewer
 
 nodes:
   - id: provider.source_sweep
@@ -66,6 +68,26 @@ nodes:
     outputs:
       - "${review_dir}/index.html"
       - "${review_dir}/manifest.json"
+
+  - id: provider.build_approval_review
+    needs:
+      - provider.validate_sandbox
+    command:
+      - bc-nppd
+      - build-provider-approval-review
+      - "${sandbox_dir}"
+      - --poc-dir
+      - data/poc/vancouver
+      - --out-dir
+      - "${approval_review_dir}"
+      - --reviewer
+      - "${reviewer}"
+      - --json
+    outputs:
+      - "${approval_review_dir}/index.html"
+      - "${approval_review_dir}/review_items.csv"
+      - "${approval_review_dir}/approval_manifest_draft.csv"
+      - "${approval_review_dir}/manifest.json"
 
 public_hygiene:
   raw_material_policy: >

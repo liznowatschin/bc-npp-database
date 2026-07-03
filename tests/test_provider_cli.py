@@ -94,6 +94,42 @@ def test_build_provider_review_command_json(tmp_path):
     assert (tmp_path / "review" / "index.html").exists()
 
 
+def test_build_provider_approval_review_command_json(tmp_path):
+    scrape_result = runner.invoke(
+        app,
+        [
+            "scrape-provider-sandbox",
+            "PROV-SATIN",
+            "--input-dir",
+            "tests/fixtures/providers",
+            "--out-dir",
+            str(tmp_path / "sandbox"),
+            "--json",
+        ],
+    )
+    assert scrape_result.exit_code == 0
+
+    result = runner.invoke(
+        app,
+        [
+            "build-provider-approval-review",
+            str(tmp_path / "sandbox"),
+            "--poc-dir",
+            "data/poc/vancouver",
+            "--out-dir",
+            str(tmp_path / "approval_review"),
+            "--reviewer",
+            "tester",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"review_items": 1' in result.stdout
+    assert (tmp_path / "approval_review" / "index.html").exists()
+    assert (tmp_path / "approval_review" / "approval_manifest_draft.csv").exists()
+
+
 def test_validate_provider_approvals_command_json():
     result = runner.invoke(
         app,

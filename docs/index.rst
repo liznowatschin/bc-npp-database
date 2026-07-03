@@ -16,6 +16,7 @@ database for coastal British Columbia.
    source-attribution
    provider-sandbox
    provider-approvals
+   provider-review-workflow
    canonical-pipeline
    scoring-framework
    foundation-release

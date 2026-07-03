@@ -424,3 +424,15 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   115 supplier availability rows, and 0 mowability rows for review.
 - Completed focused Phase 19 verification with Ruff, provider tests, and
   Sphinx docs passing.
+- Created Phase 19 child issue #113 for the expert provider review and
+  approval interface.
+- Added `bc-nppd build-provider-approval-review` to generate a local static
+  approval app, `review_items.csv`, and a draft approval manifest from provider
+  sandbox outputs.
+- Added a reviewer workflow doc and extended the P19 FreshForge template with
+  the approval-review node.
+- Generated the Satinflower approval-review app under ignored
+  `outputs/provider_approval_review/PROV-SATIN` with 115 review items and a
+  575-row draft approval manifest that validates cleanly.
+- Completed P19.4 verification with Ruff, 110 pytest tests, Sphinx docs, and
+  provider approval-review draft validation passing.

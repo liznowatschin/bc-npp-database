@@ -46,6 +46,14 @@ it does not make UNI, PSI, or RVI score inputs ready.
 Commands
 --------
 
+Build a static expert review app from a provider sandbox:
+
+.. code-block:: console
+
+   bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-SATIN --poc-dir data/poc/vancouver --out-dir outputs/provider_approval_review/PROV-SATIN --reviewer "expert reviewer" --json
+
+The full reviewer workflow is documented in ``provider-review-workflow``.
+
 Validate an approval manifest:
 
 .. code-block:: console

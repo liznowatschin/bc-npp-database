@@ -102,15 +102,32 @@ provider-derived data.
   - [x] Document the Satinflower seed sweep workflow in user-facing docs.
   - [x] Run focused Ruff, provider tests, and Sphinx docs verification.
   - [ ] Open PR, merge after green CI, and close issues.
+- [x] P19.4 Expert provider review and approval interface (#113)
+  - [x] Add a static approval-review app builder and CLI command.
+  - [x] Generate `review_items.csv` and a valid `approval_manifest_draft.csv`.
+  - [x] Add species-first filters, detail panel, decisions, and CSV download/copy.
+  - [x] Document the review/export/validate/apply workflow.
 
 P19 issue records were created as parent issue #109 and child issues #110
-through #112.
+through #113.
 
 Phase 19 focused verification passed with:
 
-- `python -m ruff check src/bc_npp_database/provider_scraping.py src/bc_npp_database/cli.py tests/test_provider_scraping.py`
-- `python -m pytest tests/test_provider_scraping.py tests/test_provider_cli.py` (13 passed)
+- `python -m ruff check .`
+- `python -m pytest` (110 passed)
 - `sphinx-build -b html docs _build/html -W`
+- `bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-SATIN --poc-dir data/poc/vancouver --out-dir outputs/provider_approval_review/PROV-SATIN --reviewer "expert reviewer" --json`
+- `bc-nppd validate-provider-approvals outputs/provider_approval_review/PROV-SATIN/approval_manifest_draft.csv --json`
+
+P19.4 adds a static expert approval review app generated with:
+
+```bash
+bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-SATIN \
+  --poc-dir data/poc/vancouver \
+  --out-dir outputs/provider_approval_review/PROV-SATIN \
+  --reviewer "expert reviewer" \
+  --json
+```
 
 The live Satinflower seed sweep was run with:
 
