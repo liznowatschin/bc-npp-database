@@ -80,6 +80,32 @@ Rules:
   references.
 - Keep changes scoped to the active roadmap phase and issue.
 
+## Product Delivery Pattern
+
+When a task aims to turn external source material into useful BC-NPPD product
+data, use the proven sandbox-review-manifest pattern by default:
+
+1. Start from a concrete user-facing outcome and a real input entrypoint.
+2. Acquire raw source material only into ignored locations such as `local/`,
+   `tmp/`, `data/raw/`, or `outputs/`.
+3. Normalize observations into inspectable sandbox CSV/JSON artifacts.
+4. Build or update a humane review surface before promoting observations.
+5. Treat expert decisions as an exported, durable approval manifest.
+6. Validate the approval manifest before applying it.
+7. Apply first to ignored preview outputs unless the maintainer explicitly asks
+   to update tracked product artifacts.
+8. Record before/after counts, diagnostics, commands, and artifact paths in
+   roadmap, changelog, issues, or planning notes.
+
+Do not import scraped, parsed, media-derived, GIS-derived, or provider-derived
+observations directly into tracked PoC data as facts. They must pass through a
+review/approval boundary unless a roadmap phase explicitly defines a different
+auditable gate.
+
+For repeated expert decisions, prefer static, dependency-light review tools
+with search, filters, detail panels, batch controls, CSV export/copy, and clear
+caveats before introducing a server, database, or hidden state.
+
 ## Planning Workflow
 
 This repo follows the UBC-FRESH phase/task/subtask workflow:

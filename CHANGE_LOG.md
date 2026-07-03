@@ -460,3 +460,31 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #117 to `main` as merge commit `f334a08`.
 - Closed Phase 20 as complete.
+- Added batch review controls to the provider approval-review app so expert
+  reviewers can select multiple species, set approval status in bulk, and
+  include or defer supplier, candidate attribute, and provisional mowability
+  rows for all selected approved species.
+- Added `planning/delivery_success_patterns.md` to capture why the P19-P20
+  provider workflow succeeded and updated `AGENTS.md` to make the
+  sandbox-review-manifest pattern a default contract for future source-to-product
+  workflows.
+- Started Phase 21 downloaded provider approval runner on
+  `feature/p21-downloaded-provider-approval-runner`.
+- Created Phase 21 GitHub issue records: parent issue #118 and child issues
+  #119 through #121.
+- Added a dependency-free FreshForge workflow shape for applying a downloaded
+  `approval_manifest.csv` into an ignored Vancouver preview product.
+- Added `scripts/apply-downloaded-provider-approval.ps1` as a Liz-friendly
+  one-command runner that defaults to `$HOME/Downloads/approval_manifest.csv`,
+  validates the manifest, applies approved rows, regenerates downstream preview
+  artifacts, validates the preview, and prints the usability app path.
+- Updated provider review workflow docs with the simple runner path, manual CLI
+  fallback, and promotion boundary.
+- Smoke-tested the PowerShell runner against the downloaded Satinflower approval
+  manifest in `Downloads`: 2,316 approved rows applied into an ignored preview
+  with 152 plant rows, 149 sources, 2,404 source-attribution rows, 115 supplier
+  rows, and all preview validators passing.
+- Completed P21 local acceptance with Ruff, 113 pytest tests, Sphinx docs,
+  package build, twine metadata check, and the downloaded-manifest smoke test
+  passing.
+- Opened pull request #122 for Phase 21 closeout.

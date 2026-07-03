@@ -1,0 +1,141 @@
+# Dependency-free FreshForge workflow shape for downloaded approval manifests.
+# This file documents the intended orchestration contract; CI does not execute it
+# and FreshForge is not a package dependency.
+
+workflow:
+  id: p21_downloaded_provider_approval
+  provider: bc_npp_database
+  description: >
+    Validate an approval manifest downloaded from the static provider review
+    app, apply it to an ignored Vancouver preview product, regenerate downstream
+    artifacts, and validate the preview.
+
+parameters:
+  provider_id: PROV-SATIN
+  database_instance: vancouver
+  downloaded_manifest: ${USERPROFILE}/Downloads/approval_manifest.csv
+  scratch_manifest: outputs/provider_approval_review/PROV-SATIN/approval_manifest.csv
+  poc_dir: data/poc/vancouver
+  preview_dir: outputs/provider_approved_vancouver
+  run_summary: outputs/provider_approved_vancouver/provider_approval_preview_summary.txt
+
+nodes:
+  - id: provider.copy_downloaded_manifest
+    command:
+      - powershell
+      - -NoProfile
+      - -ExecutionPolicy
+      - Bypass
+      - -Command
+      - >
+        New-Item -ItemType Directory -Force -Path (Split-Path '${scratch_manifest}');
+        Copy-Item -LiteralPath '${downloaded_manifest}' -Destination '${scratch_manifest}' -Force
+    inputs:
+      - "${downloaded_manifest}"
+    outputs:
+      - "${scratch_manifest}"
+
+  - id: provider.validate_approval_manifest
+    needs:
+      - provider.copy_downloaded_manifest
+    command:
+      - bc-nppd
+      - validate-provider-approvals
+      - "${scratch_manifest}"
+      - --json
+
+  - id: provider.apply_approval_preview
+    needs:
+      - provider.validate_approval_manifest
+    command:
+      - bc-nppd
+      - apply-provider-approvals
+      - "${scratch_manifest}"
+      - --poc-dir
+      - "${poc_dir}"
+      - --out-dir
+      - "${preview_dir}"
+      - --json
+    outputs:
+      - "${preview_dir}/plant_list.csv"
+      - "${preview_dir}/provider_data/approval_manifest.csv"
+      - "${preview_dir}/usability/index.html"
+      - "${preview_dir}/pollinator_module/manifest.json"
+
+  - id: provider.validate_preview_provider_data
+    needs:
+      - provider.apply_approval_preview
+    command:
+      - bc-nppd
+      - validate-provider-approvals
+      - "${preview_dir}/provider_data"
+      - --json
+
+  - id: provider.validate_preview_poc
+    needs:
+      - provider.apply_approval_preview
+    command:
+      - bc-nppd
+      - validate-vancouver-poc-list
+      - "${preview_dir}"
+      - --json
+
+  - id: provider.validate_preview_evidence
+    needs:
+      - provider.apply_approval_preview
+    command:
+      - bc-nppd
+      - validate-vancouver-evidence
+      - "${preview_dir}/evidence_hardening"
+      - --json
+
+  - id: provider.validate_preview_usability
+    needs:
+      - provider.apply_approval_preview
+    command:
+      - bc-nppd
+      - validate-vancouver-usability
+      - "${preview_dir}/usability"
+      - --json
+
+  - id: provider.validate_preview_pollinator
+    needs:
+      - provider.apply_approval_preview
+    command:
+      - bc-nppd
+      - validate-vancouver-pollinator-module
+      - "${preview_dir}/pollinator_module"
+      - --json
+
+  - id: provider.write_run_summary
+    needs:
+      - provider.validate_preview_provider_data
+      - provider.validate_preview_poc
+      - provider.validate_preview_evidence
+      - provider.validate_preview_usability
+      - provider.validate_preview_pollinator
+    command:
+      - powershell
+      - -NoProfile
+      - -ExecutionPolicy
+      - Bypass
+      - -Command
+      - >
+        "Provider approval preview complete.`nProvider: ${provider_id}`nPreview:
+        ${preview_dir}`nOpen: ${preview_dir}/usability/index.html" |
+        Set-Content -Path '${run_summary}' -Encoding utf8
+    outputs:
+      - "${run_summary}"
+
+public_hygiene:
+  downloaded_manifest_policy: >
+    Downloaded approval manifests are local reviewer outputs. They may be copied
+    into ignored outputs for preview runs, but should only be tracked after an
+    explicit reviewed-input promotion step.
+  preview_policy: >
+    Preview products under outputs are generated local products and remain
+    ignored.
+  evidence_policy: >
+    Provider-approved rows are candidate PoC observations. They do not make
+    native status, ecological scores, pollinator scores, UNI, PSI, RVI, or
+    mowability final.

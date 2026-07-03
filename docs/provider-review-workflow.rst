@@ -48,6 +48,16 @@ detail panel to inspect:
 * provisional mowability rows, if present;
 * provider URLs and taxonomy/source-review flags.
 
+Use the selection checkboxes and **Batch Review** controls when several species
+need the same decision. Batch actions can:
+
+* select all currently visible species after search/filtering;
+* clear the current selection;
+* set the approval status on all selected species;
+* include or defer supplier rows on all selected approved species;
+* include or defer candidate attribute rows on all selected approved species;
+* include or defer provisional mowability rows on all selected approved species.
+
 Set a species-level decision:
 
 * ``approved`` for observations ready to enter the candidate PoC layer;
@@ -62,6 +72,36 @@ decision when supplier availability is the reviewed claim.
 
 Use **Download approval_manifest.csv** or **Copy CSV**. The static app does not
 write directly to the repository.
+
+Simple Apply Preview
+--------------------
+
+For the easiest user-test path, download ``approval_manifest.csv`` from the
+review app into the default Downloads folder, then run:
+
+.. code-block:: console
+
+   .\scripts\apply-downloaded-provider-approval.ps1
+
+The script validates the downloaded manifest, copies it to an ignored scratch
+path, applies approved rows into ``outputs/provider_approved_vancouver``,
+regenerates downstream preview artifacts, and validates the preview. It prints
+the static preview app path:
+
+.. code-block:: text
+
+   outputs/provider_approved_vancouver/usability/index.html
+
+Use ``-ManifestPath`` when the CSV was saved somewhere else. Use
+``-OpenPreview`` to open the preview app after validation passes.
+
+Greg or an automation agent can use the dependency-free FreshForge workflow
+shape in ``examples/p21_downloaded_provider_approval_freshforge.yaml`` for the
+same validate/apply/validate-preview sequence.
+
+The script does not promote reviewed manifests into tracked product data. Only
+after human inspection should a reviewed manifest be copied into a tracked input
+path such as ``data/poc/vancouver/provider_data/reviewed_manifests/``.
 
 Validate And Apply
 ------------------
