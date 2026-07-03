@@ -1009,6 +1009,8 @@ through #107.
 Pull request #108 is the Phase 18 closeout PR against `main`.
 It passed CI for Python 3.11 and Python 3.12 and merged to `main` as merge
 commit `6280631`.
+Post-merge `main` CI and Docs/Pages deploy also passed on closeout commit
+`89393e4`.
 
 Phase 18 local verification passed with:
 
