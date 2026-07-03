@@ -73,12 +73,37 @@ Rules:
 - Read `AGENTS.md`, `ROADMAP.md`, and `CHANGE_LOG.md` before making
   project-shaping changes.
 - Keep CLI commands thin wrappers over Python APIs.
+- Use FreshForge as the default orchestration layer for reusable, multi-step
+  UBC-FRESH workflows.
 - Prefer structured records and parsers over ad hoc string handling.
 - Keep source policy and validation behavior explicit.
 - Preserve uncertainty and record assumptions.
 - Keep public repo content clean of private, irrelevant, or unpublished
   references.
 - Keep changes scoped to the active roadmap phase and issue.
+
+## Workflow Orchestration Contract
+
+FreshForge is the preferred UBC-FRESH workflow runner. When BC-NPPD needs a
+reusable multi-step pipeline, such as provider scraping, source materialization,
+workbook-to-table import, approval preview, scoring, or release dry-runs, define
+the workflow as FreshForge YAML and expose BC-NPPD behavior as small domain
+commands or provider nodes.
+
+Do not build a parallel package-specific orchestration framework, sidecar
+overlay engine, bespoke DAG runner, hidden state machine, or command sequencer
+inside BC-NPPD when the same job should be expressed as a FreshForge workflow.
+BC-NPPD may provide thin launchers for humane local use, especially on Windows,
+but those launchers should invoke FreshForge workflows or stable `bc-nppd`
+domain commands. They must not become independent reimplementations of
+FreshForge.
+
+Per-provider or per-task customization should live in FreshForge YAML workflow
+parameters, overlays, or documented workflow inputs unless a roadmap phase
+explicitly approves another format for a narrow non-workflow data contract.
+Lower-level `bc-nppd` commands remain useful as debuggable primitives and
+manual fallbacks, not as a reason to fork workflow orchestration across the
+UBC-FRESH package ecosystem.
 
 ## Product Delivery Pattern
 

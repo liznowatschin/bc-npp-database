@@ -634,3 +634,15 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #136 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #136 to `main` as merge commit `eabe0fa`.
 - Closed Phase 28 as complete.
+- Started Phase 29 provider source sweep workflow overlays on
+  `feature/p29-provider-workflow-overlays`.
+- Created Phase 29 GitHub issue records: parent issue #137 and child issues
+  #138, #139, and #140.
+- Corrected the P29 architecture to make FreshForge YAML the canonical
+  provider source-sweep workflow surface, instead of introducing a TOML/JSON
+  package-specific mini-orchestrator.
+- Updated `AGENTS.md` and `CONTRIBUTING.md` to require FreshForge for reusable
+  UBC-FRESH multi-step workflows and to prohibit parallel workflow
+  orchestrator reinventions inside BC-NPPD.
+- Recorded P30 Premier Pacific source sweep and P31 one-command reviewed
+  provider preview as planned future phases, not active parallel branches.

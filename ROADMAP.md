@@ -37,6 +37,9 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P26 Provider approval ID namespacing | #131 | `feature/p26-provider-approval-id-namespacing` | Complete |
 | P27 Usability provider filter layout fix | #133 | `feature/p27-usability-filter-layout` | Complete |
 | P28 Provider approval dedupe guardrails | #135 | `feature/p28-provider-approval-dedupe` | Complete |
+| P29 Provider source sweep workflow overlays | #137 | `feature/p29-provider-workflow-overlays` | Active |
+| P30 Premier Pacific source sweep | TBD | `feature/p30-premier-source-sweep` | Planned |
+| P31 One-command reviewed provider preview | TBD | `feature/p31-provider-preview-runner` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1539,3 +1542,72 @@ P28 local acceptance passed:
 - `sphinx-build -b html docs _build/html -W`
 - `python -m build`
 - `twine check dist/*`
+
+## Phase 29: Provider Source Sweep Workflow Overlays
+
+Parent issue: #137
+
+Branch: `feature/p29-provider-workflow-overlays`
+
+Status: active
+
+Goal: make provider source sweeps repeatable through FreshForge YAML workflow
+definitions and provider-specific YAML overlays, so future supplier targets can
+produce review packages without hand-assembling `bc-nppd` commands or growing
+BC-NPPD-specific mini-orchestrators.
+
+Design correction: FreshForge is the UBC-FRESH workflow orchestration layer.
+BC-NPPD should expose domain commands and thin launchers, not reimplement
+FreshForge through TOML/JSON sidecar orchestration, hidden DAG runners, or
+bespoke package command sequencers.
+
+- [ ] P29.1 FreshForge workflow and provider YAML overlays (#138)
+  - [ ] Add a generic FreshForge provider source-review workflow.
+  - [ ] Add provider overlays for `PROV-SATIN`, `PROV-NWM`, `PROV-WCS`, and
+        `PROV-PREMIER`.
+  - [ ] Keep generated raw/sandbox/review outputs in ignored locations.
+- [ ] P29.2 Liz-friendly FreshForge launcher (#139)
+  - [ ] Add an execution-policy-safe Windows launcher that invokes FreshForge.
+  - [ ] Support provider ID selection and practical reviewer/catalog/max-page
+        overrides without reimplementing workflow orchestration.
+  - [ ] Print and optionally open the generated approval-review app path.
+- [ ] P29.3 Workflow contract docs, tests, and closeout (#140)
+  - [x] Update `AGENTS.md` and `CONTRIBUTING.md` to prohibit parallel workflow
+        orchestrator reinventions.
+  - [ ] Update provider docs with the FreshForge-first one-command path and
+        lower-level `bc-nppd` fallback.
+  - [ ] Run full local acceptance.
+  - [ ] Open PR after P29 tasks are complete.
+  - [ ] Merge after green CI and close issue.
+
+## Phase 30: Premier Pacific Source Sweep
+
+Parent issue: TBD
+
+Branch: `feature/p30-premier-source-sweep`
+
+Status: planned
+
+Goal: use the P29 FreshForge provider workflow lane against Premier Pacific,
+tuning only provider-shape parsing where needed, and stop at an ignored,
+reviewable candidate package.
+
+- [ ] P30.1 Premier overlay and adapter tuning.
+- [ ] P30.2 Premier sandbox and review package generation.
+- [ ] P30.3 Approval-review validation, docs, and closeout.
+
+## Phase 31: One-Command Reviewed Provider Preview
+
+Parent issue: TBD
+
+Branch: `feature/p31-provider-preview-runner`
+
+Status: planned
+
+Goal: make the downstream reviewed-manifest preview path easier by discovering
+reviewed provider manifests by default while preserving explicit manifest paths
+for reproducible Greg/agent runs.
+
+- [ ] P31.1 Reviewed manifest discovery and cumulative apply defaults.
+- [ ] P31.2 Combined source-review plus approval-preview workflow docs.
+- [ ] P31.3 Validation, usability checks, and closeout.
