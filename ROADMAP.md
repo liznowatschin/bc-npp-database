@@ -25,7 +25,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Complete |
 | P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Complete |
 | P16 Provider scraping sandbox MVP | #91 | `feature/p16-provider-scraping-sandbox` | Complete |
-| P17 Approved provider data integration | #97 | `feature/p17-provider-approval-integration` | Active |
+| P17 Approved provider data integration | #97 | `feature/p17-provider-approval-integration` | Complete |
 | P18 Provider data usability layer | TBD | `feature/p18-provider-usability-layer` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
@@ -921,7 +921,7 @@ Parent issue: #97
 
 Branch: `feature/p17-provider-approval-integration`
 
-Status: active
+Status: complete
 
 Goal: import only user-approved sandbox rows into the tracked Vancouver PoC,
 preserving provider provenance, review status, supplier rows, candidate
@@ -939,12 +939,12 @@ mowability, and source-attribution boundaries.
   - [x] Write separate provider-data supplier and mowability tables.
   - [x] Preserve candidate caveats and keep mowability score readiness blocked.
   - [x] Add docs, schema contract, example manifest, and tests.
-- [ ] P17.4 Regeneration, validation, and closeout (#101)
+- [x] P17.4 Regeneration, validation, and closeout (#101)
   - [x] Regenerate downstream artifacts when approvals are applied.
   - [x] Run local acceptance.
   - [x] Open PR and record the PR number (#102).
-  - [ ] Merge PR after green CI.
-  - [ ] Close issues after merge.
+  - [x] Merge PR after green CI.
+  - [x] Close issues after merge.
 
 Provider-derived data remains candidate/pending review unless separately
 reviewed. Mowability does not make UNI, PSI, or RVI score readiness ready.
@@ -968,7 +968,9 @@ Phase 17 local verification passed with:
 - `twine check dist/*`
 - Existing tracked Vancouver PoC, evidence, usability, and pollinator validators.
 
-Pull request #102 is the Phase 17 closeout PR against `main`.
+Pull request #102 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #102 merged to `main` as merge commit `c892391`.
 
 ## Phase 18: Provider Data Usability Layer
 

@@ -381,3 +381,7 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   approval CLI checks, regenerated ignored provider-approved Vancouver outputs,
   Sphinx, build, twine, and tracked Vancouver validators passing.
 - Opened pull request #102 for Phase 17 closeout.
+- Verified that pull request #102 passed CI for Python 3.11 and Python 3.12
+  before merge.
+- Merged pull request #102 to `main` as merge commit `c892391`.
+- Closed Phase 17 as complete.
