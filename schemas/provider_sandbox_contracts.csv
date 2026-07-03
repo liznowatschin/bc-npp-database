@@ -1,0 +1,36 @@
+table_name,column_name,required,notes
+manifest.json,database_instance,yes,The database instance such as vancouver.
+manifest.json,provider_ids,yes,List of provider IDs included in the sandbox.
+manifest.json,public_hygiene,yes,Must state that raw provider HTML is not tracked.
+inventory_pages.csv,provider_id,yes,Provider ID such as PROV-SATIN.
+inventory_pages.csv,page_url,yes,Inventory or product-list page URL.
+inventory_pages.csv,page_type,yes,Collection/product/search/feed/sitemap or another adapter-specific page type.
+inventory_pages.csv,fetch_status,yes,planned/fetched/fixture/error or adapter-specific status.
+inventory_pages.csv,review_status,yes,Provider page review status.
+candidate_species.csv,provider_id,yes,Provider ID.
+candidate_species.csv,botanical_name,yes,Candidate botanical name from provider material.
+candidate_species.csv,common_name,no,Candidate common name from provider material.
+candidate_species.csv,candidate_status,yes,candidate/excluded/deferred/needs_review.
+candidate_species.csv,vancouver_eligibility_status,yes,candidate/eligible/excluded/ineligible/needs_review/needs_northward_review.
+candidate_species.csv,source_url,yes,Provider page URL supporting the observation.
+candidate_species.csv,review_status,yes,Observation review status.
+candidate_attributes.csv,provider_id,yes,Provider ID.
+candidate_attributes.csv,botanical_name,yes,Candidate botanical name.
+candidate_attributes.csv,attribute_name,yes,Provider-supported attribute name.
+candidate_attributes.csv,attribute_value,yes,Provider-supported attribute value.
+candidate_attributes.csv,evidence_confidence,yes,Configured evidence confidence value.
+candidate_attributes.csv,source_url,yes,Provider page URL supporting the observation.
+candidate_attributes.csv,review_status,yes,Observation review status.
+supplier_availability.csv,provider_id,yes,Provider ID.
+supplier_availability.csv,botanical_name,yes,Candidate botanical name.
+supplier_availability.csv,supplier_status,yes,available/unavailable/mix_component/unknown or provider-specific status.
+supplier_availability.csv,product_url,yes,Provider product or collection URL.
+supplier_availability.csv,review_status,yes,Observation review status.
+mowability.csv,provider_id,yes,Provider ID.
+mowability.csv,botanical_name,yes,Candidate botanical name.
+mowability.csv,mowability_score,yes,Provisional 0-5 candidate score.
+mowability.csv,source_url,yes,Provider page URL supporting the observation.
+mowability.csv,review_status,yes,Observation review status.
+diagnostics.csv,severity,yes,error/warning/info.
+diagnostics.csv,code,yes,Machine-readable diagnostic code.
+diagnostics.csv,message,yes,Human-readable diagnostic message.

@@ -1,0 +1,7 @@
+rule_id,provider_id,field,decision,notes
+VAN-PROV-001,ALL,botanical_name,include_candidate,Include native or plausibly regionally suitable BC/Vancouver species as candidates only.
+VAN-PROV-002,ALL,evidence,review_gate,Scraped provider values are observations first and cannot become facts without approval.
+VAN-PROV-003,PROV-WCS,product_category,exclude,Exclude vegetables and route non-native wildflower mix components to review.
+VAN-PROV-004,PROV-NWM,geography,needs_northward_review,Require Vancouver/BC suitability review for US PNW provider rows.
+VAN-PROV-005,ALL,supplier_availability,separate_table,Store supplier information separately from plant identity rows.
+VAN-PROV-006,ALL,mowability_score,candidate_only,Use provisional 0-5 mowability as candidate display data only.

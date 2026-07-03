@@ -53,3 +53,8 @@ without treating the request as ecological evidence.
 Phase 13 adds ``Matricaria discoidea`` as an additional unreviewed
 user-requested expansion candidate and regenerates the current PoC product to
 53 species.
+
+Phase 15 introduces the source-provider registry and provider sandbox
+contracts for future supplier website scraping. P15 validates provider records,
+Vancouver eligibility rules, supplier rows, and provisional mowability
+observations without live scraping or PoC integration.

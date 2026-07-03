@@ -16,11 +16,18 @@ Tier 3: regional expert and practitioner sources
    Use for propagation, germination practices, cultivation notes, nursery
    production, seed handling, and practical establishment guidance.
 
-Approved Tier 3 source
-----------------------
+Approved Tier 3 sources
+-----------------------
 
 Satinflower Nurseries is approved as a regional practitioner source when used
 with appropriate attribution and confidence labeling.
+
+P15 adds a provider registry for commercial and practitioner supplier websites:
+Satinflower Nurseries, Northwest Meadowscapes, West Coast Seeds, and Premier
+Pacific Seeds. Provider rows are Tier 3 by default and may support supplier
+availability, cultivation clues, candidate discovery, and candidate mowability
+observations. They do not independently establish native status, ecological
+scores, pollinator scores, or final planting recommendations.
 
 Excluded sources
 ----------------

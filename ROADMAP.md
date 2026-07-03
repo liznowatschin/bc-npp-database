@@ -23,6 +23,10 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P12 Expand Vancouver species list | #71 | `feature/p12-expand-vancouver-species-list` | Complete |
 | P13 Add Matricaria discoidea | #76 | `feature/p13-add-matricaria-discoidea` | Complete |
 | P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Complete |
+| P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Active |
+| P16 Provider scraping sandbox MVP | TBD | `feature/p16-provider-scraping-sandbox` | Planned |
+| P17 Approved provider data integration | TBD | `feature/p17-provider-approval-integration` | Planned |
+| P18 Provider data usability layer | TBD | `feature/p18-provider-usability-layer` | Planned |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -805,3 +809,107 @@ Pull request #85 is the Phase 14 closeout PR against `main`.
 Pull request #85 passed CI for Python 3.11 and Python 3.12 before merge.
 
 Pull request #85 merged to `main` as merge commit `3569a49`.
+
+## Phase 15: Source Provider Registry And Sandbox Contracts
+
+Parent issue: #86
+
+Branch: `feature/p15-source-provider-registry`
+
+Status: active
+
+Goal: add a tracked source-provider registry and provider sandbox validation
+contracts for future supplier website scraping, without live scraping or
+Vancouver PoC integration in this phase.
+
+- [x] P15.1 Provider registry and source policy (#87)
+  - [x] Add deterministic `PROV-*` records for Satinflower, Northwest
+        Meadowscapes, West Coast Seeds, and Premier Pacific.
+  - [x] Treat provider rows as Tier 3 commercial/practitioner sources.
+  - [x] Record provider-specific scope, exclusions, and scrape policy.
+  - [x] Update source-policy documentation.
+- [x] P15.2 Sandbox data contracts and validators (#88)
+  - [x] Add sandbox contracts for inventory pages, species observations,
+        attribute observations, supplier availability, mowability, manifests,
+        and diagnostics.
+  - [x] Add Vancouver eligibility rules for provider observations.
+  - [x] Validate WCS vegetable exclusion and NWM northward suitability review.
+  - [x] Validate provisional 0-5 mowability observations.
+- [ ] P15.3 CLI, docs, tests, and closeout (#89)
+  - [x] Add `bc-nppd validate-source-providers`.
+  - [x] Add `bc-nppd validate-provider-sandbox`.
+  - [x] Add docs and synthetic fixture tests.
+  - [x] Run local acceptance.
+  - [x] Open PR and record the PR number (#90).
+  - [ ] Merge PR after green CI.
+  - [ ] Close issues after merge.
+
+Phase 15 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (93 passed)
+- `bc-nppd validate-source-providers data/source_providers/provider_registry.csv --json`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd validate-vancouver-poc-list data/poc/vancouver --json`
+- `bc-nppd validate-vancouver-evidence data/poc/vancouver/evidence_hardening --json`
+- `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
+- `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
+
+Pull request #90 is the Phase 15 closeout PR against `main`.
+
+## Phase 16: Provider Scraping Sandbox MVP
+
+Parent issue: TBD
+
+Branch: `feature/p16-provider-scraping-sandbox`
+
+Status: planned
+
+Goal: add live-capable but CI-fixture-backed provider adapters that scrape or
+parse provider inventories into reviewable sandbox CSV and static HTML outputs.
+
+- [ ] P16.1 Provider fetch policy and adapters
+- [ ] P16.2 Inventory extraction and Vancouver eligibility filtering
+- [ ] P16.3 Sandbox CSV and static review table
+- [ ] P16.4 Verification, docs, and closeout
+
+P16 must not update `data/poc/vancouver`. Raw provider HTML, screenshots,
+downloads, and scrape caches remain ignored.
+
+## Phase 17: Approved Provider Data Integration
+
+Parent issue: TBD
+
+Branch: `feature/p17-provider-approval-integration`
+
+Status: planned
+
+Goal: import only user-approved sandbox rows into the tracked Vancouver PoC,
+preserving provider provenance, review status, supplier rows, candidate
+mowability, and source-attribution boundaries.
+
+- [ ] P17.1 Approval manifest and review statuses
+- [ ] P17.2 Approved species and attribute import
+- [ ] P17.3 Supplier and mowability artifacts
+- [ ] P17.4 Regeneration, validation, and closeout
+
+Provider-derived data remains candidate/pending review unless separately
+reviewed. Mowability does not make UNI, PSI, or RVI score readiness ready.
+
+## Phase 18: Provider Data Usability Layer
+
+Parent issue: TBD
+
+Branch: `feature/p18-provider-usability-layer`
+
+Status: planned
+
+Goal: expose approved provider-derived supplier and mowability metadata in the
+static Vancouver PoC interface with filters, detail-panel provenance, and
+explicit caveats.
+
+- [ ] P18.1 Supplier and mowability display
+- [ ] P18.2 Provider provenance detail panels
+- [ ] P18.3 Filters, validation, docs, and closeout

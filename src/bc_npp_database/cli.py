@@ -34,6 +34,13 @@ from .pollinators import (
 from .pollinators import (
     has_error_diagnostics as has_pollinator_error_diagnostics,
 )
+from .providers import (
+    has_error_diagnostics as has_provider_error_diagnostics,
+)
+from .providers import (
+    validate_provider_sandbox,
+    validate_source_provider_file,
+)
 from .scoring import (
     calculate_scores,
     validate_score_inputs,
@@ -126,6 +133,34 @@ def validate_source_attribution_command(
     """Validate source attribution records from CSV, JSON, or JSON Lines."""
     diagnostics = validate_source_attribution_records(load_mapping_records(path))
     _emit_diagnostics(diagnostics, json_output=json_output)
+
+
+@app.command("validate-source-providers")
+def validate_source_providers_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate source-provider registry records from CSV, JSON, or JSON Lines."""
+    diagnostics = validate_source_provider_file(path)
+    _emit_diagnostics(diagnostics, json_output=json_output)
+
+
+@app.command("validate-provider-sandbox")
+def validate_provider_sandbox_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate a provider sandbox directory."""
+    result = validate_provider_sandbox(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Provider sandbox validation passed for {path}.")
+    if has_provider_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
 
 
 @app.command("inventory-workbook")

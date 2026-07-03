@@ -321,3 +321,20 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   before merge.
 - Merged pull request #85 to `main` as merge commit `3569a49`.
 - Closed Phase 14 as complete.
+- Started Phase 15 source-provider registry and sandbox contracts on
+  `feature/p15-source-provider-registry`.
+- Created Phase 15 GitHub issue records: parent issue #86 and child issues
+  #87 through #89.
+- Planned Phase 16 provider scraping sandbox, Phase 17 approved provider data
+  integration, and Phase 18 provider data usability as future UBC-FRESH phases.
+- Added a tracked provider registry for Satinflower, Northwest Meadowscapes,
+  West Coast Seeds, and Premier Pacific as Tier 3 provider sources.
+- Added provider sandbox contracts and Vancouver eligibility rules for future
+  candidate species observations, attribute observations, supplier rows, and
+  provisional mowability observations.
+- Added provider registry and sandbox validation APIs, CLI commands, docs, and
+  synthetic fixture tests without adding live scraping.
+- Completed Phase 15 local acceptance verification with Ruff, pytest, provider
+  registry validation, Sphinx, build, twine, and all Vancouver validators
+  passing.
+- Opened pull request #90 for Phase 15 closeout.

@@ -1,0 +1,10 @@
+column_name,required,notes
+provider_id,yes,Stable provider ID such as PROV-SATIN.
+provider_name,yes,Human-readable provider name.
+homepage_url,yes,Provider homepage URL using HTTP or HTTPS.
+source_tier,yes,Provider entries are Tier 3 commercial/practitioner sources.
+in_scope_notes,yes,What provider material may be used for.
+exclusion_notes,yes,Provider-specific exclusions and evidence boundaries.
+scrape_policy,yes,How future adapters may fetch and materialize provider pages.
+review_status,yes,Review status from the configured source review statuses.
+notes,no,Additional provider notes.
