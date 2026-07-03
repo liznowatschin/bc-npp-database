@@ -32,6 +32,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P21 Downloaded provider approval runner | #118 | `feature/p21-downloaded-provider-approval-runner` | Complete |
 | P22 Windows runner execution-policy shim | #123 | `feature/p22-windows-runner-shim` | Complete |
 | P23 Northwest Meadowscapes source sweep | #125 | `feature/p23-nwm-source-sweep` | Complete |
+| P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | PR #128 |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1261,3 +1262,59 @@ P23 current catch counts:
 - 19 existing Vancouver PoC matches.
 - 184 new candidate species.
 - 858 draft approval rows.
+
+## Phase 24: West Coast Seeds Source Sweep
+
+Parent issue: #127
+
+Branch: `feature/p24-west-coast-seeds-source-sweep`
+
+Status: PR #128
+
+Goal: deploy the provider source-sweep and approval-review workflow on West
+Coast Seeds while preserving strict review gates for commercial seed mixes,
+vegetables, non-native wildflower components, and lawn material.
+
+- [x] Add WCS source-sweep parsing for body-derived single-species products.
+- [x] Add WCS blend-ingredient parsing from product descriptions.
+- [x] Default WCS source sweeps to the `wildflower-seeds` and `lawn-solutions`
+      Shopify collection feeds instead of the site-wide product feed.
+- [x] Mark WCS candidates as `needs_review` rather than eligible by default.
+- [x] Preserve WCS blend ingredients as `mix_component` supplier rows.
+- [x] Generate ignored WCS sandbox, review, and approval-review outputs.
+- [x] Validate WCS sandbox and approval draft.
+- [x] Run full acceptance.
+- [x] Open PR (#128).
+- [ ] Merge after green CI and close issue.
+
+P24 local acceptance passed:
+
+- `python -m ruff check .`
+- `python -m pytest` (`117 passed`)
+- `bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-WCS --json`
+- `bc-nppd validate-provider-approvals outputs/provider_approval_review/PROV-WCS/approval_manifest_draft.csv --json`
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+
+P24 WCS source-sweep command:
+
+- `bc-nppd scrape-provider-sandbox PROV-WCS --database-instance vancouver --live-fetch --source-sweep --max-pages 3 --raw-dir local/provider_raw --out-dir outputs/provider_sandbox_source_sweep/PROV-WCS --json`
+
+P24 generated ignored outputs:
+
+- `outputs/provider_sandbox_source_sweep/PROV-WCS`
+- `outputs/provider_review_source_sweep/PROV-WCS`
+- `outputs/provider_approval_review/PROV-WCS`
+
+P24 current catch counts:
+
+- 55 unique candidate species.
+- 360 candidate attribute rows.
+- 72 supplier availability rows.
+- 0 mowability rows.
+- 55 species flagged `needs_review`.
+- 68 supplier rows flagged `mix_component`.
+- 1 existing Vancouver PoC match.
+- 54 new candidate species.
+- 487 draft approval rows.

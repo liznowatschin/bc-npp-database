@@ -217,6 +217,78 @@ def test_nwm_shopify_titles_use_botanical_parentheses_and_skip_non_species(tmp_p
     assert all(row["vancouver_eligibility_status"] == "needs_northward_review" for row in species)
 
 
+def test_wcs_shopify_body_extracts_single_species_and_blend_components(tmp_path):
+    fixture_dir = tmp_path / "fixtures" / "PROV-WCS"
+    fixture_dir.mkdir(parents=True)
+    (fixture_dir / "products.json").write_text(
+        json.dumps(
+            {
+                "products": [
+                    {
+                        "title": "Common Woolly Sunflower",
+                        "handle": "common-woolly-sunflower",
+                        "body_html": (
+                            "<p>Eriophyllum lanatum. Height to 30-60cm. "
+                            "Blooms May to August.</p>"
+                        ),
+                        "product_type": "Flower Seeds",
+                        "tags": ["wildflower"],
+                        "variants": [{"available": True}],
+                    },
+                    {
+                        "title": "Cut Flower Blend",
+                        "handle": "cut-flower-blend",
+                        "body_html": (
+                            "<p>Blend Ingredients. [Blanketflower "
+                            "(Gaillardia aristata), Clarkia "
+                            "(Clarkia unguiculata)]</p>"
+                        ),
+                        "product_type": "Flower Seeds",
+                        "tags": ["wildflower"],
+                        "variants": [{"available": True}],
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = scrape_provider_sandbox(
+        "PROV-WCS",
+        "vancouver",
+        tmp_path / "sandbox",
+        input_dir=tmp_path / "fixtures",
+    )
+
+    assert result.diagnostics == ()
+    species = _read_csv(tmp_path / "sandbox" / "candidate_species.csv")
+    names = {row["botanical_name"]: row for row in species}
+    assert set(names) == {
+        "Clarkia unguiculata",
+        "Eriophyllum lanatum",
+        "Gaillardia aristata",
+    }
+    assert names["Eriophyllum lanatum"]["common_name"] == "Common Woolly Sunflower"
+    assert all(row["vancouver_eligibility_status"] == "needs_review" for row in species)
+
+    suppliers = _read_csv(tmp_path / "sandbox" / "supplier_availability.csv")
+    supplier_statuses = {
+        row["botanical_name"]: row["supplier_status"] for row in suppliers
+    }
+    assert supplier_statuses["Eriophyllum lanatum"] == "available"
+    assert supplier_statuses["Gaillardia aristata"] == "mix_component"
+    assert supplier_statuses["Clarkia unguiculata"] == "mix_component"
+
+    attributes = _read_csv(tmp_path / "sandbox" / "candidate_attributes.csv")
+    observation_types = {
+        (row["botanical_name"], row["attribute_value"])
+        for row in attributes
+        if row["attribute_name"] == "provider observation type"
+    }
+    assert ("Eriophyllum lanatum", "product_body") in observation_types
+    assert ("Gaillardia aristata", "blend_ingredient") in observation_types
+
+
 def test_provider_sandbox_deduplicates_species_but_keeps_supplier_rows(tmp_path):
     fixture_dir = tmp_path / "fixtures" / "PROV-NWM"
     fixture_dir.mkdir(parents=True)

@@ -523,3 +523,23 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #126 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #126 to `main` as merge commit `048f213`.
 - Closed Phase 23 as complete.
+- Started Phase 24 West Coast Seeds source sweep on
+  `feature/p24-west-coast-seeds-source-sweep`.
+- Created Phase 24 GitHub issue record: parent issue #127.
+- Added WCS-specific Shopify parsing for body-derived single-species products
+  and blend ingredient lists, with blend ingredients preserved as
+  `mix_component` supplier rows.
+- Defaulted WCS source sweeps to the `wildflower-seeds` and `lawn-solutions`
+  collection feeds instead of the site-wide product feed.
+- Preserved strict review gates by marking WCS candidate species as
+  `needs_review`, reflecting the vegetable/non-native/mix-component boundary in
+  the provider registry.
+- Ran the live WCS source sweep into ignored local/output directories.
+- Generated ignored WCS sandbox, review, and approval-review outputs with 55
+  unique candidate species, 360 attribute rows, 72 supplier rows, 0 mowability
+  rows, 1 existing PoC match, 54 new candidates, and 487 draft approval rows.
+- Validated the WCS approval manifest draft with no diagnostics.
+- Completed P24 local acceptance with Ruff, 117 pytest tests, Sphinx docs,
+  package build, twine metadata check, WCS sandbox validation, and WCS approval
+  draft validation passing.
+- Opened pull request #128 for Phase 24 closeout.

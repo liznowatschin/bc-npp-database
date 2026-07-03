@@ -151,6 +151,43 @@ Run the NWM source sweep with:
      --reviewer "expert reviewer" \
      --json
 
+West Coast Seeds Source Sweep
+-----------------------------
+
+West Coast Seeds is treated as a Tier 3 commercial/practitioner provider.
+The adapter uses the WCS ``wildflower-seeds`` and ``lawn-solutions`` Shopify
+collection feeds by default instead of the site-wide product feed, because the
+site-wide feed contains vegetables and many unrelated products. WCS rows are
+kept as review-only observations: single-species products can be parsed from
+body text, blend ingredient lists can become candidate species observations,
+and blend ingredients are recorded as ``mix_component`` supplier rows.
+
+All WCS candidate species remain ``needs_review`` until an expert rejects,
+defers, or approves them. This is especially important because many commercial
+wildflower blend components are not native to Vancouver or British Columbia.
+
+Run the WCS source sweep with:
+
+.. code-block:: bash
+
+   bc-nppd scrape-provider-sandbox PROV-WCS \
+     --database-instance vancouver \
+     --live-fetch \
+     --source-sweep \
+     --max-pages 3 \
+     --raw-dir local/provider_raw \
+     --out-dir outputs/provider_sandbox_source_sweep/PROV-WCS \
+     --json
+   bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-WCS --json
+   bc-nppd build-provider-review outputs/provider_sandbox_source_sweep/PROV-WCS \
+     --out-dir outputs/provider_review_source_sweep/PROV-WCS \
+     --json
+   bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-WCS \
+     --poc-dir data/poc/vancouver \
+     --out-dir outputs/provider_approval_review/PROV-WCS \
+     --reviewer "expert reviewer" \
+     --json
+
 Raw provider HTML, screenshots, downloads, and scrape caches must remain under
 ignored directories such as ``local/``, ``tmp/``, ``data/raw/``, or
 ``outputs/``.

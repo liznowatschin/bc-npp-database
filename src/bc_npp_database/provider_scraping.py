@@ -310,51 +310,55 @@ def _load_shopify_product_catalog_pages(
 ) -> list[dict[str, str]]:
     provider_id = str(provider["provider_id"])
     homepage_url = str(provider["homepage_url"]).rstrip("/")
-    catalog_base_url = (catalog_url or homepage_url).rstrip("/")
     pages: list[dict[str, str]] = []
     page_limit = max(1, min(max_pages, 25))
     raw_root = raw_dir / provider_id
     raw_root.mkdir(parents=True, exist_ok=True)
-    for page_number in range(1, page_limit + 1):
-        url = _shopify_catalog_page_url(catalog_base_url, page_number)
-        if not _robots_allows(url):
-            diagnostics.append(
-                _diagnostic(
-                    "provider_robots_disallowed",
-                    "Provider robots.txt does not allow the configured product catalogue URL.",
-                    field="catalog_url",
-                    value=url,
+    for catalog_index, catalog_base_url in enumerate(
+        _shopify_catalog_base_urls(provider_id, homepage_url, catalog_url),
+        start=1,
+    ):
+        for page_number in range(1, page_limit + 1):
+            url = _shopify_catalog_page_url(catalog_base_url, page_number)
+            if not _robots_allows(url):
+                diagnostics.append(
+                    _diagnostic(
+                        "provider_robots_disallowed",
+                        "Provider robots.txt does not allow the configured product catalogue URL.",
+                        field="catalog_url",
+                        value=url,
+                    )
                 )
-            )
-            break
-        try:
-            text = _fetch_url(url)
-        except OSError as exc:
-            diagnostics.append(
-                _diagnostic(
-                    "provider_catalog_fetch_failed",
-                    "Provider product catalogue fetch failed.",
-                    field="catalog_url",
-                    value=f"{url}: {exc}",
+                break
+            try:
+                text = _fetch_url(url)
+            except OSError as exc:
+                diagnostics.append(
+                    _diagnostic(
+                        "provider_catalog_fetch_failed",
+                        "Provider product catalogue fetch failed.",
+                        field="catalog_url",
+                        value=f"{url}: {exc}",
+                    )
                 )
+                break
+            raw_filename = f"products_catalog_{catalog_index:02d}_page_{page_number:03d}.json"
+            raw_path = raw_root / raw_filename
+            raw_path.write_text(text, encoding="utf-8")
+            product_count = _shopify_product_count(text)
+            pages.append(
+                {
+                    "url": url,
+                    "json": text,
+                    "fetch_status": "fetched_catalog",
+                    "page_type": "shopify_products_json",
+                }
             )
-            break
-        raw_path = raw_root / f"products_page_{page_number:03d}.json"
-        raw_path.write_text(text, encoding="utf-8")
-        product_count = _shopify_product_count(text)
-        pages.append(
-            {
-                "url": url,
-                "json": text,
-                "fetch_status": "fetched_catalog",
-                "page_type": "shopify_products_json",
-            }
-        )
-        if product_count == 0:
-            break
-        if product_count < 250:
-            break
-        time.sleep(0.25)
+            if product_count == 0:
+                break
+            if product_count < 250:
+                break
+            time.sleep(0.25)
     if not pages:
         diagnostics.append(
             _diagnostic(
@@ -366,6 +370,21 @@ def _load_shopify_product_catalog_pages(
             )
         )
     return pages
+
+
+def _shopify_catalog_base_urls(
+    provider_id: str,
+    homepage_url: str,
+    catalog_url: str | None,
+) -> list[str]:
+    if catalog_url:
+        return [url.strip().rstrip("/") for url in catalog_url.split(",") if url.strip()]
+    if provider_id == "PROV-WCS":
+        return [
+            "https://www.westcoastseeds.com/collections/wildflower-seeds",
+            "https://www.westcoastseeds.com/collections/lawn-solutions",
+        ]
+    return [homepage_url.rstrip("/")]
 
 
 def _shopify_catalog_page_url(catalog_base_url: str, page_number: int) -> str:
@@ -534,16 +553,16 @@ def _parse_shopify_products_json(
         if not isinstance(product, dict):
             continue
         title = str(product.get("title", "")).strip()
-        parsed = _parse_botanical_product_title(title, provider_id)
-        if not parsed:
-            continue
-        botanical_name, common_name = parsed
         handle = str(product.get("handle", "")).strip()
         product_url = _product_url_from_catalog(catalog_url, handle)
         tags = product.get("tags", [])
         tag_text = ", ".join(str(tag) for tag in tags) if isinstance(tags, list) else str(tags)
         product_type = str(product.get("product_type", "")).strip()
-        body_attributes = _parse_shopify_body_attributes(str(product.get("body_html", "")))
+        body_html = str(product.get("body_html", ""))
+        candidates = _shopify_product_species_candidates(provider_id, title, body_html)
+        if not candidates:
+            continue
+        body_attributes = _parse_shopify_body_attributes(body_html)
         variants = product.get("variants", [])
         supplier_status = "unknown"
         if isinstance(variants, list) and variants:
@@ -551,22 +570,117 @@ def _parse_shopify_products_json(
                 variant.get("available") for variant in variants if isinstance(variant, dict)
             )
             supplier_status = "available" if has_available_variant else "unavailable"
-        records.append(
-            {
-                "botanical_name": botanical_name,
-                "common_name": common_name,
-                "source_url": product_url,
-                "product_category": product_type or tag_text,
-                "supplier_status": supplier_status,
-                "attribute_product_title": title,
-                "attribute_product_type": product_type,
-                "attribute_tags": tag_text,
-                "candidate_reason": _shopify_candidate_reason(provider_id),
-                "notes": "Source-sweep catalogue observation; pending user review.",
-                **body_attributes,
-            }
-        )
+        for botanical_name, common_name, observation_type in candidates:
+            records.append(
+                {
+                    "botanical_name": botanical_name,
+                    "common_name": common_name,
+                    "source_url": product_url,
+                    "product_category": product_type or tag_text,
+                    "supplier_status": _shopify_supplier_status(
+                        provider_id, supplier_status, observation_type
+                    ),
+                    "attribute_product_title": title,
+                    "attribute_product_type": product_type,
+                    "attribute_tags": tag_text,
+                    "attribute_provider_observation_type": observation_type,
+                    "candidate_reason": _shopify_candidate_reason(
+                        provider_id, observation_type
+                    ),
+                    "notes": "Source-sweep catalogue observation; pending user review.",
+                    **body_attributes,
+                }
+            )
     return records
+
+
+def _shopify_product_species_candidates(
+    provider_id: str,
+    title: str,
+    body_html: str,
+) -> list[tuple[str, str, str]]:
+    if provider_id == "PROV-WCS":
+        return _wcs_product_species_candidates(title, body_html)
+    parsed = _parse_botanical_product_title(title, provider_id)
+    return [(parsed[0], parsed[1], "product_title")] if parsed else []
+
+
+def _wcs_product_species_candidates(title: str, body_html: str) -> list[tuple[str, str, str]]:
+    plain_text = _plain_text_from_html(body_html)
+    candidates: list[tuple[str, str, str]] = []
+    seen: set[str] = set()
+
+    for common_name, botanical_name in _parenthetical_botanical_pairs(plain_text):
+        key = botanical_name.casefold()
+        if key not in seen:
+            candidates.append((botanical_name, common_name, "blend_ingredient"))
+            seen.add(key)
+
+    if not candidates:
+        leading = _leading_botanical_name(plain_text)
+        if leading:
+            candidates.append((leading, title, "product_body"))
+
+    if not candidates:
+        parsed = _parse_botanical_product_title(title, "PROV-WCS")
+        if parsed:
+            candidates.append((parsed[0], parsed[1], "product_title"))
+
+    return candidates
+
+
+def _parenthetical_botanical_pairs(text: str) -> list[tuple[str, str]]:
+    pairs: list[tuple[str, str]] = []
+    pattern = re.compile(
+        r"([A-Z][A-Za-z' -]{2,80}?)\s*\("
+        r"([A-Z][a-z-]+\s+[a-z][a-z-]+"
+        r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?)"
+        r"\)"
+    )
+    for match in pattern.finditer(text):
+        common_name = _clean_wcs_common_name(match.group(1))
+        botanical_name = _clean_botanical_name(match.group(2))
+        if common_name and _looks_like_botanical_name(botanical_name):
+            pairs.append((common_name, botanical_name))
+    return pairs
+
+
+def _leading_botanical_name(text: str) -> str:
+    match = re.search(
+        r"(?:^|\])\s*([A-Z][a-z-]+\s+[a-z][a-z-]+"
+        r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?)\s*\.",
+        text,
+    )
+    if not match:
+        return ""
+    botanical_name = _clean_botanical_name(match.group(1))
+    return botanical_name if _looks_like_botanical_name(botanical_name) else ""
+
+
+def _plain_text_from_html(value: str) -> str:
+    return _clean_whitespace(
+        re.sub(
+            r"<[^>]+>",
+            " ",
+            value.replace("&nbsp;", " ").replace("&amp;", "&"),
+        )
+    )
+
+
+def _clean_wcs_common_name(value: str) -> str:
+    value = re.sub(r"[\[\],.;:]+", " ", value)
+    value = re.sub(r"\b(Blend Ingredients|Ingredients|and|or)\b", " ", value, flags=re.IGNORECASE)
+    return _clean_whitespace(value)
+
+
+def _shopify_supplier_status(
+    provider_id: str,
+    supplier_status: str,
+    observation_type: str,
+) -> str:
+    if provider_id == "PROV-WCS" and observation_type == "blend_ingredient":
+        return "mix_component"
+    return supplier_status
 
 
 def _parse_shopify_body_attributes(body_html: str) -> dict[str, str]:
@@ -660,9 +774,13 @@ def _product_url_from_catalog(catalog_url: str, handle: str) -> str:
     return urljoin(root, f"/products/{handle}") if handle else catalog_url
 
 
-def _shopify_candidate_reason(provider_id: str) -> str:
+def _shopify_candidate_reason(provider_id: str, observation_type: str = "product_title") -> str:
     if provider_id == "PROV-SATIN":
         return "Satinflower catalogue product title parsed as a botanical species candidate."
+    if provider_id == "PROV-WCS" and observation_type == "blend_ingredient":
+        return "West Coast Seeds blend ingredient parsed as a review-only species candidate."
+    if provider_id == "PROV-WCS":
+        return "West Coast Seeds product body parsed as a review-only species candidate."
     return "Provider catalogue product title parsed as a botanical species candidate."
 
 
@@ -670,6 +788,8 @@ def _vancouver_eligibility(provider_id: str, record: dict[str, str]) -> str:
     category = record.get("product_category", "").casefold()
     if provider_id == "PROV-WCS" and "vegetable" in category:
         return "excluded"
+    if provider_id == "PROV-WCS":
+        return "needs_review"
     if provider_id == "PROV-NWM":
         return "needs_northward_review"
     return record.get("vancouver_eligibility_status") or "candidate"
