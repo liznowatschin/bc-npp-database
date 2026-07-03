@@ -35,7 +35,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | Complete |
 | P25 Cumulative provider approval previews | #129 | `feature/p25-cumulative-provider-approvals` | Complete |
 | P26 Provider approval ID namespacing | #131 | `feature/p26-provider-approval-id-namespacing` | Complete |
-| P27 Usability provider filter layout fix | #133 | `feature/p27-usability-filter-layout` | PR pending |
+| P27 Usability provider filter layout fix | #133 | `feature/p27-usability-filter-layout` | PR #134 |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1444,7 +1444,7 @@ Parent issue: #133
 
 Branch: `feature/p27-usability-filter-layout`
 
-Status: PR pending
+Status: PR #134
 
 Goal: fix the Vancouver usability app provider filters so checkbox controls are
 clearly labeled and do not render as large white boxes covering candidate-view
@@ -1463,7 +1463,7 @@ white boxes.
 - [x] Regenerate the cumulative provider-approved preview app.
 - [x] Validate tracked and cumulative-preview usability outputs.
 - [x] Run full acceptance.
-- [ ] Open PR.
+- [x] Open PR (#134).
 - [ ] Merge after green CI and close issue.
 
 P27 local acceptance passed:

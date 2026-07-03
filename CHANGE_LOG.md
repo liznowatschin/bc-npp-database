@@ -607,3 +607,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Validated tracked and cumulative-preview usability outputs.
 - Completed P27 local acceptance with Ruff, 121 pytest tests, Sphinx docs,
   package build, and twine metadata check passing.
+- Opened pull request #134 for Phase 27 closeout.
