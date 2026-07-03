@@ -591,3 +591,6 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed P26 local acceptance with Ruff, 121 pytest tests, Sphinx docs,
   package build, and twine metadata check passing.
 - Opened pull request #132 for Phase 26 closeout.
+- Verified pull request #132 passed CI for Python 3.11 and Python 3.12.
+- Merged pull request #132 to `main` as merge commit `8feac72`.
+- Closed Phase 26 as complete.
