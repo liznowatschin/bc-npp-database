@@ -32,7 +32,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P21 Downloaded provider approval runner | #118 | `feature/p21-downloaded-provider-approval-runner` | Complete |
 | P22 Windows runner execution-policy shim | #123 | `feature/p22-windows-runner-shim` | Complete |
 | P23 Northwest Meadowscapes source sweep | #125 | `feature/p23-nwm-source-sweep` | Complete |
-| P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | PR pending |
+| P24 West Coast Seeds source sweep | #127 | `feature/p24-west-coast-seeds-source-sweep` | PR #128 |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1269,7 +1269,7 @@ Parent issue: #127
 
 Branch: `feature/p24-west-coast-seeds-source-sweep`
 
-Status: PR pending
+Status: PR #128
 
 Goal: deploy the provider source-sweep and approval-review workflow on West
 Coast Seeds while preserving strict review gates for commercial seed mixes,
@@ -1284,7 +1284,7 @@ vegetables, non-native wildflower components, and lawn material.
 - [x] Generate ignored WCS sandbox, review, and approval-review outputs.
 - [x] Validate WCS sandbox and approval draft.
 - [x] Run full acceptance.
-- [ ] Open PR.
+- [x] Open PR (#128).
 - [ ] Merge after green CI and close issue.
 
 P24 local acceptance passed:

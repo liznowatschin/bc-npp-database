@@ -542,3 +542,4 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed P24 local acceptance with Ruff, 117 pytest tests, Sphinx docs,
   package build, twine metadata check, WCS sandbox validation, and WCS approval
   draft validation passing.
+- Opened pull request #128 for Phase 24 closeout.
