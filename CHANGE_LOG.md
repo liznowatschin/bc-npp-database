@@ -608,3 +608,6 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Completed P27 local acceptance with Ruff, 121 pytest tests, Sphinx docs,
   package build, and twine metadata check passing.
 - Opened pull request #134 for Phase 27 closeout.
+- Verified pull request #134 passed CI for Python 3.11 and Python 3.12.
+- Merged pull request #134 to `main` as merge commit `da5537e`.
+- Closed Phase 27 as complete.
