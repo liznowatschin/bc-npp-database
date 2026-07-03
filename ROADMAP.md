@@ -24,7 +24,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P13 Add Matricaria discoidea | #76 | `feature/p13-add-matricaria-discoidea` | Complete |
 | P14 Fill missing common names | #81 | `feature/p14-fill-common-names` | Complete |
 | P15 Source provider registry and sandbox contracts | #86 | `feature/p15-source-provider-registry` | Complete |
-| P16 Provider scraping sandbox MVP | #91 | `feature/p16-provider-scraping-sandbox` | Active |
+| P16 Provider scraping sandbox MVP | #91 | `feature/p16-provider-scraping-sandbox` | Complete |
 | P17 Approved provider data integration | TBD | `feature/p17-provider-approval-integration` | Planned |
 | P18 Provider data usability layer | TBD | `feature/p18-provider-usability-layer` | Planned |
 
@@ -869,7 +869,7 @@ Parent issue: #91
 
 Branch: `feature/p16-provider-scraping-sandbox`
 
-Status: active
+Status: complete
 
 Goal: add live-capable but CI-fixture-backed provider adapters that scrape or
 parse provider inventories into reviewable sandbox CSV and static HTML outputs.
@@ -886,12 +886,12 @@ parse provider inventories into reviewable sandbox CSV and static HTML outputs.
   - [x] Generate review CSV bundle.
   - [x] Generate static HTML review page.
   - [x] Validate generated sandbox outputs.
-- [ ] P16.4 Verification, docs, and closeout (#95)
+- [x] P16.4 Verification, docs, and closeout (#95)
   - [x] Add docs and tests.
   - [x] Run local acceptance.
   - [x] Open PR and record the PR number (#96).
-  - [ ] Merge PR after green CI.
-  - [ ] Close issues after merge.
+  - [x] Merge PR after green CI.
+  - [x] Close issues after merge.
 
 P16 must not update `data/poc/vancouver`. Raw provider HTML, screenshots,
 downloads, and scrape caches remain ignored.
@@ -911,7 +911,9 @@ Phase 16 local verification passed with:
 - `bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json`
 - `bc-nppd validate-vancouver-pollinator-module data/poc/vancouver/pollinator_module --json`
 
-Pull request #96 is the Phase 16 closeout PR against `main`.
+Pull request #96 passed CI for Python 3.11 and Python 3.12 before merge.
+
+Pull request #96 merged to `main` as merge commit `98fe0bd`.
 
 ## Phase 17: Approved Provider Data Integration
 

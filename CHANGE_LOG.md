@@ -361,3 +361,7 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
   sandbox CLI checks, Sphinx, build, twine, and all Vancouver validators
   passing.
 - Opened pull request #96 for Phase 16 closeout.
+- Verified that pull request #96 passed CI for Python 3.11 and Python 3.12
+  before merge.
+- Merged pull request #96 to `main` as merge commit `98fe0bd`.
+- Closed Phase 16 as complete.
