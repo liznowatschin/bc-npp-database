@@ -40,7 +40,7 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P29 Provider source sweep workflow overlays | #137 | `feature/p29-provider-workflow-overlays` | Complete |
 | P30 Oak Summit provider workflow bootstrap | #143 | `feature/p30-oak-summit-provider-bootstrap` | Complete |
 | P31 One-command reviewed provider preview | TBD | `feature/p31-provider-preview-runner` | Planned |
-| P32 E-Flora attribute boost sandbox | #148 | `feature/p32-eflora-attribute-boost` | Active |
+| P32 E-Flora attribute boost sandbox | #148 | `feature/p32-eflora-attribute-boost` | Complete |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1719,7 +1719,7 @@ Parent issue: #148
 
 Branch: `feature/p32-eflora-attribute-boost`
 
-Status: active
+Status: complete
 
 Goal: add a review-gated E-Flora BC attribute boost sandbox that resolves
 species to atlas pages, extracts Tier 2 source-attributed candidate attributes,
@@ -1740,12 +1740,12 @@ preview outputs without silently overwriting reviewed BC-NPPD values.
   - [x] Apply boost values into ignored preview outputs only.
   - [x] Fill missing, `Unknown`, or `Pending review` fields only.
   - [x] Preserve candidate review status and source attribution.
-- [ ] P32.4 FreshForge nodes, docs, tests, and closeout (#152)
+- [x] P32.4 FreshForge nodes, docs, tests, and closeout (#152)
   - [x] Add `bc_npp_database.eflora` FreshForge provider nodes.
   - [x] Add CLI commands, docs, examples, and tests.
   - [x] Run local acceptance.
   - [x] Open PR (#153) after P32 tasks are complete.
-  - [ ] Merge after green CI and close issue.
+  - [x] Merge after green CI and close issue.
 
 P32 implemented interfaces:
 
@@ -1783,3 +1783,6 @@ P32 local verification passed with:
 - `freshforge providers --json`
 - `freshforge validate examples/workflows/eflora_attribute_boost.yaml --json`
 - `freshforge run examples/workflows/eflora_attribute_boost.yaml --workdir . --json`
+
+Pull request #153 passed CI for Python 3.11 and Python 3.12 and merged to
+`main` as merge commit `c77e4e7`.
