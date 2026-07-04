@@ -696,3 +696,26 @@ with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 - Verified pull request #147 passed CI for Python 3.11 and Python 3.12.
 - Merged pull request #147 to `main` as merge commit `fab205d`.
 - Closed Phase 30 as complete.
+- Started Phase 32 E-Flora attribute boost sandbox on
+  `feature/p32-eflora-attribute-boost`.
+- Created Phase 32 GitHub issue records: parent issue #148 and child issues
+  #149, #150, #151, and #152.
+- Began adding E-Flora as a Tier 2 reference-source boost lane rather than a
+  commercial `PROV-*` supplier lane.
+- Added `src/bc_npp_database/eflora.py` with deterministic atlas URL helpers,
+  fixture-backed and explicit live-fetch resolution, atlas parsing, boost
+  sandbox validation, and review-gated preview application.
+- Added E-Flora CLI commands for species resolution, boost sandbox generation,
+  boost validation, and preview application.
+- Added the `bc_npp_database.eflora` FreshForge provider namespace and
+  `examples/workflows/eflora_attribute_boost.yaml`.
+- Added E-Flora Sphinx docs plus fixture-backed tests for parser, CLI, and
+  FreshForge workflow behavior.
+- Verified the fixture FreshForge workflow runs successfully with 1 resolved
+  species, 12 candidate attributes, 12 source-attribution rows, 2 synonym rows,
+  and 54 preview plant rows.
+- Completed P32 local acceptance with Ruff, 140 pytest tests, Sphinx docs,
+  package build, twine metadata check, E-Flora boost build/validate/apply
+  commands, FreshForge provider discovery, FreshForge workflow validation, and
+  fixture workflow execution passing.
+- Opened pull request #153 for Phase 32 closeout.

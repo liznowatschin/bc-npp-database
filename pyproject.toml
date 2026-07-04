@@ -72,6 +72,7 @@ bc-nppd = "bc_npp_database.cli:app"
 
 [project.entry-points."freshforge.providers"]
 bc_npp_database = "bc_npp_database.freshforge_provider:provider_factory"
+"bc_npp_database.eflora" = "bc_npp_database.freshforge_provider:eflora_provider_factory"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

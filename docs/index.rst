@@ -17,6 +17,7 @@ database for coastal British Columbia.
    provider-sandbox
    provider-approvals
    provider-review-workflow
+   eflora-attribute-boost
    canonical-pipeline
    scoring-framework
    foundation-release

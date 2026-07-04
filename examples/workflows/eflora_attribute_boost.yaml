@@ -1,0 +1,38 @@
+workflow:
+  id: eflora_attribute_boost_fixture
+  name: "E-Flora attribute boost fixture workflow"
+  description: "Build, validate, and preview-apply E-Flora boost rows from fixtures."
+
+nodes:
+  - id: extract_boost
+    provider: bc_npp_database.eflora.extract_boost
+    inputs:
+      species_csv: tests/fixtures/eflora/species.csv
+    parameters:
+      input_dir: tests/fixtures/eflora
+      access_date: "2026-07-03"
+      live_fetch: false
+      raw_dir: local/eflora_raw
+    outputs:
+      boost_dir: outputs/eflora_boost_fixture/vancouver
+    artifacts:
+      boost_dir: outputs/eflora_boost_fixture/vancouver
+
+  - id: validate_boost
+    provider: bc_npp_database.eflora.validate_boost
+    needs:
+      - extract_boost
+    inputs:
+      boost_dir: outputs/eflora_boost_fixture/vancouver
+
+  - id: apply_preview
+    provider: bc_npp_database.eflora.apply_preview
+    needs:
+      - validate_boost
+    inputs:
+      boost_dir: outputs/eflora_boost_fixture/vancouver
+      poc_dir: data/poc/vancouver
+    outputs:
+      preview_dir: outputs/eflora_boost_preview_fixture/vancouver
+    artifacts:
+      preview_dir: outputs/eflora_boost_preview_fixture/vancouver
