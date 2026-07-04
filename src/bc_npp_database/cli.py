@@ -14,6 +14,15 @@ from .canonical import (
     import_canonical_workbook,
 )
 from .config import PROJECT_ABBREVIATION, PROJECT_NAME
+from .eflora import (
+    apply_eflora_boost,
+    build_eflora_boost,
+    resolve_eflora_species,
+    validate_eflora_boost,
+)
+from .eflora import (
+    has_error_diagnostics as has_eflora_error_diagnostics,
+)
 from .evidence_hardening import (
     generate_vancouver_evidence_hardening,
     validate_vancouver_evidence_hardening,
@@ -160,6 +169,124 @@ def validate_source_attribution_command(
     """Validate source attribution records from CSV, JSON, or JSON Lines."""
     diagnostics = validate_source_attribution_records(load_mapping_records(path))
     _emit_diagnostics(diagnostics, json_output=json_output)
+
+
+@app.command("resolve-eflora-species")
+def resolve_eflora_species_command(
+    species_name: str,
+    input_dir: Path | None = typer.Option(
+        None,
+        "--input-dir",
+        help="Directory of fixture or previously materialized E-Flora atlas pages.",
+    ),
+    live_fetch: bool = typer.Option(
+        False,
+        "--live-fetch",
+        help="Fetch the E-Flora atlas page into ignored raw storage.",
+    ),
+    raw_dir: Path = typer.Option(
+        Path("local/eflora_raw"),
+        "--raw-dir",
+        help="Ignored directory for live-fetched raw E-Flora HTML.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Resolve one botanical name to an E-Flora atlas page."""
+    result = resolve_eflora_species(
+        species_name,
+        input_dir=input_dir,
+        live_fetch=live_fetch,
+        raw_dir=raw_dir,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"E-Flora atlas URL: {result.atlas_url}")
+        typer.echo(f"Match status: {result.match_status or 'unresolved'}")
+    if has_eflora_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("build-eflora-boost")
+def build_eflora_boost_command(
+    species_csv: Path,
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output E-Flora boost directory."),
+    input_dir: Path | None = typer.Option(
+        None,
+        "--input-dir",
+        help="Directory of fixture or previously materialized E-Flora atlas pages.",
+    ),
+    live_fetch: bool = typer.Option(
+        False,
+        "--live-fetch",
+        help="Fetch E-Flora atlas pages into ignored raw storage.",
+    ),
+    raw_dir: Path = typer.Option(
+        Path("local/eflora_raw"),
+        "--raw-dir",
+        help="Ignored directory for live-fetched raw E-Flora HTML.",
+    ),
+    access_date: str | None = typer.Option(
+        None,
+        "--access-date",
+        help="Access date to preserve in E-Flora citations.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Build a review-gated E-Flora attribute boost sandbox."""
+    result = build_eflora_boost(
+        species_csv,
+        out_dir,
+        input_dir=input_dir,
+        live_fetch=live_fetch,
+        raw_dir=raw_dir,
+        access_date=access_date,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated E-Flora boost sandbox at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_eflora_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-eflora-boost")
+def validate_eflora_boost_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate an E-Flora boost sandbox directory."""
+    result = validate_eflora_boost(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"E-Flora boost validation passed for {path}.")
+    if has_eflora_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("apply-eflora-boost")
+def apply_eflora_boost_command(
+    boost_dir: Path,
+    poc_dir: Path = typer.Option(..., "--poc-dir", help="Input Vancouver PoC directory."),
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output preview directory."),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Apply E-Flora boost rows into an ignored preview output."""
+    result = apply_eflora_boost(boost_dir, poc_dir, out_dir)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Generated E-Flora boost preview at {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_eflora_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
 
 
 @app.command("validate-source-providers")

@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
+from .eflora import apply_eflora_boost, build_eflora_boost, validate_eflora_boost
+from .eflora import has_error_diagnostics as has_eflora_errors
 from .provider_approval_review import build_provider_approval_review
 from .provider_scraping import build_provider_review, scrape_provider_sandbox
 from .provider_scraping import has_error_diagnostics as has_provider_scraping_errors
@@ -15,6 +17,11 @@ from .providers import validate_provider_sandbox
 def provider_factory():
     """Return the BC-NPPD FreshForge provider."""
     return BcNppDatabaseProvider()
+
+
+def eflora_provider_factory():
+    """Return the BC-NPPD E-Flora FreshForge provider."""
+    return EFloraProvider()
 
 
 class BcNppDatabaseProvider:
@@ -183,6 +190,137 @@ class BcNppDatabaseProvider:
                 _freshforge_diagnostic(
                     "bc_npp_database.node_type.unsupported",
                     f"Unsupported BC-NPPD node type: {node_type.id}",
+                    severity="error",
+                ),
+            ),
+        )
+
+
+class EFloraProvider:
+    """Executable FreshForge provider for E-Flora boost workflows."""
+
+    def metadata(self):
+        from freshforge.providers import NodeTypeMetadata, ProviderMetadata
+
+        return ProviderMetadata(
+            id="bc_npp_database.eflora",
+            version="0.1.0a1",
+            name="BC-NPPD E-Flora provider",
+            description="E-Flora attribute boost nodes for BC-NPPD.",
+            node_types=(
+                NodeTypeMetadata(
+                    id="resolve_species",
+                    name="Resolve E-Flora species",
+                    description="Resolve input species into an E-Flora boost sandbox.",
+                    inputs=("species_csv",),
+                    outputs=("boost_dir",),
+                    artifacts=("boost_dir",),
+                ),
+                NodeTypeMetadata(
+                    id="extract_boost",
+                    name="Extract E-Flora boost",
+                    description="Extract E-Flora atlas attributes into a boost sandbox.",
+                    inputs=("species_csv",),
+                    outputs=("boost_dir",),
+                    artifacts=("boost_dir",),
+                ),
+                NodeTypeMetadata(
+                    id="validate_boost",
+                    name="Validate E-Flora boost",
+                    description="Validate an E-Flora boost sandbox.",
+                    inputs=("boost_dir",),
+                ),
+                NodeTypeMetadata(
+                    id="apply_preview",
+                    name="Apply E-Flora boost preview",
+                    description="Apply E-Flora boost rows into an ignored preview output.",
+                    inputs=("boost_dir", "poc_dir"),
+                    outputs=("preview_dir",),
+                    artifacts=("preview_dir",),
+                ),
+            ),
+        )
+
+    def validate_node(self, node, node_type, *, location: str) -> Sequence[Any]:
+        diagnostics: list[Any] = []
+        diagnostics.extend(
+            _missing_keys(
+                required=node_type.inputs,
+                actual=node.inputs,
+                field_name="inputs",
+                location=location,
+            )
+        )
+        diagnostics.extend(
+            _missing_keys(
+                required=node_type.outputs,
+                actual=node.outputs,
+                field_name="outputs",
+                location=location,
+            )
+        )
+        artifacts = node.artifacts if isinstance(node.artifacts, dict) else {}
+        diagnostics.extend(
+            _missing_keys(
+                required=node_type.artifacts,
+                actual=artifacts,
+                field_name="artifacts",
+                location=location,
+            )
+        )
+        return diagnostics
+
+    def run_node(self, node, node_type, *, context):
+        from freshforge.records import ProviderRunResult, RunStatus
+
+        if node_type.id in {"resolve_species", "extract_boost"}:
+            result = build_eflora_boost(
+                context.resolve_path(str(node.inputs["species_csv"])),
+                context.resolve_path(str(node.artifacts["boost_dir"])),
+                input_dir=_optional_resolved_path(node.parameters.get("input_dir"), context),
+                live_fetch=bool(node.parameters.get("live_fetch", False)),
+                raw_dir=context.resolve_path(
+                    str(node.parameters.get("raw_dir", "local/eflora_raw"))
+                ),
+                access_date=_optional_string(node.parameters.get("access_date")),
+            )
+            return ProviderRunResult(
+                status=_run_status(not has_eflora_errors(result.diagnostics)),
+                outputs={"boost_dir": result.path, "counts": result.counts},
+                artifacts=result.paths,
+                diagnostics=_freshforge_diagnostics(result.diagnostics),
+                data=result.to_summary_dict(),
+            )
+
+        if node_type.id == "validate_boost":
+            result = validate_eflora_boost(context.resolve_path(str(node.inputs["boost_dir"])))
+            return ProviderRunResult(
+                status=_run_status(not has_eflora_errors(result.diagnostics)),
+                outputs={"counts": result.counts},
+                diagnostics=_freshforge_diagnostics(result.diagnostics),
+                data=result.to_summary_dict(),
+            )
+
+        if node_type.id == "apply_preview":
+            result = apply_eflora_boost(
+                context.resolve_path(str(node.inputs["boost_dir"])),
+                context.resolve_path(str(node.inputs["poc_dir"])),
+                context.resolve_path(str(node.artifacts["preview_dir"])),
+            )
+            return ProviderRunResult(
+                status=_run_status(not has_eflora_errors(result.diagnostics)),
+                outputs={"preview_dir": result.path, "counts": result.counts},
+                artifacts=result.paths,
+                diagnostics=_freshforge_diagnostics(result.diagnostics),
+                data=result.to_summary_dict(),
+            )
+
+        return ProviderRunResult(
+            status=RunStatus.FAILED,
+            diagnostics=(
+                _freshforge_diagnostic(
+                    "bc_npp_database.eflora.node_type.unsupported",
+                    f"Unsupported BC-NPPD E-Flora node type: {node_type.id}",
                     severity="error",
                 ),
             ),

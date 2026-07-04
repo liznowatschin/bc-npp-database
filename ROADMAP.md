@@ -38,8 +38,9 @@ synchronized with GitHub issues, planning notes, pull requests, and
 | P27 Usability provider filter layout fix | #133 | `feature/p27-usability-filter-layout` | Complete |
 | P28 Provider approval dedupe guardrails | #135 | `feature/p28-provider-approval-dedupe` | Complete |
 | P29 Provider source sweep workflow overlays | #137 | `feature/p29-provider-workflow-overlays` | Complete |
-| P30 Premier Pacific source sweep | TBD | `feature/p30-premier-source-sweep` | Planned |
+| P30 Oak Summit provider workflow bootstrap | #143 | `feature/p30-oak-summit-provider-bootstrap` | Complete |
 | P31 One-command reviewed provider preview | TBD | `feature/p31-provider-preview-runner` | Planned |
+| P32 E-Flora attribute boost sandbox | #148 | `feature/p32-eflora-attribute-boost` | Active |
 
 ## Phase 0: Bootstrap Scaffold
 
@@ -1643,7 +1644,7 @@ FreshForge workflow file while keeping live/raw/generated outputs ignored.
   - [x] Add `PROV-OAKSUMMIT` to the Tier 3 provider registry.
   - [x] Add Oak Summit defaults to the FreshForge workflow authoring helper.
   - [x] Generate `examples/workflows/providers/PROV-OAKSUMMIT.yaml`.
-- [ ] P30.2 FreshForge workflow generation and Oak Summit source-review smoke
+- [x] P30.2 FreshForge workflow generation and Oak Summit source-review smoke
       (#145)
   - [x] Validate the generated FreshForge workflow.
   - [x] Run a local FreshForge source-review smoke against the Oak Summit
@@ -1652,7 +1653,7 @@ FreshForge workflow file while keeping live/raw/generated outputs ignored.
         provider robots policy.
   - [x] Reject genus-only `sp`/`spp` placeholders as species candidates.
   - [x] Record generated review output paths and counts.
-- [ ] P30.3 Docs, tests, and closeout (#146)
+- [x] P30.3 Docs, tests, and closeout (#146)
   - [x] Update provider docs and tests.
   - [x] Run local acceptance.
   - [x] Open PR (#147) after P30 tasks are complete.
@@ -1711,3 +1712,74 @@ for reproducible Greg/agent runs.
 - [ ] P31.1 Reviewed manifest discovery and cumulative apply defaults.
 - [ ] P31.2 Combined source-review plus approval-preview workflow docs.
 - [ ] P31.3 Validation, usability checks, and closeout.
+
+## Phase 32: E-Flora Attribute Boost Sandbox
+
+Parent issue: #148
+
+Branch: `feature/p32-eflora-attribute-boost`
+
+Status: active
+
+Goal: add a review-gated E-Flora BC attribute boost sandbox that resolves
+species to atlas pages, extracts Tier 2 source-attributed candidate attributes,
+validates boost packages, and can apply missing-value boosts into ignored
+preview outputs without silently overwriting reviewed BC-NPPD values.
+
+- [x] P32.1 E-Flora source contract and atlas resolver (#149)
+  - [x] Add deterministic E-Flora atlas URL and external-ID helpers.
+  - [x] Add fixture-backed and explicit live-fetch resolver paths.
+  - [x] Preserve citation/access-date/source-tier metadata.
+- [x] P32.2 Atlas parser and boost sandbox tables (#150)
+  - [x] Parse habitat/range, status, ecology/BEC, bloom period, family,
+        common name, and synonyms from atlas fixtures.
+  - [x] Emit `resolved_species`, `candidate_attributes`, `source_attribution`,
+        `synonyms`, `diagnostics`, and `manifest` artifacts.
+  - [x] Validate malformed, missing, ambiguous, and excluded-source rows.
+- [x] P32.3 Review-gated boost preview and approval workflow (#151)
+  - [x] Apply boost values into ignored preview outputs only.
+  - [x] Fill missing, `Unknown`, or `Pending review` fields only.
+  - [x] Preserve candidate review status and source attribution.
+- [ ] P32.4 FreshForge nodes, docs, tests, and closeout (#152)
+  - [x] Add `bc_npp_database.eflora` FreshForge provider nodes.
+  - [x] Add CLI commands, docs, examples, and tests.
+  - [x] Run local acceptance.
+  - [ ] Open PR after P32 tasks are complete.
+  - [ ] Merge after green CI and close issue.
+
+P32 implemented interfaces:
+
+- `bc-nppd resolve-eflora-species SPECIES_NAME --json`
+- `bc-nppd build-eflora-boost INPUT_SPECIES_CSV --out-dir outputs/eflora_boost/vancouver --json`
+- `bc-nppd validate-eflora-boost BOOST_DIR --json`
+- `bc-nppd apply-eflora-boost BOOST_DIR --poc-dir data/poc/vancouver --out-dir outputs/eflora_boost_preview/vancouver --json`
+- FreshForge provider namespace `bc_npp_database.eflora` with
+  `resolve_species`, `extract_boost`, `validate_boost`, and `apply_preview`.
+- FreshForge example workflow `examples/workflows/eflora_attribute_boost.yaml`.
+
+P32 fixture workflow smoke generated ignored outputs:
+
+- `outputs/eflora_boost_fixture/vancouver`
+- `outputs/eflora_boost_preview_fixture/vancouver`
+
+P32 fixture workflow smoke counts:
+
+- 1 resolved species.
+- 12 candidate attribute rows.
+- 12 source-attribution rows.
+- 2 synonym rows.
+- 54 preview plant rows.
+
+P32 local verification passed with:
+
+- `python -m ruff check .`
+- `python -m pytest` (140 passed)
+- `sphinx-build -b html docs _build/html -W`
+- `python -m build`
+- `twine check dist/*`
+- `bc-nppd build-eflora-boost tests/fixtures/eflora/species.csv --input-dir tests/fixtures/eflora --out-dir outputs/eflora_boost_fixture/vancouver --access-date 2026-07-03 --json`
+- `bc-nppd validate-eflora-boost outputs/eflora_boost_fixture/vancouver --json`
+- `bc-nppd apply-eflora-boost outputs/eflora_boost_fixture/vancouver --poc-dir data/poc/vancouver --out-dir outputs/eflora_boost_preview_fixture/vancouver --json`
+- `freshforge providers --json`
+- `freshforge validate examples/workflows/eflora_attribute_boost.yaml --json`
+- `freshforge run examples/workflows/eflora_attribute_boost.yaml --workdir . --json`
