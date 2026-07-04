@@ -1744,7 +1744,7 @@ preview outputs without silently overwriting reviewed BC-NPPD values.
   - [x] Add `bc_npp_database.eflora` FreshForge provider nodes.
   - [x] Add CLI commands, docs, examples, and tests.
   - [x] Run local acceptance.
-  - [ ] Open PR after P32 tasks are complete.
+  - [x] Open PR (#153) after P32 tasks are complete.
   - [ ] Merge after green CI and close issue.
 
 P32 implemented interfaces:
