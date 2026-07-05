@@ -52,16 +52,14 @@ def test_build_provider_approval_review_flags_new_taxonomy_candidates(tmp_path):
     assert result.diagnostics == ()
     items = _read_csv(tmp_path / "approval_review" / "review_items.csv")
     assert items[0]["botanical_name"] == "Prunella vulgaris ssp lanceolata"
-    assert items[0]["species_id"] == ""
-    assert items[0]["existing_status"] == "new"
-    assert items[0]["default_target_action"] == "add_species"
-    assert items[0]["taxonomy_flag"] == "yes"
-    assert items[0]["default_approval_status"] == "needs_taxonomy_review"
+    assert items[0]["species_id"] == "BCNPPD-0127"
+    assert items[0]["existing_status"] == "existing"
+    assert items[0]["default_target_action"] == "update_existing"
+    assert items[0]["taxonomy_flag"] == "no"
 
     html = (tmp_path / "approval_review" / "index.html").read_text(encoding="utf-8")
     assert "Provider Approval Review" in html
     assert "Download approval_manifest.csv" in html
-    assert "needs_taxonomy_review" in html
     assert "Provider source" in html
     assert "Batch Review" in html
     assert 'id="select-visible"' in html

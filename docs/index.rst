@@ -15,6 +15,7 @@ database for coastal British Columbia.
    source-policy
    source-attribution
    provider-sandbox
+   provider-ingestion-pipeline
    provider-approvals
    provider-review-workflow
    eflora-attribute-boost

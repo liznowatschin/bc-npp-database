@@ -869,8 +869,7 @@ def _emit_diagnostics(diagnostics: list[object], *, json_output: bool) -> None:
         typer.echo("Validation passed.")
     if any(diagnostic.severity.value == "error" for diagnostic in diagnostics):
         raise typer.Exit(code=1)
-import typer
-from pathlib import Path
+
 
 @app.command("generate-provider-workflow-templates")
 def generate_provider_workflow_templates_command(
@@ -889,18 +888,17 @@ def generate_provider_workflow_templates_command(
 ) -> None:
     """Generate FreshForge YAML workflow templates for the four default providers."""
     from .provider_workflows import generate_provider_source_workflow
-    import os
-    
+
     # The four default providers mentioned in the request
     provider_ids = ["PROV-SATIN", "PROV-NWM", "PROV-WCS", "PROV-PREMIER"]
-    
+
     # Ensure output directory exists
     out_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate workflow for each provider
     for provider_id in provider_ids:
         output_path = out_dir / f"{provider_id.lower()}_source_review.yaml"
-        
+
         result = generate_provider_source_workflow(
             provider_id,
             output_path=output_path,
@@ -908,10 +906,10 @@ def generate_provider_workflow_templates_command(
             database_instance=database_instance,
             force=force,
         )
-        
+
         if result.diagnostics:
             for diagnostic in result.diagnostics:
                 typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
             raise typer.Exit(code=1)
         else:
-            typer.echo(f"Generated workflow template for {provider_id} at {output_path}
+            typer.echo(f"Generated workflow template for {provider_id} at {output_path}")
