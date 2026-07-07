@@ -63,6 +63,9 @@ Export the tracked Vancouver PoC database to a formatted Excel workbook:
      --json
    bc-nppd validate-vancouver-poc-excel outputs/vancouver_poc_export.xlsx --json
 
+A downloadable copy of the current tracked export is committed at
+``data/poc/vancouver/exports/vancouver_poc_export.xlsx``.
+
 The July 2026 tracked PoC contains 493 plant rows, 460 sources, 5,176
 source-attribution rows, 5,160 provider approval-manifest rows, 402 provider
 candidate-species rows, 1,816 provider candidate-attribute rows, 603 supplier

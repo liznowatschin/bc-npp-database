@@ -16,6 +16,8 @@ Inspect:
 * `provider_data/` for provider approval decisions, candidate species,
   candidate attributes, supplier rows, provisional mowability rows, and
   provider attribution.
+* `exports/vancouver_poc_export.xlsx` for a downloadable formatted Excel dump
+  of the current tracked PoC database instance.
 * `manifest.json` for generation metadata and caveats.
 * `diagnostics.csv` for PoC warnings.
 
