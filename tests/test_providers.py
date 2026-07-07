@@ -1,7 +1,15 @@
 import csv
 import json
+import shutil
 from pathlib import Path
 
+from bc_npp_database.diagnostics import Severity
+from bc_npp_database.provider_approvals import (
+    ProviderApprovalResult,
+    apply_provider_sandbox,
+    apply_provider_sandbox_sequence,
+    auto_import_provider_sandboxes,
+)
 from bc_npp_database.providers import (
     SourceProviderRecord,
     validate_provider_sandbox,
@@ -10,6 +18,12 @@ from bc_npp_database.providers import (
 )
 
 REGISTRY = Path("data/source_providers/provider_registry.csv")
+POC_DIR = Path("data/poc/vancouver")
+
+
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        return [dict(row) for row in csv.DictReader(handle)]
 
 
 def test_provider_registry_validates_cleanly():
@@ -133,7 +147,7 @@ def _write_provider_sandbox(
     mowability_overrides: dict[str, str] | None = None,
 ) -> Path:
     sandbox = tmp_path / "provider_sandbox"
-    sandbox.mkdir()
+    sandbox.mkdir(parents=True)
     species_row = {
         "provider_id": "PROV-SATIN",
         "botanical_name": "Achillea millefolium",
@@ -147,7 +161,7 @@ def _write_provider_sandbox(
     } | (species_overrides or {})
     mowability_row = {
         "provider_id": species_row["provider_id"],
-        "botanical_name": "Achillea millefolium",
+        "botanical_name": species_row["botanical_name"],
         "mowability_score": "3",
         "source_url": species_row["source_url"],
         "review_status": "pending_review",
@@ -171,7 +185,7 @@ def _write_provider_sandbox(
         [
             {
                 "provider_id": species_row["provider_id"],
-                "botanical_name": "Achillea millefolium",
+                "botanical_name": species_row["botanical_name"],
                 "attribute_name": "supplier_note",
                 "attribute_value": "Native seed product page.",
                 "evidence_confidence": "Pending review",
@@ -185,7 +199,7 @@ def _write_provider_sandbox(
         [
             {
                 "provider_id": species_row["provider_id"],
-                "botanical_name": "Achillea millefolium",
+                "botanical_name": species_row["botanical_name"],
                 "supplier_status": "available",
                 "product_url": species_row["source_url"],
                 "review_status": "pending_review",
@@ -224,3 +238,232 @@ def _write_csv(path: Path, rows: list[dict[str, str]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+
+
+def test_apply_provider_sandbox_basic_auto_approve(tmp_path):
+    """Test basic auto-approve of a sandbox with eligible candidates."""
+    sandbox = _write_provider_sandbox(tmp_path)
+    poc_dir = _clean_poc_dir(tmp_path)
+
+    output_dir = tmp_path / "test_output" / "vancouver"
+
+    result = apply_provider_sandbox(
+        sandbox,
+        poc_dir,
+        output_dir,
+        regenerate_downstream=False,
+    )
+
+    assert isinstance(result, ProviderApprovalResult)
+    assert not [d for d in result.diagnostics if d.severity == Severity.ERROR]
+    assert result.counts["eligible_species"] == 1
+    assert result.counts["excluded_species"] == 0
+    assert result.counts["approved_rows"] == 4  # species + supplier + attribute + mowability
+    assert result.counts["supplier_included"] == 1
+    assert result.counts["attribute_included"] == 1
+    assert result.counts["mowability_included"] == 1
+
+    approval_rows = _read_csv(output_dir / "provider_data" / "approval_manifest.csv")
+    assert {row["approval_status"] for row in approval_rows} == {"approved"}
+    assert {row["sandbox_table"] for row in approval_rows} == {
+        "candidate_species.csv",
+        "supplier_availability.csv",
+        "candidate_attributes.csv",
+        "mowability.csv",
+    }
+
+    plants = _read_csv(output_dir / "plant_list.csv")
+    # The sandbox species already exists in POC, so we check it's present with our data
+    assert any(row["Botanical Name"] == "Achillea millefolium" for row in plants)
+
+    suppliers = _read_csv(output_dir / "provider_data" / "supplier_availability.csv")
+    # Check that at least one supplier row has our provider_id
+    assert any(supplier["provider_id"] == "PROV-SATIN" and
+               supplier["botanical_name"] == "Achillea millefolium"
+               for supplier in suppliers)
+
+    mowability = _read_csv(output_dir / "provider_data" / "mowability.csv")
+    assert any(m["provider_id"] == "PROV-SATIN" and
+               m["botanical_name"] == "Achillea millefolium"
+               for m in mowability)
+
+
+def test_apply_provider_sandbox_excludes_ineligible_species(tmp_path):
+    """Test that excluded species are filtered out."""
+    sandbox = _write_provider_sandbox(
+        tmp_path,
+        species_overrides={
+            "vancouver_eligibility_status": "excluded",
+        },
+    )
+    poc_dir = _clean_poc_dir(tmp_path)
+
+    output_dir = tmp_path / "test_output" / "vancouver"
+
+    result = apply_provider_sandbox(
+        sandbox,
+        poc_dir,
+        output_dir,
+        regenerate_downstream=False,
+    )
+
+    assert isinstance(result, ProviderApprovalResult)
+    assert not [d for d in result.diagnostics if d.severity == Severity.ERROR]
+    assert result.counts["eligible_species"] == 0
+    assert result.counts["excluded_species"] == 1
+    assert result.counts["approved_rows"] == 0
+    assert result.counts["supplier_included"] == 0
+    assert result.counts["attribute_included"] == 0
+    assert result.counts["mowability_included"] == 0
+
+    # Check that no new supplier/mowability rows were added for our sandbox species
+    suppliers = _read_csv(output_dir / "provider_data" / "supplier_availability.csv")
+    mowability = _read_csv(output_dir / "provider_data" / "mowability.csv")
+    assert not any(s["provider_id"] == "PROV-SATIN" for s in suppliers)
+    assert not any(m["provider_id"] == "PROV-SATIN" for m in mowability)
+
+
+def test_apply_provider_sandbox_wcs_vegetables_excluded(tmp_path):
+    """Test that PROV-WCS vegetables are excluded."""
+    sandbox = _write_provider_sandbox(
+        tmp_path,
+        species_overrides={
+            "provider_id": "PROV-WCS",
+            "botanical_name": "Lactuca sativa",
+            "common_name": "Lettuce",
+            "product_category": "Vegetable Seeds",
+            "vancouver_eligibility_status": "excluded",
+            "candidate_status": "excluded",
+            "source_url": "https://westcoastseeds.com/products/lettuce",
+        },
+        mowability_overrides={
+            "provider_id": "PROV-WCS",
+            "botanical_name": "Lactuca sativa",
+            "source_url": "https://westcoastseeds.com/products/lettuce",
+        },
+    )
+    poc_dir = _clean_poc_dir(tmp_path)
+
+    result = apply_provider_sandbox(
+        sandbox,
+        poc_dir,
+        tmp_path / "vancouver",
+        regenerate_downstream=False,
+    )
+
+    assert isinstance(result, ProviderApprovalResult)
+    assert not [d for d in result.diagnostics if d.severity == Severity.ERROR]
+    assert result.counts["eligible_species"] == 0
+    assert result.counts["excluded_species"] == 1
+
+    plants = _read_csv(tmp_path / "vancouver" / "plant_list.csv")
+    assert not any(row["Botanical Name"] == "Lactuca sativa" for row in plants)
+
+
+def test_apply_provider_sandbox_sequence_cumulates_sandboxes(tmp_path):
+    satin = _write_provider_sandbox(tmp_path / "satin")
+    premier = _write_provider_sandbox(
+        tmp_path / "premier",
+        species_overrides={
+            "provider_id": "PROV-PREMIER",
+            "botanical_name": "Festuca rubra",
+            "common_name": "red fescue",
+            "source_url": "https://premierpacificseeds.ca/products/festuca-rubra",
+        },
+        mowability_overrides={
+            "provider_id": "PROV-PREMIER",
+            "botanical_name": "Festuca rubra",
+            "source_url": "https://premierpacificseeds.ca/products/festuca-rubra",
+        },
+    )
+    poc_dir = _clean_poc_dir(tmp_path)
+
+    result = apply_provider_sandbox_sequence(
+        [satin, premier],
+        poc_dir,
+        tmp_path / "sequence",
+        regenerate_downstream=False,
+    )
+
+    assert not [d for d in result.diagnostics if d.severity == Severity.ERROR]
+    plants = _read_csv(tmp_path / "sequence" / "plant_list.csv")
+    assert any(row["Botanical Name"] == "Achillea millefolium" for row in plants)
+    assert any(row["Botanical Name"] == "Festuca rubra" for row in plants)
+    suppliers = _read_csv(tmp_path / "sequence" / "provider_data" / "supplier_availability.csv")
+    assert {row["provider_id"] for row in suppliers} >= {"PROV-SATIN", "PROV-PREMIER"}
+
+
+def test_auto_import_provider_sandboxes_from_fixtures_for_other_providers(tmp_path):
+    poc_dir = _clean_poc_dir(tmp_path)
+
+    result = auto_import_provider_sandboxes(
+        ["PROV-NWM", "PROV-WCS", "PROV-PREMIER"],
+        poc_dir,
+        tmp_path / "auto_import",
+        sandbox_root=tmp_path / "sandboxes",
+        input_dir=Path("tests/fixtures/providers"),
+        regenerate_downstream=False,
+    )
+
+    assert not [d for d in result.diagnostics if d.severity == Severity.ERROR]
+    assert result.counts["PROV-NWM_candidate_species"] == 1
+    assert result.counts["PROV-WCS_candidate_species"] == 2
+    assert result.counts["PROV-PREMIER_candidate_species"] == 1
+    assert result.counts["sequence_sandbox_species"] == 4
+    assert result.counts["sequence_eligible_species"] == 3
+    assert result.counts["sequence_excluded_species"] == 1
+    assert result.counts["sequence_supplier_included"] == 3
+    assert result.counts["sequence_attribute_included"] == 4
+    assert result.counts["sequence_mowability_included"] == 2
+
+    approval_rows = _read_csv(tmp_path / "auto_import" / "provider_data" / "approval_manifest.csv")
+    assert {row["approval_status"] for row in approval_rows} == {"approved"}
+    assert {row["sandbox_table"] for row in approval_rows} == {
+        "candidate_species.csv",
+        "supplier_availability.csv",
+        "candidate_attributes.csv",
+        "mowability.csv",
+    }
+    assert {row["provider_id"] for row in approval_rows} == {
+        "PROV-NWM",
+        "PROV-WCS",
+        "PROV-PREMIER",
+    }
+
+    plants = _read_csv(tmp_path / "auto_import" / "plant_list.csv")
+    candidate_species = _read_csv(
+        tmp_path / "auto_import" / "provider_data" / "candidate_species.csv"
+    )
+    candidate_attributes = _read_csv(
+        tmp_path / "auto_import" / "provider_data" / "candidate_attributes.csv"
+    )
+    suppliers = _read_csv(
+        tmp_path / "auto_import" / "provider_data" / "supplier_availability.csv"
+    )
+    assert {row["provider_id"] for row in candidate_species} == {
+        "PROV-NWM",
+        "PROV-WCS",
+        "PROV-PREMIER",
+    }
+    assert {row["provider_id"] for row in candidate_attributes} == {
+        "PROV-NWM",
+        "PROV-WCS",
+        "PROV-PREMIER",
+    }
+    assert {row["provider_id"] for row in suppliers} >= {
+        "PROV-NWM",
+        "PROV-WCS",
+        "PROV-PREMIER",
+    }
+    assert len(plants) >= 3
+
+
+def _clean_poc_dir(tmp_path: Path) -> Path:
+    destination = tmp_path / "clean_poc"
+    if destination.exists():
+        shutil.rmtree(destination)
+    shutil.copytree(POC_DIR, destination)
+    provider_data = destination / "provider_data"
+    if provider_data.exists():
+        shutil.rmtree(provider_data)
+    return destination

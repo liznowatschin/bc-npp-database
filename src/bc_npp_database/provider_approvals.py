@@ -13,7 +13,7 @@ from typing import Any
 from .diagnostics import Diagnostic, Severity
 from .evidence_hardening import generate_vancouver_evidence_hardening
 from .pollinators import generate_vancouver_pollinator_module
-from .providers import KNOWN_PROVIDER_IDS, MOWABILITY_VALUES
+from .providers import KNOWN_PROVIDER_IDS, MOWABILITY_VALUES, validate_provider_sandbox
 from .sources import (
     SPECIES_ID_PATTERN,
 )
@@ -57,6 +57,43 @@ APPROVAL_FIELDS = (
     "reviewer",
     "review_date",
     "review_notes",
+    "candidate_status",
+    "vancouver_eligibility_status",
+    "product_category",
+    "candidate_reason",
+    "sandbox_review_status",
+    "sandbox_notes",
+)
+
+PROVIDER_CANDIDATE_SPECIES_FIELDS = (
+    "species_id",
+    "provider_id",
+    "botanical_name",
+    "common_name",
+    "candidate_status",
+    "vancouver_eligibility_status",
+    "source_url",
+    "source_id",
+    "product_url",
+    "product_category",
+    "candidate_reason",
+    "review_status",
+    "notes",
+    "approval_id",
+)
+
+PROVIDER_CANDIDATE_ATTRIBUTE_FIELDS = (
+    "species_id",
+    "provider_id",
+    "botanical_name",
+    "attribute_name",
+    "attribute_value",
+    "evidence_confidence",
+    "source_url",
+    "source_id",
+    "review_status",
+    "notes",
+    "approval_id",
 )
 
 SUPPLIER_FIELDS = (
@@ -84,6 +121,8 @@ MOWABILITY_FIELDS = (
 
 PROVIDER_DATA_REQUIRED_FILES = (
     "approval_manifest.csv",
+    "candidate_species.csv",
+    "candidate_attributes.csv",
     "supplier_availability.csv",
     "mowability.csv",
     "manifest.json",
@@ -130,9 +169,9 @@ def validate_provider_approvals(path: Path) -> ProviderApprovalResult:
         diagnostics.append(
             _diagnostic(
                 "missing_provider_approval_manifest",
-                "Missing provider approval manifest.",
                 field="path",
                 value=str(approval_path),
+                message="Missing provider approval manifest.",
             )
         )
         return ProviderApprovalResult(str(path), counts, tuple(diagnostics), paths)
@@ -145,23 +184,95 @@ def validate_provider_approvals(path: Path) -> ProviderApprovalResult:
     diagnostics.extend(_validate_approval_rows(approval_rows, set()))
 
     if path.is_dir() and (path / "supplier_availability.csv").exists():
+        diagnostics.extend(_validate_provider_data_files(path))
+        candidate_species_rows = _load_csv(path / "candidate_species.csv", diagnostics)
+        candidate_attribute_rows = _load_csv(path / "candidate_attributes.csv", diagnostics)
         supplier_rows = _load_csv(path / "supplier_availability.csv", diagnostics)
         mowability_rows = _load_csv(path / "mowability.csv", diagnostics)
         diagnostic_rows = _load_csv(path / "diagnostics.csv", diagnostics)
         manifest = _load_json(path / "manifest.json", diagnostics)
         counts.update(
             {
+                "candidate_species": len(candidate_species_rows),
+                "candidate_attributes": len(candidate_attribute_rows),
                 "supplier_availability": len(supplier_rows),
                 "mowability": len(mowability_rows),
             }
         )
         paths.update(_provider_data_paths(path))
+        diagnostics.extend(_validate_candidate_species_rows(candidate_species_rows))
+        diagnostics.extend(_validate_candidate_attribute_rows(candidate_attribute_rows))
         diagnostics.extend(_validate_supplier_rows(supplier_rows))
         diagnostics.extend(_validate_mowability_rows(mowability_rows))
         diagnostics.extend(_validate_provider_data_manifest(manifest, counts))
         diagnostics.extend(_validate_diagnostic_rows(diagnostic_rows))
 
     return ProviderApprovalResult(str(path), counts, tuple(diagnostics), paths)
+
+
+def auto_approve_provider_manifest(
+    approvals_path: Path,
+    output_path: Path,
+    *,
+    approve_rejected: bool = False,
+    reviewer: str = "auto-approve (greedy mode)",
+) -> ProviderApprovalResult:
+    """Write an all-included provider approval manifest from a draft manifest.
+
+    This is the manifest equivalent of approving every species in the static
+    review app and checking supplier, attributes, and mowability inclusion for
+    every approved species. Explicitly rejected rows stay rejected unless
+    ``approve_rejected`` is true.
+    """
+    diagnostics: list[Diagnostic] = []
+    approval_manifest = _approval_manifest_path(approvals_path)
+    approval_rows = _load_csv(approval_manifest, diagnostics)
+    if diagnostics:
+        return ProviderApprovalResult(str(output_path), _empty_counts(), tuple(diagnostics), {})
+
+    approved_rows: list[dict[str, str]] = []
+    approved_count = 0
+    rejected_preserved_count = 0
+    for row in approval_rows:
+        copied = {field: row.get(field, "") for field in APPROVAL_FIELDS}
+        original_status = copied.get("approval_status", "").strip()
+        if original_status == "rejected" and not approve_rejected:
+            rejected_preserved_count += 1
+        else:
+            copied["approval_status"] = IMPORTABLE_APPROVAL_STATUS
+            copied["reviewer"] = copied.get("reviewer") or reviewer
+            copied["review_notes"] = _auto_approval_note(copied)
+            approved_count += 1
+        approved_rows.append(copied)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    _write_csv(output_path, approved_rows, APPROVAL_FIELDS)
+    validation = validate_provider_approvals(output_path)
+    diagnostics.extend(validation.diagnostics)
+    diagnostics.append(
+        Diagnostic(
+            code="provider_manifest_auto_approved",
+            message="Provider approval manifest was converted to all-included auto-approval.",
+            severity=Severity.INFO,
+            context={
+                "input_rows": len(approval_rows),
+                "approved_rows": approved_count,
+                "rejected_rows_preserved": rejected_preserved_count,
+                "approve_rejected": approve_rejected,
+            },
+        )
+    )
+    counts = {
+        **validation.counts,
+        "auto_approved_rows": approved_count,
+        "rejected_rows_preserved": rejected_preserved_count,
+    }
+    return ProviderApprovalResult(
+        str(output_path),
+        counts,
+        tuple(diagnostics),
+        {"approval_manifest": str(output_path)},
+    )
 
 
 def apply_provider_approvals(
@@ -201,6 +312,16 @@ def apply_provider_approvals(
     supplier_rows = (
         _load_csv(provider_data_input / "supplier_availability.csv", diagnostics)
         if (provider_data_input / "supplier_availability.csv").exists()
+        else []
+    )
+    provider_candidate_species_rows = (
+        _load_csv(provider_data_input / "candidate_species.csv", diagnostics)
+        if (provider_data_input / "candidate_species.csv").exists()
+        else []
+    )
+    provider_candidate_attribute_rows = (
+        _load_csv(provider_data_input / "candidate_attributes.csv", diagnostics)
+        if (provider_data_input / "candidate_attributes.csv").exists()
         else []
     )
     mowability_rows = (
@@ -248,6 +369,9 @@ def apply_provider_approvals(
             attribution = _attribution_row(row, plant_row["Species ID"], source["source_id"])
             attribution_rows.append(attribution)
             provider_attribution_rows.append(attribution)
+            provider_candidate_attribute_rows.append(
+                _candidate_attribute_row(row, plant_row["Species ID"], source["source_id"])
+            )
             _maybe_apply_candidate_attribute(plant_row, row)
         elif table == "supplier_availability.csv":
             supplier_rows.append(_supplier_row(row, plant_row["Species ID"], source["source_id"]))
@@ -274,6 +398,9 @@ def apply_provider_approvals(
             attribution_rows.append(attribution)
             provider_attribution_rows.append(attribution)
         else:
+            provider_candidate_species_rows.append(
+                _candidate_species_row(row, plant_row["Species ID"], source["source_id"])
+            )
             attribution = _attribution_row(
                 row,
                 plant_row["Species ID"],
@@ -285,6 +412,12 @@ def apply_provider_approvals(
             provider_attribution_rows.append(attribution)
 
     attribution_rows = _dedupe_rows(attribution_rows, _ATTRIBUTION_KEY)
+    provider_candidate_species_rows = _dedupe_rows(
+        provider_candidate_species_rows, _PROVIDER_CANDIDATE_SPECIES_KEY
+    )
+    provider_candidate_attribute_rows = _dedupe_rows(
+        provider_candidate_attribute_rows, _PROVIDER_CANDIDATE_ATTRIBUTE_KEY
+    )
     supplier_rows = _dedupe_rows(supplier_rows, _SUPPLIER_KEY)
     mowability_rows = _dedupe_rows(mowability_rows, _MOWABILITY_KEY)
     provider_attribution_rows = _dedupe_rows(provider_attribution_rows, _ATTRIBUTION_KEY)
@@ -322,6 +455,23 @@ def apply_provider_approvals(
             row.get("species_id", ""),
             row.get("source_id", ""),
             row.get("claim_field", ""),
+        ),
+    )
+    provider_candidate_species_rows = sorted(
+        provider_candidate_species_rows,
+        key=lambda row: (
+            row.get("species_id", ""),
+            row.get("provider_id", ""),
+            row.get("source_url", ""),
+        ),
+    )
+    provider_candidate_attribute_rows = sorted(
+        provider_candidate_attribute_rows,
+        key=lambda row: (
+            row.get("species_id", ""),
+            row.get("provider_id", ""),
+            row.get("source_url", ""),
+            row.get("attribute_name", ""),
         ),
     )
 
@@ -365,6 +515,16 @@ def apply_provider_approvals(
         combined_approval_rows,
         APPROVAL_FIELDS,
     )
+    _write_csv(
+        provider_data_dir / "candidate_species.csv",
+        provider_candidate_species_rows,
+        PROVIDER_CANDIDATE_SPECIES_FIELDS,
+    )
+    _write_csv(
+        provider_data_dir / "candidate_attributes.csv",
+        provider_candidate_attribute_rows,
+        PROVIDER_CANDIDATE_ATTRIBUTE_FIELDS,
+    )
     _write_csv(provider_data_dir / "supplier_availability.csv", supplier_rows, SUPPLIER_FIELDS)
     _write_csv(provider_data_dir / "mowability.csv", mowability_rows, MOWABILITY_FIELDS)
     _write_csv(
@@ -376,6 +536,8 @@ def apply_provider_approvals(
             "artifact_name": "Vancouver Provider Approval Data",
             "approval_manifest": str(approval_manifest),
             "approved_observation_count": combined_approved_count,
+            "candidate_species_count": len(provider_candidate_species_rows),
+            "candidate_attribute_count": len(provider_candidate_attribute_rows),
             "supplier_availability_count": len(supplier_rows),
             "mowability_count": len(mowability_rows),
             "source_attribution_count": len(provider_attribution_rows),
@@ -409,6 +571,8 @@ def apply_provider_approvals(
         "plant_list": len(plant_rows),
         "sources": len(source_rows),
         "source_attribution": len(attribution_rows),
+        "candidate_species": len(provider_candidate_species_rows),
+        "candidate_attributes": len(provider_candidate_attribute_rows),
         "supplier_availability": len(supplier_rows),
         "mowability": len(mowability_rows),
     }
@@ -471,6 +635,161 @@ def apply_provider_approval_sequence(
     return result
 
 
+def apply_provider_sandbox_sequence(
+    sandbox_dirs: list[Path],
+    poc_dir: Path,
+    output_dir: Path,
+    *,
+    regenerate_downstream: bool = True,
+) -> ProviderApprovalResult:
+    """Apply multiple provider sandboxes cumulatively with auto-approval."""
+    if not sandbox_dirs:
+        return ProviderApprovalResult(
+            str(output_dir),
+            _empty_counts(),
+            (
+                Diagnostic(
+                    code="provider_sandbox_sequence_empty",
+                    message="At least one provider sandbox directory is required.",
+                    severity=Severity.ERROR,
+                    field="sandbox_dirs",
+                ),
+            ),
+            {},
+        )
+
+    steps_dir = output_dir.parent / f".{output_dir.name}_sandbox_steps"
+    if steps_dir.exists():
+        shutil.rmtree(steps_dir)
+    steps_dir.mkdir(parents=True, exist_ok=True)
+
+    current_base = poc_dir
+    result = ProviderApprovalResult(str(output_dir), _empty_counts(), (), {})
+    diagnostics: list[Diagnostic] = []
+    sequence_counts = {
+        "sequence_sandbox_species": 0,
+        "sequence_eligible_species": 0,
+        "sequence_excluded_species": 0,
+        "sequence_auto_approval_rows": 0,
+        "sequence_supplier_included": 0,
+        "sequence_attribute_included": 0,
+        "sequence_mowability_included": 0,
+    }
+    for index, sandbox_dir in enumerate(sandbox_dirs, start=1):
+        is_last = index == len(sandbox_dirs)
+        step_output = output_dir if is_last else steps_dir / f"step_{index:02d}"
+        result = apply_provider_sandbox(
+            sandbox_dir,
+            current_base,
+            step_output,
+            regenerate_downstream=regenerate_downstream if is_last else False,
+        )
+        diagnostics.extend(result.diagnostics)
+        sequence_counts["sequence_sandbox_species"] += result.counts.get("sandbox_species", 0)
+        sequence_counts["sequence_eligible_species"] += result.counts.get("eligible_species", 0)
+        sequence_counts["sequence_excluded_species"] += result.counts.get("excluded_species", 0)
+        sequence_counts["sequence_auto_approval_rows"] += result.counts.get(
+            "auto_approval_rows", result.counts.get("approval_manifest", 0)
+        )
+        sequence_counts["sequence_supplier_included"] += result.counts.get(
+            "supplier_included", 0
+        )
+        sequence_counts["sequence_attribute_included"] += result.counts.get(
+            "attribute_included", 0
+        )
+        sequence_counts["sequence_mowability_included"] += result.counts.get(
+            "mowability_included", 0
+        )
+        if _has_errors(result.diagnostics):
+            return ProviderApprovalResult(
+                result.path,
+                {**result.counts, **sequence_counts},
+                tuple(diagnostics),
+                result.paths,
+            )
+        current_base = step_output
+    return ProviderApprovalResult(
+        result.path,
+        {**result.counts, **sequence_counts},
+        tuple(diagnostics),
+        result.paths,
+    )
+
+
+def auto_import_provider_sandboxes(
+    provider_ids: list[str],
+    poc_dir: Path,
+    output_dir: Path,
+    *,
+    sandbox_root: Path,
+    input_dir: Path | None = None,
+    live_fetch: bool = False,
+    source_sweep: bool = True,
+    max_pages: int = 5,
+    regenerate_downstream: bool = True,
+) -> ProviderApprovalResult:
+    """Scrape provider sandboxes and auto-apply them cumulatively."""
+    if not provider_ids:
+        return ProviderApprovalResult(
+            str(output_dir),
+            _empty_counts(),
+            (
+                Diagnostic(
+                    code="provider_auto_import_empty",
+                    message="At least one provider ID is required.",
+                    severity=Severity.ERROR,
+                    field="provider_ids",
+                ),
+            ),
+            {},
+        )
+
+    from .provider_scraping import has_error_diagnostics as has_scrape_errors
+    from .provider_scraping import scrape_provider_sandbox
+
+    diagnostics: list[Diagnostic] = []
+    sandbox_dirs: list[Path] = []
+    scrape_counts: dict[str, int] = {}
+    paths: dict[str, str] = {}
+    for provider_id in provider_ids:
+        sandbox_dir = sandbox_root / provider_id
+        scrape_result = scrape_provider_sandbox(
+            provider_id,
+            "vancouver",
+            sandbox_dir,
+            input_dir=input_dir,
+            live_fetch=live_fetch,
+            source_sweep=source_sweep,
+            max_pages=max_pages,
+        )
+        diagnostics.extend(scrape_result.diagnostics)
+        paths[f"{provider_id}_sandbox"] = scrape_result.path
+        scrape_counts[f"{provider_id}_candidate_species"] = scrape_result.counts.get(
+            "candidate_species", 0
+        )
+        if has_scrape_errors(scrape_result.diagnostics):
+            return ProviderApprovalResult(
+                str(output_dir),
+                {**_empty_counts(), **scrape_counts},
+                tuple(diagnostics),
+                paths,
+            )
+        sandbox_dirs.append(sandbox_dir)
+
+    apply_result = apply_provider_sandbox_sequence(
+        sandbox_dirs,
+        poc_dir,
+        output_dir,
+        regenerate_downstream=regenerate_downstream,
+    )
+    return ProviderApprovalResult(
+        str(output_dir),
+        {**scrape_counts, **apply_result.counts},
+        tuple(diagnostics) + apply_result.diagnostics,
+        {**paths, **apply_result.paths},
+    )
+
+
 def has_error_diagnostics(diagnostics: tuple[Diagnostic, ...] | list[Diagnostic]) -> bool:
     """Return whether diagnostics include an error."""
     return _has_errors(diagnostics)
@@ -521,6 +840,20 @@ def _dedupe_rows(
 
 _SUPPLIER_KEY = ("species_id", "provider_id", "product_url", "supplier_status")
 _MOWABILITY_KEY = ("species_id", "provider_id", "source_url", "mowability_score")
+_PROVIDER_CANDIDATE_SPECIES_KEY = (
+    "species_id",
+    "provider_id",
+    "source_url",
+    "approval_id",
+)
+_PROVIDER_CANDIDATE_ATTRIBUTE_KEY = (
+    "species_id",
+    "provider_id",
+    "source_url",
+    "attribute_name",
+    "attribute_value",
+    "approval_id",
+)
 _ATTRIBUTION_KEY = (
     "species_id",
     "source_id",
@@ -621,6 +954,54 @@ def _validate_approved_row(
     return diagnostics
 
 
+def _validate_candidate_species_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for row_number, row in enumerate(rows, start=2):
+        for field in (
+            "species_id",
+            "provider_id",
+            "botanical_name",
+            "source_url",
+            "source_id",
+            "approval_id",
+        ):
+            if not row.get(field, "").strip():
+                diagnostics.append(
+                    _diagnostic("missing_candidate_species_field", row_number, field)
+                )
+        if row.get("species_id") and not SPECIES_ID_PATTERN.fullmatch(row["species_id"]):
+            diagnostics.append(
+                _diagnostic("invalid_species_id", row_number, "species_id", row["species_id"])
+            )
+    diagnostics.extend(diagnose_excluded_sources(rows))
+    return diagnostics
+
+
+def _validate_candidate_attribute_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for row_number, row in enumerate(rows, start=2):
+        for field in (
+            "species_id",
+            "provider_id",
+            "botanical_name",
+            "attribute_name",
+            "attribute_value",
+            "source_url",
+            "source_id",
+            "approval_id",
+        ):
+            if not row.get(field, "").strip():
+                diagnostics.append(
+                    _diagnostic("missing_candidate_attribute_field", row_number, field)
+                )
+        if row.get("species_id") and not SPECIES_ID_PATTERN.fullmatch(row["species_id"]):
+            diagnostics.append(
+                _diagnostic("invalid_species_id", row_number, "species_id", row["species_id"])
+            )
+    diagnostics.extend(diagnose_excluded_sources(rows))
+    return diagnostics
+
+
 def _validate_supplier_rows(rows: list[dict[str, str]]) -> list[Diagnostic]:
     diagnostics: list[Diagnostic] = []
     for row_number, row in enumerate(rows, start=2):
@@ -682,15 +1063,33 @@ def _validate_provider_data_manifest(
 ) -> list[Diagnostic]:
     diagnostics: list[Diagnostic] = []
     expected = {
+        "candidate_species_count": counts.get("candidate_species", 0),
+        "candidate_attribute_count": counts.get("candidate_attributes", 0),
         "supplier_availability_count": counts.get("supplier_availability", 0),
         "mowability_count": counts.get("mowability", 0),
     }
     for field, expected_count in expected.items():
-        if manifest.get(field) != expected_count:
+        if field in manifest and manifest.get(field) != expected_count:
             diagnostics.append(_diagnostic("provider_data_manifest_count_mismatch", field=field))
     hygiene = manifest.get("public_hygiene", {})
     if not isinstance(hygiene, dict) or hygiene.get("raw_provider_html_tracked") is not False:
         diagnostics.append(_diagnostic("invalid_provider_data_hygiene", field="public_hygiene"))
+    return diagnostics
+
+
+def _validate_provider_data_files(path: Path) -> list[Diagnostic]:
+    diagnostics: list[Diagnostic] = []
+    for filename in PROVIDER_DATA_REQUIRED_FILES:
+        file_path = path / filename
+        if not file_path.exists():
+            diagnostics.append(
+                _diagnostic(
+                    "missing_provider_data_file",
+                    field="path",
+                    value=str(file_path),
+                    message=f"Missing provider-data file: {filename}.",
+                )
+            )
     return diagnostics
 
 
@@ -806,6 +1205,45 @@ def _attribution_row(
     }
 
 
+def _candidate_species_row(
+    row: dict[str, str], species_id: str, source_id: str
+) -> dict[str, str]:
+    return {
+        "species_id": species_id,
+        "provider_id": row.get("provider_id", ""),
+        "botanical_name": row.get("botanical_name", ""),
+        "common_name": row.get("common_name", ""),
+        "candidate_status": row.get("candidate_status", ""),
+        "vancouver_eligibility_status": row.get("vancouver_eligibility_status", ""),
+        "source_url": row.get("source_url", "") or row.get("product_url", ""),
+        "source_id": source_id,
+        "product_url": row.get("product_url", "") or row.get("source_url", ""),
+        "product_category": row.get("product_category", ""),
+        "candidate_reason": row.get("candidate_reason", ""),
+        "review_status": "pending_review",
+        "notes": row.get("sandbox_notes", "") or row.get("review_notes", ""),
+        "approval_id": row.get("approval_id", ""),
+    }
+
+
+def _candidate_attribute_row(
+    row: dict[str, str], species_id: str, source_id: str
+) -> dict[str, str]:
+    return {
+        "species_id": species_id,
+        "provider_id": row.get("provider_id", ""),
+        "botanical_name": row.get("botanical_name", ""),
+        "attribute_name": row.get("attribute_name", ""),
+        "attribute_value": row.get("attribute_value", ""),
+        "evidence_confidence": row.get("evidence_confidence", "") or "Pending review",
+        "source_url": row.get("source_url", "") or row.get("product_url", ""),
+        "source_id": source_id,
+        "review_status": "pending_review",
+        "notes": row.get("sandbox_notes", "") or row.get("review_notes", ""),
+        "approval_id": row.get("approval_id", ""),
+    }
+
+
 def _supplier_row(row: dict[str, str], species_id: str, source_id: str) -> dict[str, str]:
     return {
         "species_id": species_id,
@@ -906,6 +1344,8 @@ def _approval_manifest_path(path: Path) -> Path:
 def _provider_data_paths(path: Path) -> dict[str, str]:
     return {
         "approval_manifest": str(path / "approval_manifest.csv"),
+        "candidate_species": str(path / "candidate_species.csv"),
+        "candidate_attributes": str(path / "candidate_attributes.csv"),
         "supplier_availability": str(path / "supplier_availability.csv"),
         "mowability": str(path / "mowability.csv"),
         "manifest": str(path / "manifest.json"),
@@ -940,9 +1380,23 @@ def _empty_counts() -> dict[str, int]:
         "plant_list": 0,
         "sources": 0,
         "source_attribution": 0,
+        "candidate_species": 0,
+        "candidate_attributes": 0,
         "supplier_availability": 0,
         "mowability": 0,
     }
+
+
+def _read_csv(path: Path, diagnostics: list[Diagnostic]) -> list[dict[str, str]]:
+    """Read a CSV file into a list of dicts."""
+    try:
+        with path.open(newline="", encoding="utf-8-sig") as handle:
+            return [dict(row) for row in csv.DictReader(handle)]
+    except OSError as exc:
+        diagnostics.append(
+            _diagnostic("provider_approval_csv_unreadable", field="path", value=f"{path}: {exc}")
+        )
+        return []
 
 
 def _write_csv(path: Path, rows: list[dict[str, object]], fieldnames: tuple[str, ...]) -> None:
@@ -1003,5 +1457,352 @@ def _clean(value: object) -> str:
     return str(value).strip()
 
 
+def _auto_approval_note(row: dict[str, str]) -> str:
+    table = row.get("sandbox_table", "")
+    return (
+        "Auto-approved by greedy provider import: species approved and supplier, "
+        f"attribute, and mowability inclusion enabled for {table}."
+    )
+
+
+def _sandbox_approval_metadata(row: dict[str, str]) -> dict[str, str]:
+    return {
+        "candidate_status": row.get("candidate_status", ""),
+        "vancouver_eligibility_status": row.get("vancouver_eligibility_status", ""),
+        "product_category": row.get("product_category", ""),
+        "candidate_reason": row.get("candidate_reason", ""),
+        "sandbox_review_status": row.get("review_status", ""),
+        "sandbox_notes": row.get("notes", ""),
+    }
+
+
 def _has_errors(diagnostics: tuple[Diagnostic, ...] | list[Diagnostic]) -> bool:
     return any(diagnostic.severity == Severity.ERROR for diagnostic in diagnostics)
+
+
+# ---------------------------------------------------------------------------
+# Auto-approve sandbox → PoC (fully unsupervised batch pipeline)
+# ---------------------------------------------------------------------------
+
+
+def apply_provider_sandbox(
+    sandbox_dir: Path,
+    poc_dir: Path,
+    output_dir: Path,
+    *,
+    regenerate_downstream: bool = True,
+) -> ProviderApprovalResult:
+    """Auto-approve a provider sandbox and apply directly to the Vancouver PoC.
+
+    Reads candidate species, supplier, attribute, and mowability rows from
+    a validated provider sandbox, applies Vancouver eligibility filters,
+    generates an approval manifest with all eligible candidates marked
+    ``approved`` (including their linked supplier/attribute/mowability rows),
+    and applies it directly -- creating a fully unsupervised batch ingestion
+    pipeline.
+
+    Eligibility filters applied:
+
+    * Provider rows with ``vancouver_eligibility_status == "excluded"`` are
+      dropped (e.g. PROV-WCS vegetables per VAN-PROV-003).
+    * All other eligible candidates are auto-approved.
+
+    All three "include" categories from the review app -- **supplier_availability**
+    rows, **candidate_attributes** rows, and **mowability** rows -- are included
+    by default when their parent species is approved.
+    """
+    diagnostics: list[Diagnostic] = []
+    sandbox_dir = sandbox_dir.resolve()
+
+    validation = validate_provider_sandbox(sandbox_dir)
+    diagnostics.extend(validation.diagnostics)
+    if _has_errors(validation.diagnostics):
+        return ProviderApprovalResult(
+            str(output_dir),
+            _empty_counts(),
+            validation.diagnostics,
+            {},
+        )
+
+    # --- 1. Load sandbox tables ------------------------------------------------
+    species_rows = _read_csv(sandbox_dir / "candidate_species.csv", diagnostics)
+    attribute_rows = _read_csv(sandbox_dir / "candidate_attributes.csv", diagnostics)
+    supplier_rows_raw = _read_csv(sandbox_dir / "supplier_availability.csv", diagnostics)
+    mowability_rows_raw = _read_csv(sandbox_dir / "mowability.csv", diagnostics)
+
+    # --- 2. Extract provider_id ------------------------------------------------
+    provider_id = _extract_provider_id_from_sandbox(
+        species_rows, attribute_rows, supplier_rows_raw, mowability_rows_raw
+    )
+    if not provider_id:
+        diagnostics.append(
+            Diagnostic(
+                code="missing_provider_id",
+                message="Could not determine provider_id from sandbox rows.",
+                severity=Severity.ERROR,
+            )
+        )
+        return ProviderApprovalResult(str(output_dir), _empty_counts(), tuple(diagnostics), {})
+
+    # --- 3. Apply Vancouver eligibility filters ---------------------------------
+    included_species = []
+    excluded_count = 0
+    for row in species_rows:
+        elig = row.get("vancouver_eligibility_status", "candidate").strip().lower()
+        candidate_status = row.get("candidate_status", "").strip().lower()
+        if elig in {"excluded", "ineligible"} or candidate_status == "excluded":
+            excluded_count += 1
+            continue
+        included_species.append(row)
+
+    included_names = {r.get("botanical_name", "").strip().casefold() for r in included_species}
+
+    # --- 4. Group related rows by botanical name --------------------------------
+    attributes_by_name: dict[str, list[dict]] = {}
+    for row in attribute_rows:
+        if row.get("botanical_name", "").strip().casefold() not in included_names:
+            continue
+        name = row.get("botanical_name", "").strip().casefold()
+        attributes_by_name.setdefault(name, []).append(row)
+
+    supplier_by_name: dict[str, list[dict]] = {}
+    for row in supplier_rows_raw:
+        if row.get("botanical_name", "").strip().casefold() not in included_names:
+            continue
+        name = row.get("botanical_name", "").strip().casefold()
+        supplier_by_name.setdefault(name, []).append(row)
+
+    mowability_by_name: dict[str, list[dict]] = {}
+    for row in mowability_rows_raw:
+        if row.get("botanical_name", "").strip().casefold() not in included_names:
+            continue
+        name = row.get("botanical_name", "").strip().casefold()
+        mowability_by_name.setdefault(name, []).append(row)
+
+    # --- 5. Build approval manifest rows ----------------------------------------
+    # First load POC plant_list to determine which species already exist
+    existing_plant_rows = _load_csv(poc_dir / "plant_list.csv", diagnostics)
+    existing_names = {r.get("Botanical Name", "").strip().casefold() for r in existing_plant_rows}
+
+    # Build lookup dict for existing species
+    existing_species_by_name: dict[str, dict[str, str]] = {
+        row.get("Botanical Name", "").strip().casefold(): row
+        for row in existing_plant_rows if row.get("Botanical Name")
+    }
+
+    approval_rows: list[dict[str, str]] = []
+    included_supplier_count = 0
+    included_attribute_count = 0
+    included_mowability_count = 0
+
+    for idx, species_row in enumerate(included_species, start=1):
+        botanical_name = species_row.get("botanical_name", "").strip()
+        common_name = species_row.get("common_name", "").strip()
+        product_url = species_row.get("product_url", "") or ""
+        source_url = species_row.get("source_url", "")
+
+        # Determine if this is a new species or existing
+        target_action = (
+            "add_species" if botanical_name.casefold() not in existing_names else "update_existing"
+        )
+
+        # Get species_id if it's an update_existing
+        species_id = ""
+        if target_action == "update_existing":
+            existing_row = existing_species_by_name.get(botanical_name.casefold())
+            if existing_row:
+                species_id = existing_row.get("Species ID", "")
+
+        related_target_action = target_action if target_action == "add_species" else ""
+
+        # Include supplier rows (Category 1: supplier_availability)
+        related_suppliers = supplier_by_name.get(botanical_name.casefold(), [])
+        for sup_idx, sup in enumerate(related_suppliers, start=1):
+            included_supplier_count += 1
+            approval_rows.append({
+                "approval_id": f"PA-AUTO-{idx:04d}-SUP-{sup_idx:02d}",
+                "sandbox_table": "supplier_availability.csv",
+                "provider_id": provider_id,
+                "botanical_name": botanical_name,
+                "common_name": common_name,
+                "species_id": species_id,  # Use parent species_id (can be empty for new species)
+                "approval_status": IMPORTABLE_APPROVAL_STATUS,
+                "target_action": related_target_action or "record_supplier",
+                "attribute_name": "",
+                "attribute_value": "",
+                "evidence_confidence": "Pending review",
+                "source_url": sup.get("product_url", "") or source_url,
+                "supplier_status": sup.get("supplier_status", ""),
+                "product_url": sup.get("product_url", ""),
+                "mowability_score": "",
+                "reviewer": "auto-approve (greedy mode)",
+                "review_date": "",
+                "review_notes": "Auto-approved supplier row via apply_provider_sandbox.",
+                **_sandbox_approval_metadata(sup),
+            })
+
+        # Include attribute rows (Category 2: candidate_attributes)
+        related_attrs = attributes_by_name.get(botanical_name.casefold(), [])
+        for attr_idx, attr in enumerate(related_attrs, start=1):
+            included_attribute_count += 1
+            approval_rows.append({
+                "approval_id": f"PA-AUTO-{idx:04d}-ATTR-{attr_idx:02d}",
+                "sandbox_table": "candidate_attributes.csv",
+                "provider_id": provider_id,
+                "botanical_name": botanical_name,
+                "common_name": common_name,
+                "species_id": species_id,  # Use parent species_id (can be empty for new species)
+                "approval_status": IMPORTABLE_APPROVAL_STATUS,
+                "target_action": related_target_action or "update_existing",
+                "attribute_name": attr.get("attribute_name", ""),
+                "attribute_value": attr.get("attribute_value", ""),
+                "evidence_confidence": "Pending review",
+                "source_url": attr.get("source_url", source_url),
+                "supplier_status": "",
+                "product_url": attr.get("product_url", "") or source_url,
+                "mowability_score": "",
+                "reviewer": "auto-approve (greedy mode)",
+                "review_date": "",
+                "review_notes": "Auto-approved attribute row via apply_provider_sandbox.",
+                **_sandbox_approval_metadata(attr),
+            })
+
+        # Include mowability rows (Category 3: mowability)
+        related_mow = mowability_by_name.get(botanical_name.casefold(), [])
+        for mow_idx, mow in enumerate(related_mow, start=1):
+            included_mowability_count += 1
+            approval_rows.append({
+                "approval_id": f"PA-AUTO-{idx:04d}-MOW-{mow_idx:02d}",
+                "sandbox_table": "mowability.csv",
+                "provider_id": provider_id,
+                "botanical_name": botanical_name,
+                "common_name": common_name,
+                "species_id": species_id,  # Use parent species_id (can be empty for new species)
+                "approval_status": IMPORTABLE_APPROVAL_STATUS,
+                "target_action": related_target_action or "record_mowability",
+                "attribute_name": "",
+                "attribute_value": "",
+                "evidence_confidence": "Pending review",
+                "source_url": mow.get("source_url", source_url),
+                "supplier_status": "",
+                "product_url": "",
+                "mowability_score": mow.get("mowability_score", ""),
+                "reviewer": "auto-approve (greedy mode)",
+                "review_date": "",
+                "review_notes": "Auto-approved mowability row via apply_provider_sandbox.",
+                **_sandbox_approval_metadata(mow),
+            })
+
+        # Species-level approval row
+        approval_rows.append({
+            "approval_id": f"PA-AUTO-{idx:04d}",
+            "sandbox_table": "candidate_species.csv",
+            "provider_id": provider_id,
+            "botanical_name": botanical_name,
+            "common_name": common_name,
+            "species_id": species_id,
+            "approval_status": IMPORTABLE_APPROVAL_STATUS,
+            "target_action": target_action,
+            "attribute_name": "",
+            "attribute_value": "",
+            "evidence_confidence": "Pending review",
+            "source_url": source_url or product_url,
+            "supplier_status": "",
+            "product_url": product_url or source_url,
+            "mowability_score": "",
+            "reviewer": "auto-approve (greedy mode)",
+            "review_date": "",
+            "review_notes": (
+                "Auto-approved via apply_provider_sandbox. "
+                f"Eligibility: {species_row.get('vancouver_eligibility_status', 'candidate')}."
+            ),
+            **_sandbox_approval_metadata(species_row),
+        })
+
+    approved_count = len(included_species)
+
+    # --- 6. Write temp manifest & delegate to existing apply logic ---------------
+    temp_manifest = output_dir / "_auto_approved_manifest.csv"
+    _write_csv(temp_manifest, approval_rows, APPROVAL_FIELDS)
+
+    counts = {
+        "sandbox_species": len(species_rows),
+        "eligible_species": approved_count,
+        "excluded_species": excluded_count,
+        "auto_approval_rows": len(approval_rows),
+        "approval_manifest": len(approval_rows),
+        # Count rows marked approved: species, supplier, attribute, and mowability.
+        "approved_rows": len(
+            [
+                row
+                for row in approval_rows
+                if row.get("approval_status") == IMPORTABLE_APPROVAL_STATUS
+            ]
+        ),
+        "supplier_included": included_supplier_count,
+        "attribute_included": included_attribute_count,
+        "mowability_included": included_mowability_count,
+    }
+
+    apply_result = apply_provider_approvals(
+        temp_manifest,
+        poc_dir,
+        output_dir,
+        regenerate_downstream=regenerate_downstream,
+    )
+
+    if temp_manifest.exists():
+        temp_manifest.unlink()
+
+    diagnostics.append(
+        Diagnostic(
+            code="provider_sandbox_auto_approved",
+            message=(
+                f"Auto-approved {approved_count} species "
+                f"({excluded_count} excluded) with all linked supplier/"
+                f"attribute/mowability rows."
+            ),
+            severity=Severity.INFO,
+            context={
+                "approved_species": approved_count,
+                "excluded_species": excluded_count,
+                "supplier_included": included_supplier_count,
+                "attributes_included": included_attribute_count,
+                "mowability_included": included_mowability_count,
+                "provider_id": provider_id,
+            },
+        )
+    )
+
+    final_counts = {
+        **counts,
+        # Use apply_result's counts for downstream files
+        "plant_list": apply_result.counts.get("plant_list", 0),
+        "sources": apply_result.counts.get("sources", 0),
+        "source_attribution": apply_result.counts.get("source_attribution", 0),
+        "supplier_availability": apply_result.counts.get("supplier_availability", 0),
+        "mowability": apply_result.counts.get("mowability", 0),
+    }
+    all_diagnostics = tuple(diagnostics) + apply_result.diagnostics
+
+    return ProviderApprovalResult(
+        str(output_dir),
+        final_counts,
+        all_diagnostics,
+        apply_result.paths,
+    )
+
+
+def _extract_provider_id_from_sandbox(
+    species_rows: list[dict],
+    attribute_rows: list[dict],
+    supplier_rows: list[dict],
+    mowability_rows: list[dict],
+) -> str | None:
+    """Extract provider_id from any non-empty sandbox table."""
+    for rows in [species_rows, attribute_rows, supplier_rows, mowability_rows]:
+        for row in rows:
+            pid = row.get("provider_id", "").strip()
+            if pid:
+                return pid
+    return None

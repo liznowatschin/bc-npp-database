@@ -1,2 +1,2 @@
 severity,code,message,row_number,field,value,context
-info,provider_approvals_applied,Provider approvals were applied as candidate PoC observations.,,,,"{""approved_rows"": 2431}"
+info,provider_approvals_applied,Provider approvals were applied as candidate PoC observations.,,,,"{""approved_rows"": 548}"

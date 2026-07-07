@@ -64,7 +64,8 @@ applied to a Vancouver PoC output directory with separate supplier and
 provisional mowability artifacts, while rejected, deferred, and review-needed
 rows remain excluded from the product.
 
-Phase 18 applies a caveated demo provider approval manifest to the tracked
-Vancouver PoC for user testing, bringing the current product to 54 species and
-exposing supplier, mowability, and provider provenance metadata in the static
-web interface.
+Phase 18 applied caveated provider approval data to the tracked Vancouver PoC
+for user testing, exposing supplier, mowability, and provider provenance
+metadata in the static web interface. The July 2026 all-provider promotion
+brings the tracked PoC to 493 plant rows while keeping provider-derived values
+candidate/pending review.

@@ -238,6 +238,80 @@ Run the WCS source sweep with:
      --reviewer "expert reviewer" \
      --json
 
+Premier Pacific Seeds Source Sweep
+----------------------------------
+
+Premier Pacific Seeds currently exposes the useful native-seed material as
+WordPress product pages, not Shopify catalogue JSON. The ``PROV-PREMIER``
+source-sweep adapter fetches the current species-bearing pages:
+
+* ``https://premierpacificseeds.ca/products/bc-native-species/``
+* ``https://premierpacificseeds.ca/products/wildflower-seed/``
+* ``https://premierpacificseeds.ca/products/reclamation-seed/``
+
+The parser reads botanical names from accordion species-profile labels, seed-mix
+percentage lists, percentage paragraphs, and species composition tables. It
+keeps provider spellings and taxonomy strings as review candidates rather than
+silently correcting them. For example, provider variants such as
+``Anaphalis margaritacia`` and ``Anaphalis margaritacea`` remain separate
+observations until review resolves them. The ``forage-seed`` page was checked
+on 2026-07-07 and did not contain parseable botanical seed-mix component rows
+for the current parser.
+
+Run the Premier source sweep with:
+
+.. code-block:: bash
+
+   bc-nppd scrape-provider-sandbox PROV-PREMIER \
+     --database-instance vancouver \
+     --live-fetch \
+     --source-sweep \
+     --catalog-url https://premierpacificseeds.ca \
+     --max-pages 5 \
+     --raw-dir local/provider_raw \
+     --out-dir outputs/provider_sandbox_source_sweep/PROV-PREMIER \
+     --json
+   bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-PREMIER --json
+   bc-nppd build-provider-review outputs/provider_sandbox_source_sweep/PROV-PREMIER \
+     --out-dir outputs/provider_review_source_sweep/PROV-PREMIER \
+     --json
+   bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-PREMIER \
+     --poc-dir data/poc/vancouver \
+     --out-dir outputs/provider_approval_review/PROV-PREMIER \
+     --reviewer "expert reviewer" \
+     --json
+
+Oak Summit Nursery Source Sweep
+-------------------------------
+
+Oak Summit Nursery uses a Shopify native-seeds collection. The
+``PROV-OAKSUMMIT`` adapter parses product titles from collection HTML, skips
+non-species titles, and keeps rows as ``needs_northward_review`` until
+Vancouver or BC suitability is reviewed.
+
+Run the Oak Summit source sweep with:
+
+.. code-block:: bash
+
+   bc-nppd scrape-provider-sandbox PROV-OAKSUMMIT \
+     --database-instance vancouver \
+     --live-fetch \
+     --source-sweep \
+     --catalog-url https://oaksummitnursery.ca/collections/native-seeds \
+     --max-pages 3 \
+     --raw-dir local/provider_raw \
+     --out-dir outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT \
+     --json
+   bc-nppd validate-provider-sandbox outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT --json
+   bc-nppd build-provider-review outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT \
+     --out-dir outputs/provider_review_source_sweep/PROV-OAKSUMMIT \
+     --json
+   bc-nppd build-provider-approval-review outputs/provider_sandbox_source_sweep/PROV-OAKSUMMIT \
+     --poc-dir data/poc/vancouver \
+     --out-dir outputs/provider_approval_review/PROV-OAKSUMMIT \
+     --reviewer "expert reviewer" \
+     --json
+
 Raw provider HTML, screenshots, downloads, and scrape caches must remain under
 ignored directories such as ``local/``, ``tmp/``, ``data/raw/``, or
 ``outputs/``.

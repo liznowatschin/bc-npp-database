@@ -3,6 +3,104 @@
 This file records the dated project narrative for BC-NPPD. Keep it synchronized
 with `ROADMAP.md`, planning notes, issue comments, and pull requests.
 
+## 2026-07-06
+
+- Continued provider import automation work from the uncommitted local changes
+  on `main`.
+- Added `bc-nppd apply-provider-sandbox-sequence` to auto-approve and apply
+  multiple validated provider sandboxes cumulatively.
+- Added `bc-nppd auto-import-provider-sandboxes` to run a provider scrape or
+  fixture read, generate sandbox tables, auto-approve all non-excluded
+  candidate rows, include linked supplier availability, candidate attribute,
+  and mowability rows, and apply the providers into an ignored Vancouver PoC
+  preview.
+- Added `bc-nppd auto-approve-provider-manifest` so a full review-app
+  `approval_manifest_draft.csv` can be converted into an all-included approval
+  manifest: every non-rejected species, supplier availability, candidate
+  attribute, and mowability row becomes `approved`.
+- Updated provider import docs with the unsupervised preview command while
+  preserving the normal sandbox-review-manifest review boundary for promoted
+  product data.
+- Verified the fixture-backed automated import for `PROV-NWM`, `PROV-WCS`, and
+  `PROV-PREMIER` into
+  `outputs/provider_auto_import_vancouver_fixture_full`: 4 sandbox species, 3
+  eligible auto-approved species, 1 excluded WCS candidate, 12 auto-approval
+  rows, 166 preview plant rows, 152 sources, 2,530 source-attribution rows, 118
+  supplier rows, and 3 mowability rows.
+- Validated the generated provider sandboxes, provider-data directory,
+  Vancouver PoC preview, evidence hardening artifacts, usability artifacts, and
+  pollinator module artifacts with no diagnostics.
+- Attempted live source-sweep and homepage fetches for `PROV-NWM`, `PROV-WCS`,
+  and `PROV-PREMIER`; the current scraper stopped at robots-policy diagnostics,
+  so live catalogue import for those providers remains blocked unless a
+  policy-compliant source entrypoint or pre-materialized ignored input is
+  supplied.
+- Audited the current clone for the historical full NWM and WCS ignored
+  provider outputs that produced the documented 345-row cumulative preview.
+  Those ignored artifacts are not present in this workspace; the roadmap records
+  the missing full inputs as 858 NWM draft approval rows and 487 WCS draft
+  approval rows.
+- Follow-up verification on 2026-07-07 preserved provider-side
+  `candidate_species.csv` and `candidate_attributes.csv` in generated
+  `provider_data/` outputs, made those tables part of the provider-data
+  validation contract, and revalidated
+  `outputs/provider_auto_import_vancouver_fixture_full`: 166 plant rows, 152
+  sources, 2,530 source-attribution rows, 2,448 approval-manifest rows, 2,447
+  approved provider rows, 3 candidate-species provider rows, 4
+  candidate-attribute provider rows, 118 supplier rows, and 3 mowability rows.
+  The fixture-backed path remains a code/contract verification preview, not the
+  historical full-provider 345-species import.
+- Ran fresh live provider source sweeps with network access for `PROV-NWM`,
+  `PROV-WCS`, and `PROV-PREMIER` into ignored outputs. NWM validated at 213
+  candidate species, 693 candidate attributes, and 220 supplier rows. WCS
+  validated at 55 candidate species, 360 candidate attributes, and 72 supplier
+  rows.
+- Updated the Premier Pacific adapter for the current WordPress product-page
+  site shape instead of the older Shopify-style source sweep. The parser now
+  reads BC native species, wildflower seed, and reclamation seed pages,
+  including accordion species-profile labels, seed-mix percentage lists,
+  percentage paragraphs, and species-composition tables. The corrected Premier
+  sandbox validated at 56 candidate species, 373 candidate attributes, 134
+  supplier observations, and 0 mowability rows.
+- Auto-approved and imported the fresh NWM, WCS, and Premier sandboxes into the
+  ignored Vancouver preview
+  `outputs/provider_auto_import_vancouver_fresh_nwm_wcs_premier`. The preview
+  validated at 428 plant rows, 380 sources, 4,628 source-attribution rows, 4,612
+  provider approval-manifest rows, 324 provider candidate-species rows, 1,426
+  provider candidate-attribute rows, 523 supplier rows, and 1 mowability row.
+- Ran the fresh Oak Summit source sweep against the native-seeds collection.
+  The sandbox validated at 78 candidate species, 390 candidate attributes, 80
+  supplier observations, and 0 mowability rows.
+- Auto-approved and imported Oak Summit on top of the fresh NWM + WCS +
+  Premier preview into
+  `outputs/provider_auto_import_vancouver_fresh_all_providers`. The all-provider
+  ignored preview validated at 493 plant rows, 460 sources, 5,176
+  source-attribution rows, 5,160 provider approval-manifest rows, 402 provider
+  candidate-species rows, 1,816 provider candidate-attribute rows, 603 supplier
+  rows, and 1 mowability row.
+- Replaced the draft pandas-based usability Excel helper with a formatted
+  `openpyxl` Vancouver PoC workbook export. Added
+  `bc-nppd export-vancouver-poc-excel` and
+  `bc-nppd validate-vancouver-poc-excel`; the workbook includes overview,
+  manifest, core PoC, provider, evidence-hardening, usability, and pollinator
+  sheets with frozen headers, filters, Excel tables, wrapped text, URL
+  hyperlinks, and explicit caveats.
+- Exported and validated the provider-enriched all-provider preview workbook at
+  `outputs/vancouver_poc_all_providers_export.xlsx`; it contains 493 plant rows,
+  460 sources, 5,176 source-attribution rows, 5,160 provider approval-manifest
+  rows, 402 provider candidate-species rows, 1,816 provider candidate-attribute
+  rows, 603 supplier rows, and 1 mowability row.
+- Repaired the Excel export workbook structure by removing redundant
+  sheet-level autofilters that overlapped formatted Excel tables. The exporter
+  now relies on table-level filters only, and regression tests inspect the raw
+  workbook XML to prevent reintroducing the desktop Excel repair warning.
+- Promoted the all-provider preview into the tracked Vancouver PoC artifacts
+  under `data/poc/vancouver`, regenerated evidence-hardening, usability, and
+  pollinator artifacts in place, added tracked provider candidate-species and
+  candidate-attribute tables, and removed the stale `usability_layer` duplicate.
+- Updated the GitHub Pages docs workflow to publish the tracked Vancouver
+  usability app under `vancouver-usability/` alongside the Sphinx documentation.
+
 ## 2026-07-01
 
 - Started Phase 0 bootstrap scaffold for the BC Native Plant & Pollinator

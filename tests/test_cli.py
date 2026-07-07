@@ -240,7 +240,7 @@ def test_validate_vancouver_poc_list_command_json():
     )
 
     assert result.exit_code == 0
-    assert '"source_attribution": 2518' in result.stdout
+    assert '"source_attribution": 5176' in result.stdout
     assert '"diagnostics": []' in result.stdout
 
 
@@ -258,7 +258,7 @@ def test_harden_vancouver_evidence_command_json(tmp_path):
 
     assert result.exit_code == 0
     assert '"reviewed_fields": 80' in result.stdout
-    assert '"score_readiness": 498' in result.stdout
+    assert '"score_readiness": 1479' in result.stdout
     assert (tmp_path / "hardening" / "score_readiness.csv").exists()
 
 
@@ -269,7 +269,7 @@ def test_validate_vancouver_evidence_command_json():
     )
 
     assert result.exit_code == 0
-    assert '"hardened_plant_list": 166' in result.stdout
+    assert '"hardened_plant_list": 493' in result.stdout
     assert '"diagnostics": []' in result.stdout
 
 
@@ -286,7 +286,7 @@ def test_generate_vancouver_usability_command_json(tmp_path):
     )
 
     assert result.exit_code == 0
-    assert '"plant_table": 166' in result.stdout
+    assert '"plant_table": 493' in result.stdout
     assert '"view_summary": 6' in result.stdout
     assert (tmp_path / "usability" / "index.html").exists()
 
@@ -298,7 +298,7 @@ def test_validate_vancouver_usability_command_json():
     )
 
     assert result.exit_code == 0
-    assert '"use_case_views": 207' in result.stdout
+    assert '"use_case_views": 534' in result.stdout
     assert '"diagnostics": []' in result.stdout
 
 
@@ -315,8 +315,8 @@ def test_generate_vancouver_pollinator_module_command_json(tmp_path):
     )
 
     assert result.exit_code == 0
-    assert '"pollinator_review": 166' in result.stdout
-    assert '"pollinator_evidence_gaps": 1162' in result.stdout
+    assert '"pollinator_review": 493' in result.stdout
+    assert '"pollinator_evidence_gaps": 3451' in result.stdout
     assert (tmp_path / "pollinators" / "pollinator_review.csv").exists()
 
 

@@ -109,6 +109,36 @@ imported.
 and :doc:`provider-review-workflow` for the review app interface.
 
 
+Automated Sandbox Import Preview
+--------------------------------
+
+For smoke tests, fixture-backed provider runs, or intentionally unsupervised
+preview builds, ``bc-nppd`` can combine the three stages into one ignored
+output. This command scrapes or reads provider pages into sandbox tables,
+auto-approves every non-excluded candidate species, includes linked supplier
+availability, candidate attribute, and mowability rows, and applies the
+provider sandboxes cumulatively:
+
+.. code-block:: console
+
+   bc-nppd auto-import-provider-sandboxes \
+     PROV-NWM PROV-WCS PROV-PREMIER \
+     --input-dir tests/fixtures/providers \
+     --poc-dir data/poc/vancouver \
+     --out-dir outputs/provider_auto_import_vancouver \
+     --sandbox-root outputs/provider_sandbox_auto_import \
+     --json
+
+Use ``--live-fetch`` only when provider robots policy permits the configured
+fetch. If robots policy blocks a provider URL, the command stops with
+diagnostics rather than bypassing the review contract. Generated sandboxes and
+preview products belong in ignored ``outputs/`` or ``local/`` paths unless the
+maintainer explicitly promotes reviewed artifacts. The generated
+``provider_data/`` directory preserves provider-side candidate species,
+candidate attributes, supplier availability, and mowability tables alongside
+the auto-approved manifest.
+
+
 Stage 3: Import into Vancouver PoC
 ----------------------------------
 
@@ -185,7 +215,7 @@ Here's the full pipeline for one provider in sequence:
    .\scripts\apply-downloaded-provider-approval.cmd -OpenPreview
 
    # Stage 3b — Final apply (after verification)
-   bc-nppd apply-provider-approved-sequence ~/Downloads/approval_manifest.csv \
+   bc-nppd apply-provider-approval-sequence ~/Downloads/approval_manifest.csv \
      --poc-dir data/poc/vancouver \
      --out-dir outputs/provider_approved_vancouver \
      --json
@@ -205,22 +235,25 @@ Five default providers are preconfigured:
      - Status in Vancouver PoC
    * - ``PROV-SATIN``
      - Satinflower Nurseries
-     - Imported (~166 species)
+     - Imported in tracked PoC
    * - ``PROV-NWM``
      - Northwest Meadowscapes
-     - Not yet imported
+     - Imported in tracked PoC
    * - ``PROV-WCS``
      - West Coast Seeds
-     - Not yet imported
+     - Imported in tracked PoC
    * - ``PROV-OAKSUMMIT``
      - Oak Summit Nursery
-     - Not yet imported
+     - Imported in tracked PoC
    * - ``PROV-PREMIER``
      - Premier Pacific Seeds
-     - Not yet imported (deferred)
+     - Imported in tracked PoC
 
-Satinflower is the only provider with data currently in the PoC. All others are
-wired for ingestion but awaiting Stage 1 execution.
+The tracked Vancouver PoC was promoted on 2026-07-07 from the all-provider
+automated provider pathway. It validates at 493 plant rows with provider data
+from Satinflower, Northwest Meadowscapes, West Coast Seeds, Premier Pacific
+Seeds, and Oak Summit Nursery. Provider-derived observations remain
+candidate/pending review data.
 
 
 Notes and Caveats

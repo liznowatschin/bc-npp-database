@@ -1,9 +1,10 @@
 # Vancouver Plant List PoC
 
-This directory contains the first useful BC-NPPD product artifact: a caveated
-54-species Vancouver/CDF plant list. It includes the original tracked workbook
-seed rows, unreviewed user-submitted expansion candidates, and a caveated P18
-demo provider-data candidate.
+This directory contains the tracked Vancouver/CDF plant-list PoC. As of the
+July 2026 all-provider promotion it validates at 493 plant rows, including the
+original tracked workbook seed rows, unreviewed user-submitted expansion
+candidates, and provider-derived candidate observations from the configured
+provider registry.
 
 Inspect:
 
@@ -12,10 +13,12 @@ Inspect:
 * `source_attribution.csv` for species/source links.
 * `requested_species_additions.csv` for the request audit and deduplication
   disposition.
-* `provider_data/` for the P18 demo approval manifest, supplier row,
-  provisional mowability row, and provider attribution.
+* `provider_data/` for provider approval decisions, candidate species,
+  candidate attributes, supplier rows, provisional mowability rows, and
+  provider attribution.
 * `manifest.json` for generation metadata and caveats.
 * `diagnostics.csv` for PoC warnings.
 
-This is a proof of concept, not a final planting recommendation list. Candidate
-values remain subject to evidence hardening in a later phase.
+This is a proof of concept, not a final planting recommendation list.
+Provider-derived and other candidate values remain pending review unless a
+tracked source artifact explicitly says otherwise.

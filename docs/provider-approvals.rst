@@ -5,9 +5,10 @@ P17 adds the approval gate between provider sandbox outputs and the tracked
 Vancouver PoC product. Provider observations are not facts by default. They
 enter the PoC only when an approval manifest marks a row ``approved``.
 
-P18 tracks a small demo approval manifest under
-``data/poc/vancouver/provider_data`` so the provider-data workflow can be
-user-tested in the public PoC. These rows remain candidate/demo observations.
+The tracked Vancouver PoC stores provider approval data under
+``data/poc/vancouver/provider_data``. Provider-derived rows remain
+candidate/pending-review observations unless a later review artifact promotes a
+specific value.
 
 Approval Manifest
 -----------------
@@ -33,6 +34,8 @@ Approved supplier and mowability observations are stored under
 ``provider_data`` beside the Vancouver PoC artifacts:
 
 * ``approval_manifest.csv``
+* ``candidate_species.csv``
+* ``candidate_attributes.csv``
 * ``supplier_availability.csv``
 * ``mowability.csv``
 * ``source_attribution.csv``
@@ -69,11 +72,12 @@ Apply approved rows to a Vancouver PoC output directory:
 Use ``--skip-regeneration`` for fast dry runs that do not regenerate evidence,
 usability, or pollinator artifacts.
 
-Tracked Demo
-------------
+Tracked Provider Data
+---------------------
 
-The current Vancouver PoC includes a P18 demo provider-data slice with one
-supplier row, one provisional mowability row, and one added provider candidate
-species. The rejected vegetable demo row remains excluded. This demo exists for
-interface testing and does not promote provider values to reviewed ecological
-facts.
+The current Vancouver PoC includes the July 2026 all-provider promotion from
+Satinflower, Northwest Meadowscapes, West Coast Seeds, Premier Pacific Seeds,
+and Oak Summit Nursery. The tracked provider data validates at 5,160 approval
+rows, 402 candidate-species rows, 1,816 candidate-attribute rows, 603 supplier
+rows, and 1 provisional mowability row. These rows support inspection and
+review; they do not promote provider values to reviewed ecological facts.

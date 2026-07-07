@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from bc_npp_database.provider_scraping import (
+    _parse_premier_wordpress_product_page,
     _parse_shopify_collection_html,
     build_provider_review,
     scrape_provider_sandbox,
@@ -288,6 +289,41 @@ def test_wcs_shopify_body_extracts_single_species_and_blend_components(tmp_path)
     }
     assert ("Eriophyllum lanatum", "product_body") in observation_types
     assert ("Gaillardia aristata", "blend_ingredient") in observation_types
+
+
+def test_premier_wordpress_product_page_extracts_seed_mix_components():
+    records = _parse_premier_wordpress_product_page(
+        "https://premierpacificseeds.ca/products/bc-native-species/",
+        """
+        <html>
+          <head><title>BC Native Species - Premier Pacific Seeds</title></head>
+          <body>
+            <div class="jet-toggle__label-text">Agrostis scabra, Hair Bentgrass</div>
+            <ul>
+              <li><strong>Lupinus rivularis</strong>, Riverbank Lupine —
+                <strong>30.00%</strong></li>
+              <li><strong>Achillea millefolium occidentalis</strong>,
+                Western Yarrow — <strong>2.00%</strong></li>
+            </ul>
+          </body>
+        </html>
+        """,
+    )
+
+    assert [record["botanical_name"] for record in records] == [
+        "Agrostis scabra",
+        "Lupinus rivularis",
+        "Achillea millefolium occidentalis",
+    ]
+    assert records[0]["common_name"] == "Hair Bentgrass"
+    assert records[0]["supplier_status"] == "unknown"
+    assert records[0]["attribute_provider_observation_type"] == "wordpress_species_profile"
+    assert records[1]["common_name"] == "Riverbank Lupine"
+    assert records[1]["supplier_status"] == "mix_component"
+    assert records[1]["attribute_provider_observation_type"] == (
+        "wordpress_seed_mix_component"
+    )
+    assert records[1]["attribute_seed_mix_component_percentage"] == "30.00%"
 
 
 def test_oak_summit_collection_html_extracts_product_records():

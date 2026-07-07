@@ -9,6 +9,9 @@ Where To Inspect
 
 The tracked usability artifacts live in ``data/poc/vancouver/usability/``:
 
+The GitHub Pages documentation workflow also publishes the same static app at
+`vancouver-usability/index.html <vancouver-usability/index.html>`__.
+
 ``index.html``
    Self-contained static table with search, candidate view filters, and
    click-to-open plant record details. It can be opened directly in a browser.
@@ -84,36 +87,6 @@ artifact does not include reviewed height or spread fields.
 
 No P8 view should be treated as a final planting recommendation.
 
-CLI
----
-
-Regenerate the static usability layer:
-
-.. code-block:: shell
-
-   bc-nppd generate-vancouver-usability data/poc/vancouver/evidence_hardening --out-dir data/poc/vancouver/usability --json
-
-Validate the tracked artifact:
-
-.. code-block:: shell
-
-   bc-nppd validate-vancouver-usability data/poc/vancouver/usability --json
-
-Export usability data to Excel:
-
-.. code-block:: shell
-
-   bc-nppd export-usability-to-excel --output-file data/poc/vancouver/exported_usability_data.xlsx
-
-Use-Case Boundaries
--------------------
-
-The boulevard, rain garden, dry sun, and shade views are deterministic
-candidate filters from current PoC display fields. They preserve P7 evidence
-gaps and ``not_ready`` score readiness.
-
-The pollinator view is a review queue, not a Pollinator Support Index score.
-The low-growing view is marked ``insufficient_data`` because the current PoC
-artifact does not include reviewed height or spread fields.
-
-No P8 view should be treated as a final planting recommendation.
+For a formatted Excel export that includes usability sheets alongside the core
+PoC, provider, evidence, and pollinator tables, use the Vancouver PoC Excel
+export documented in ``vancouver-poc-list``.

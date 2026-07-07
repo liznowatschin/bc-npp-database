@@ -131,6 +131,16 @@ For repeated expert decisions, prefer static, dependency-light review tools
 with search, filters, detail panels, batch controls, CSV export/copy, and clear
 caveats before introducing a server, database, or hidden state.
 
+Provider scraping commands with `--live-fetch`, `--source-sweep`, or equivalent
+website acquisition behavior require outbound network access. If one of these
+commands fails under sandboxed networking with DNS, fetch, robots, empty-catalog,
+or other website-access diagnostics, rerun the same documented command with
+network escalation before interpreting the result as a provider/source problem.
+Do not waste time searching for old ignored artifacts when the task is to
+regenerate provider data; run the provider acquisition pipeline against the
+current source site and then validate the generated sandbox/review/preview
+artifacts.
+
 ## Planning Workflow
 
 This repo follows the UBC-FRESH phase/task/subtask workflow:

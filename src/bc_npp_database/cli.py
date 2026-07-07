@@ -52,6 +52,10 @@ from .provider_approval_review import (
 from .provider_approvals import (
     apply_provider_approval_sequence,
     apply_provider_approvals,
+    apply_provider_sandbox,
+    apply_provider_sandbox_sequence,
+    auto_approve_provider_manifest,
+    auto_import_provider_sandboxes,
     validate_provider_approvals,
 )
 from .provider_approvals import (
@@ -95,6 +99,13 @@ from .usability import (
 )
 from .usability import (
     has_error_diagnostics as has_usability_error_diagnostics,
+)
+from .usability_export import (
+    export_vancouver_poc_excel,
+    validate_vancouver_poc_excel,
+)
+from .usability_export import (
+    has_error_diagnostics as has_vancouver_poc_excel_error_diagnostics,
 )
 from .validate import find_excluded_sources
 from .vancouver_poc import (
@@ -496,6 +507,42 @@ def validate_provider_approvals_command(
         raise typer.Exit(code=1)
 
 
+@app.command("auto-approve-provider-manifest")
+def auto_approve_provider_manifest_command(
+    approvals_path: Path = typer.Argument(..., help="Input approval manifest or draft manifest."),
+    out_path: Path = typer.Option(
+        ...,
+        "--out-path",
+        "--out",
+        help="Output all-included approval manifest path.",
+    ),
+    approve_rejected: bool = typer.Option(
+        False,
+        "--approve-rejected",
+        help="Also convert explicitly rejected rows to approved.",
+    ),
+    reviewer: str = typer.Option(
+        "auto-approve (greedy mode)",
+        "--reviewer",
+        help="Reviewer value to fill when a row has no reviewer.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Convert a draft provider manifest to all-approved/all-included rows."""
+    result = auto_approve_provider_manifest(
+        approvals_path,
+        out_path,
+        approve_rejected=approve_rejected,
+        reviewer=reviewer,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Wrote auto-approved provider manifest to {out_path}.")
+    if has_provider_approval_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
 @app.command("apply-provider-approvals")
 def apply_provider_approvals_command(
     approvals_path: Path,
@@ -551,6 +598,131 @@ def apply_provider_approval_sequence_command(
         typer.echo(json.dumps(result.to_summary_dict(), indent=2))
     else:
         typer.echo(f"Applied provider approval sequence to {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_approval_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("apply-provider-sandbox")
+def apply_provider_sandbox_command(
+    sandbox_dir: Path = typer.Argument(..., help="Input provider sandbox directory."),
+    poc_dir: Path = typer.Option(..., "--poc-dir", help="Input Vancouver PoC directory."),
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output Vancouver PoC directory."),
+    skip_regeneration: bool = typer.Option(
+        False,
+        "--skip-regeneration",
+        help="Do not regenerate evidence, usability, or pollinator artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Apply a provider sandbox directly to the Vancouver PoC.
+
+    This command creates a fully unsupervised batch ingestion pipeline by reading
+    sandbox tables (candidate species, supplier availability, candidate attributes,
+    mowability), applying Vancouver eligibility filters, and auto-approving all
+    eligible candidates along with their linked supplier/attribute/mowability rows.
+    """
+    result = apply_provider_sandbox(
+        sandbox_dir,
+        poc_dir,
+        out_dir,
+        regenerate_downstream=not skip_regeneration,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Applied provider sandbox to {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_approval_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("apply-provider-sandbox-sequence")
+def apply_provider_sandbox_sequence_command(
+    sandbox_dirs: list[Path] = typer.Argument(
+        ...,
+        help="Provider sandbox directories to auto-approve and apply cumulatively in order.",
+    ),
+    poc_dir: Path = typer.Option(..., "--poc-dir", help="Input Vancouver PoC directory."),
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output Vancouver PoC directory."),
+    skip_regeneration: bool = typer.Option(
+        False,
+        "--skip-regeneration",
+        help="Do not regenerate evidence, usability, or pollinator artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Auto-approve and apply multiple provider sandboxes cumulatively."""
+    result = apply_provider_sandbox_sequence(
+        sandbox_dirs,
+        poc_dir,
+        out_dir,
+        regenerate_downstream=not skip_regeneration,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Applied provider sandbox sequence to {out_dir}.")
+        for name, path in result.paths.items():
+            typer.echo(f"- {name}: {path}")
+    if has_provider_approval_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("auto-import-provider-sandboxes")
+def auto_import_provider_sandboxes_command(
+    provider_ids: list[str] = typer.Argument(
+        ...,
+        help="Provider IDs to scrape into sandboxes and auto-import cumulatively.",
+    ),
+    poc_dir: Path = typer.Option(..., "--poc-dir", help="Input Vancouver PoC directory."),
+    out_dir: Path = typer.Option(..., "--out-dir", help="Output Vancouver PoC directory."),
+    sandbox_root: Path = typer.Option(
+        Path("outputs/provider_sandbox_auto_import"),
+        "--sandbox-root",
+        help="Ignored directory where generated provider sandboxes are written.",
+    ),
+    input_dir: Path | None = typer.Option(
+        None,
+        "--input-dir",
+        help="Optional fixture directory for provider pages.",
+    ),
+    live_fetch: bool = typer.Option(
+        False,
+        "--live-fetch",
+        help="Fetch provider pages live instead of requiring fixture input.",
+    ),
+    source_sweep: bool = typer.Option(
+        True,
+        "--source-sweep/--homepage-only",
+        help="Use source-sweep catalogue mode for live fetches.",
+    ),
+    max_pages: int = typer.Option(5, "--max-pages", help="Maximum live catalogue pages."),
+    skip_regeneration: bool = typer.Option(
+        False,
+        "--skip-regeneration",
+        help="Do not regenerate evidence, usability, or pollinator artifacts.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Run the automated provider scrape → auto-approval → import pathway."""
+    result = auto_import_provider_sandboxes(
+        provider_ids,
+        poc_dir,
+        out_dir,
+        sandbox_root=sandbox_root,
+        input_dir=input_dir,
+        live_fetch=live_fetch,
+        source_sweep=source_sweep,
+        max_pages=max_pages,
+        regenerate_downstream=not skip_regeneration,
+    )
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Auto-imported provider sandboxes to {out_dir}.")
         for name, path in result.paths.items():
             typer.echo(f"- {name}: {path}")
     if has_provider_approval_error_diagnostics(result.diagnostics):
@@ -816,6 +988,52 @@ def validate_vancouver_usability_command(
     else:
         typer.echo(f"Vancouver usability validation passed for {path}.")
     if has_usability_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("export-vancouver-poc-excel")
+def export_vancouver_poc_excel_command(
+    poc_dir: Path = typer.Argument(..., help="Input Vancouver PoC artifact directory."),
+    out_path: Path = typer.Option(
+        Path("outputs/vancouver_poc_export.xlsx"),
+        "--out-path",
+        "--output-file",
+        help="Output Excel workbook path.",
+    ),
+    title: str = typer.Option(
+        "BC-NPPD Vancouver PoC Export",
+        "--title",
+        help="Workbook title shown on the overview sheet.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Export Vancouver PoC artifacts to a formatted Excel workbook."""
+    result = export_vancouver_poc_excel(poc_dir, out_path, title=title)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    else:
+        typer.echo(f"Exported Vancouver PoC Excel workbook to {out_path}.")
+        for name, count in result.counts.items():
+            typer.echo(f"- {name}: {count}")
+    if has_vancouver_poc_excel_error_diagnostics(result.diagnostics):
+        raise typer.Exit(code=1)
+
+
+@app.command("validate-vancouver-poc-excel")
+def validate_vancouver_poc_excel_command(
+    path: Path,
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON output."),
+) -> None:
+    """Validate a generated Vancouver PoC Excel workbook."""
+    result = validate_vancouver_poc_excel(path)
+    if json_output:
+        typer.echo(json.dumps(result.to_summary_dict(), indent=2))
+    elif result.diagnostics:
+        for diagnostic in result.diagnostics:
+            typer.echo(f"{diagnostic.severity.value}: {diagnostic.code}: {diagnostic.message}")
+    else:
+        typer.echo(f"Vancouver PoC Excel validation passed for {path}.")
+    if has_vancouver_poc_excel_error_diagnostics(result.diagnostics):
         raise typer.Exit(code=1)
 
 

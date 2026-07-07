@@ -310,6 +310,14 @@ def _load_shopify_product_catalog_pages(
 ) -> list[dict[str, str]]:
     provider_id = str(provider["provider_id"])
     homepage_url = str(provider["homepage_url"]).rstrip("/")
+    if provider_id == "PROV-PREMIER":
+        return _load_premier_wordpress_product_pages(
+            homepage_url,
+            raw_dir,
+            diagnostics,
+            max_pages,
+            catalog_url,
+        )
     pages: list[dict[str, str]] = []
     page_limit = max(1, min(max_pages, 25))
     raw_root = raw_dir / provider_id
@@ -433,6 +441,68 @@ def _load_shopify_collection_html_pages(
     return pages
 
 
+def _load_premier_wordpress_product_pages(
+    homepage_url: str,
+    raw_dir: Path,
+    diagnostics: list[Diagnostic],
+    max_pages: int,
+    catalog_url: str | None,
+) -> list[dict[str, str]]:
+    base_url = (catalog_url or homepage_url).rstrip("/")
+    raw_root = raw_dir / "PROV-PREMIER"
+    raw_root.mkdir(parents=True, exist_ok=True)
+    page_urls = _premier_wordpress_product_urls(base_url, diagnostics)
+    pages: list[dict[str, str]] = []
+    for page_number, url in enumerate(page_urls[: max(1, max_pages)], start=1):
+        if not _robots_allows(url):
+            diagnostics.append(
+                _diagnostic(
+                    "provider_collection_html_disallowed",
+                    "Provider robots.txt does not allow the configured product page URL.",
+                    field="catalog_url",
+                    value=url,
+                )
+            )
+            continue
+        try:
+            text = _fetch_url(url)
+        except OSError as exc:
+            diagnostics.append(
+                _diagnostic(
+                    "provider_collection_fetch_failed",
+                    "Provider WordPress product page fetch failed.",
+                    field="catalog_url",
+                    value=f"{url}: {exc}",
+                )
+            )
+            continue
+        raw_path = raw_root / f"wordpress_product_page_{page_number:03d}.html"
+        raw_path.write_text(text, encoding="utf-8")
+        pages.append(
+            {
+                "url": url,
+                "html": text,
+                "fetch_status": "fetched_wordpress_product_page",
+                "page_type": "wordpress_product_page",
+            }
+        )
+        time.sleep(0.25)
+    return pages
+
+
+def _premier_wordpress_product_urls(
+    base_url: str,
+    diagnostics: list[Diagnostic],
+) -> list[str]:
+    _ = diagnostics
+    preferred_paths = (
+        "/products/bc-native-species/",
+        "/products/wildflower-seed/",
+        "/products/reclamation-seed/",
+    )
+    return [urljoin(base_url + "/", path.lstrip("/")) for path in preferred_paths]
+
+
 def _shopify_catalog_base_urls(
     provider_id: str,
     homepage_url: str,
@@ -482,6 +552,14 @@ def _parse_provider_page(provider_id: str, page: dict[str, str]) -> dict[str, ob
             "fetch_status": page["fetch_status"],
             "page_type": "shopify_collection_html",
             "records": _parse_shopify_collection_html(provider_id, page["url"], page["html"]),
+        }
+    if page.get("page_type") == "wordpress_product_page" and provider_id == "PROV-PREMIER":
+        return {
+            "provider_id": provider_id,
+            "page_url": page["url"],
+            "fetch_status": page["fetch_status"],
+            "page_type": "wordpress_product_page",
+            "records": _parse_premier_wordpress_product_page(page["url"], page["html"]),
         }
     parser = _ProviderSpeciesParser(provider_id, page["url"])
     parser.feed(page["html"])
@@ -714,6 +792,158 @@ def _parse_shopify_collection_html(
                 }
             )
     return records
+
+
+def _parse_premier_wordpress_product_page(
+    page_url: str,
+    page_html: str,
+) -> list[dict[str, str]]:
+    normalized = html.unescape(page_html)
+    page_title = _html_page_title(normalized)
+    records: list[dict[str, str]] = []
+
+    label_pattern = re.compile(
+        r'<div class="jet-toggle__label-text">\s*'
+        r"(?P<botanical>[A-Z][a-z-]+\s+[a-z][a-z-]+"
+        r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?"
+        r"(?:\s+[a-z][a-z-]+)?)"
+        r"\s*,\s*(?P<common>[^<]+?)\s*</div>",
+        re.IGNORECASE,
+    )
+    for match in label_pattern.finditer(normalized):
+        records.append(
+            _premier_wordpress_record(
+                page_url,
+                page_title,
+                match.group("botanical"),
+                match.group("common"),
+                "wordpress_species_profile",
+                supplier_status="unknown",
+            )
+        )
+
+    percentage_patterns = (
+        re.compile(
+            r"<li>\s*<strong>"
+            r"(?P<botanical>[A-Z][a-z-]+\s+[a-z][a-z-]+"
+            r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?"
+            r"(?:\s+[a-z][a-z-]+)?)"
+            r"</strong>\s*,\s*"
+            r"(?P<common>[^<—]+?)\s*—\s*"
+            r"<strong>(?P<percentage>[0-9.]+%)</strong>",
+            re.IGNORECASE,
+        ),
+        re.compile(
+            r"<p[^>]*>\s*<strong>\s*(?P<percentage>[0-9.]+%)\s*\|\s*"
+            r"(?P<botanical>[A-Z][a-z-]+\s+[a-z][a-z-]+"
+            r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?"
+            r"(?:\s+[a-z][a-z-]+)?)"
+            r"\s*,\s*(?P<common>[^<]+?)\s*</strong>\s*</p>",
+            re.IGNORECASE,
+        ),
+        re.compile(
+            r"<p[^>]*>\s*(?P<percentage>[0-9.]+%)\s*\|\s*"
+            r"(?P<botanical>[A-Z][a-z-]+\s+[a-z][a-z-]+"
+            r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?"
+            r"(?:\s+[a-z][a-z-]+)?)"
+            r"\s*,\s*(?P<common>[^<]+?)\s*</p>",
+            re.IGNORECASE,
+        ),
+    )
+    for pattern in percentage_patterns:
+        for match in pattern.finditer(normalized):
+            records.append(
+                _premier_wordpress_record(
+                    page_url,
+                    page_title,
+                    match.group("botanical"),
+                    match.group("common"),
+                    "wordpress_seed_mix_component",
+                    supplier_status="mix_component",
+                    percentage=_clean_whitespace(match.group("percentage")),
+                )
+            )
+
+    table_row_pattern = re.compile(r"<tr>(.*?)</tr>", re.IGNORECASE | re.DOTALL)
+    for row_match in table_row_pattern.finditer(normalized):
+        cells = re.findall(
+            r"<td[^>]*>(.*?)</td>",
+            row_match.group(1),
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if len(cells) < 3:
+            continue
+        cell_text = [_plain_text_from_html(cell) for cell in cells]
+        species_match = re.search(
+            r"(?P<botanical>[A-Z][a-z-]+\s+[a-z][a-z-]+"
+            r"(?:\s+(?:ssp|subsp|var)\.?\s+[a-z][a-z-]+)?"
+            r"(?:\s+[a-z][a-z-]+)?)"
+            r"\s*,\s*(?P<common>.+)",
+            cell_text[0],
+        )
+        if not species_match:
+            continue
+        records.append(
+            _premier_wordpress_record(
+                page_url,
+                page_title,
+                species_match.group("botanical"),
+                species_match.group("common"),
+                "wordpress_seed_mix_table_component",
+                supplier_status="mix_component",
+                weight_percentage=cell_text[1],
+                seed_count_percentage=cell_text[2],
+            )
+        )
+    return [record for record in records if record]
+
+
+def _premier_wordpress_record(
+    page_url: str,
+    page_title: str,
+    botanical_name: str,
+    common_name: str,
+    observation_type: str,
+    *,
+    supplier_status: str,
+    percentage: str = "",
+    weight_percentage: str = "",
+    seed_count_percentage: str = "",
+) -> dict[str, str]:
+    botanical_name = _clean_botanical_name(botanical_name)
+    if not _looks_like_botanical_name(botanical_name):
+        return {}
+    record = {
+        "botanical_name": botanical_name,
+        "common_name": _clean_whitespace(common_name),
+        "source_url": page_url,
+        "product_category": page_title or "Premier Pacific product page",
+        "supplier_status": supplier_status,
+        "attribute_product_title": page_title,
+        "attribute_provider_observation_type": observation_type,
+        "candidate_reason": (
+            "Premier Pacific WordPress product page botanical species observation "
+            "parsed as a review-only species candidate."
+        ),
+        "notes": "WordPress product-page source-sweep observation; pending user review.",
+    }
+    if percentage:
+        record["attribute_seed_mix_component_percentage"] = percentage
+    if weight_percentage:
+        record["attribute_seed_mix_weight_percentage"] = weight_percentage
+    if seed_count_percentage:
+        record["attribute_seed_mix_seed_count_percentage"] = seed_count_percentage
+    return record
+
+
+def _html_page_title(page_html: str) -> str:
+    h1_match = re.search(r"<h1[^>]*>(.*?)</h1>", page_html, re.IGNORECASE | re.DOTALL)
+    if h1_match:
+        return _plain_text_from_html(h1_match.group(1))
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", page_html, re.IGNORECASE | re.DOTALL)
+    if not title_match:
+        return ""
+    return _plain_text_from_html(title_match.group(1)).removesuffix(" - Premier Pacific Seeds")
 
 
 def _shopify_product_species_candidates(

@@ -6,6 +6,7 @@ from bc_npp_database.provider_approvals import (
     APPROVAL_FIELDS,
     apply_provider_approval_sequence,
     apply_provider_approvals,
+    auto_approve_provider_manifest,
     validate_provider_approvals,
 )
 
@@ -31,6 +32,8 @@ def test_apply_provider_approvals_imports_only_approved_rows(tmp_path):
 
     assert not [diagnostic for diagnostic in result.diagnostics if diagnostic.severity == "error"]
     assert result.counts["approved_rows"] == 4
+    assert result.counts["candidate_species"] == 1
+    assert result.counts["candidate_attributes"] == 1
     assert result.counts["supplier_availability"] == 1
     assert result.counts["mowability"] == 1
 
@@ -41,11 +44,39 @@ def test_apply_provider_approvals_imports_only_approved_rows(tmp_path):
     assert achillea["Plant Type"] == "Forb"
 
     suppliers = _read_csv(tmp_path / "vancouver" / "provider_data" / "supplier_availability.csv")
+    candidate_species = _read_csv(
+        tmp_path / "vancouver" / "provider_data" / "candidate_species.csv"
+    )
+    candidate_attributes = _read_csv(
+        tmp_path / "vancouver" / "provider_data" / "candidate_attributes.csv"
+    )
     mowability = _read_csv(tmp_path / "vancouver" / "provider_data" / "mowability.csv")
+    assert candidate_species[0]["botanical_name"] == "Festuca rubra"
+    assert candidate_attributes[0]["attribute_name"] == "Plant Type"
     assert suppliers[0]["species_id"] == "BCNPPD-0001"
     assert suppliers[0]["supplier_status"] == "available"
     assert mowability[0]["mowability_score"] == "3"
     assert "does not make UNI, PSI, or RVI" in mowability[0]["caveat"]
+
+
+def test_validate_provider_data_requires_candidate_tables(tmp_path):
+    poc_dir = _clean_poc_dir(tmp_path)
+    apply_provider_approvals(
+        APPROVALS,
+        poc_dir,
+        tmp_path / "vancouver",
+        regenerate_downstream=False,
+    )
+    provider_data_dir = tmp_path / "vancouver" / "provider_data"
+    (provider_data_dir / "candidate_attributes.csv").unlink()
+
+    result = validate_provider_approvals(provider_data_dir)
+
+    assert any(
+        diagnostic.code == "missing_provider_data_file"
+        and "candidate_attributes.csv" in diagnostic.message
+        for diagnostic in result.diagnostics
+    )
 
 
 def test_apply_provider_approvals_adds_source_attribution(tmp_path):
@@ -194,6 +225,38 @@ def test_provider_approval_validation_rejects_bad_status_and_mowability(tmp_path
     assert "invalid_mowability_score" in codes
     assert "invalid_approval_status" in codes
     assert "unknown_provider_id" in codes
+
+
+def test_auto_approve_provider_manifest_approves_all_non_rejected_rows(tmp_path):
+    output = tmp_path / "auto_approved.csv"
+
+    result = auto_approve_provider_manifest(APPROVALS, output)
+
+    assert not [diagnostic for diagnostic in result.diagnostics if diagnostic.severity == "error"]
+    assert result.counts["approval_manifest"] == 5
+    assert result.counts["auto_approved_rows"] == 4
+    assert result.counts["rejected_rows_preserved"] == 1
+    rows = _read_csv(output)
+    assert {
+        row["approval_status"]
+        for row in rows
+        if row["botanical_name"] != "Lactuca sativa"
+    } == {"approved"}
+    assert next(row for row in rows if row["botanical_name"] == "Lactuca sativa")[
+        "approval_status"
+    ] == "rejected"
+
+
+def test_auto_approve_provider_manifest_can_include_rejected_rows(tmp_path):
+    output = tmp_path / "auto_approved_all.csv"
+
+    result = auto_approve_provider_manifest(APPROVALS, output, approve_rejected=True)
+
+    assert not [diagnostic for diagnostic in result.diagnostics if diagnostic.severity == "error"]
+    assert result.counts["auto_approved_rows"] == 5
+    assert result.counts["rejected_rows_preserved"] == 0
+    rows = _read_csv(output)
+    assert {row["approval_status"] for row in rows} == {"approved"}
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:

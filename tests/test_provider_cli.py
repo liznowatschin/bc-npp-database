@@ -230,6 +230,27 @@ def test_apply_provider_approvals_command_json(tmp_path):
     assert (tmp_path / "vancouver" / "provider_data" / "mowability.csv").exists()
 
 
+def test_auto_approve_provider_manifest_command_json(tmp_path):
+    out_path = tmp_path / "auto_approved.csv"
+    result = runner.invoke(
+        app,
+        [
+            "auto-approve-provider-manifest",
+            "tests/fixtures/provider_approvals/approval_manifest.csv",
+            "--out-path",
+            str(out_path),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"auto_approved_rows": 4' in result.stdout
+    rows = _read_csv(out_path)
+    assert next(row for row in rows if row["botanical_name"] == "Lactuca sativa")[
+        "approval_status"
+    ] == "rejected"
+
+
 def test_apply_provider_approval_sequence_command_json(tmp_path):
     result = runner.invoke(
         app,
@@ -249,6 +270,36 @@ def test_apply_provider_approval_sequence_command_json(tmp_path):
     assert '"approved_rows": 4' in result.stdout
     assert (
         tmp_path / "vancouver_sequence" / "provider_data" / "supplier_availability.csv"
+    ).exists()
+
+
+def test_auto_import_provider_sandboxes_command_json(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "auto-import-provider-sandboxes",
+            "PROV-NWM",
+            "PROV-WCS",
+            "PROV-PREMIER",
+            "--input-dir",
+            "tests/fixtures/providers",
+            "--poc-dir",
+            "data/poc/vancouver",
+            "--out-dir",
+            str(tmp_path / "vancouver_auto_import"),
+            "--sandbox-root",
+            str(tmp_path / "provider_sandboxes"),
+            "--skip-regeneration",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"PROV-NWM_candidate_species": 1' in result.stdout
+    assert '"PROV-WCS_candidate_species": 2' in result.stdout
+    assert '"PROV-PREMIER_candidate_species": 1' in result.stdout
+    assert (
+        tmp_path / "vancouver_auto_import" / "provider_data" / "supplier_availability.csv"
     ).exists()
 
 
@@ -346,3 +397,8 @@ def _write_csv(path: Path, rows: list[dict[str, str]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+
+
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        return [dict(row) for row in csv.DictReader(handle)]

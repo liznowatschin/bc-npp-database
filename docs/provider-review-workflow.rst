@@ -194,6 +194,43 @@ Dry-run multiple approved manifests cumulatively:
      --out-dir outputs/provider_approved_vancouver \
      --json
 
+For an unsupervised fixture-backed or explicitly requested preview, skip the
+static review app and auto-approve all non-excluded sandbox rows:
+
+.. code-block:: console
+
+   bc-nppd auto-import-provider-sandboxes \
+     PROV-NWM PROV-WCS PROV-PREMIER \
+     --input-dir tests/fixtures/providers \
+     --poc-dir data/poc/vancouver \
+     --out-dir outputs/provider_auto_import_vancouver \
+     --sandbox-root outputs/provider_sandbox_auto_import \
+     --json
+
+This is a preview/import automation path, not a claim that provider-derived
+ecological attributes are reviewed facts. WCS excluded rows and any other
+``excluded`` or ``ineligible`` sandbox candidates stay out of the import.
+Generated ``provider_data/`` outputs include the auto-approved manifest plus
+provider-side ``candidate_species.csv``, ``candidate_attributes.csv``,
+``supplier_availability.csv``, and ``mowability.csv`` tables so all imported
+provider observations remain inspectable.
+
+If a full static review app has already produced an
+``approval_manifest_draft.csv``, convert that draft to the same all-included
+decision shape before applying it:
+
+.. code-block:: console
+
+   bc-nppd auto-approve-provider-manifest \
+     outputs/provider_approval_review/PROV-NWM/approval_manifest_draft.csv \
+     --out-path outputs/provider_approval_review/PROV-NWM/approval_manifest.csv \
+     --json
+
+The command approves every non-rejected row in the draft manifest, including
+species, supplier availability, candidate attributes, and mowability rows.
+Pass ``--approve-rejected`` only for explicitly requested exploratory previews
+where rejected rows should be included too.
+
 Only after expert review should the manifest be promoted to a tracked reviewed
 input path such as ``data/poc/vancouver/provider_data/reviewed_manifests/``.
 Raw fetched catalogue JSON, HTML, screenshots, and generated review apps remain

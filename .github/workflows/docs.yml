@@ -37,6 +37,11 @@ jobs:
       - name: Build documentation
         run: sphinx-build -b html docs _build/html -W
 
+      - name: Publish Vancouver usability app
+        run: |
+          mkdir -p _build/html/vancouver-usability
+          cp -R data/poc/vancouver/usability/. _build/html/vancouver-usability/
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 

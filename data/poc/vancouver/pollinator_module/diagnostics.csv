@@ -1,2 +1,2 @@
 severity,code,message,row_number,field,value,context
-warning,pollinator_module_caveat,Pollinator module rows are review scaffolding for the Vancouver PoC. They do not contain reviewed pollinator-support claims and are not PSI scores.,,,,"{'species_count': 166, 'pollinator_gap_count': 1162}"
+warning,pollinator_module_caveat,Pollinator module rows are review scaffolding for the Vancouver PoC. They do not contain reviewed pollinator-support claims and are not PSI scores.,,,,"{'species_count': 493, 'pollinator_gap_count': 3451}"

@@ -1691,11 +1691,21 @@ Pull request #147 passed CI for Python 3.11 and Python 3.12 and merged to
 
 ## Future Candidate: Premier Pacific Source Sweep
 
-Status: planned
+Status: local implementation in progress
 
 Goal: use the FreshForge provider workflow lane against Premier Pacific,
 tuning only provider-shape parsing where needed, and stop at an ignored,
 reviewable candidate package.
+
+Local implementation note, 2026-07-07: Premier Pacific now routes through the
+provider source-sweep pathway as a WordPress product-page provider rather than a
+Shopify catalogue provider. The adapter fetches the current BC native species,
+wildflower seed, and reclamation seed pages; parses accordion species profiles,
+seed-mix percentage lists, percentage paragraphs, and species-composition
+tables; and preserves provider spellings as review candidates. A fresh ignored
+Premier sandbox validated at 56 candidate species, 373 candidate attributes,
+134 supplier observations, and 0 mowability rows. The fresh NWM + WCS +
+Premier auto-import preview validated at 428 plant rows.
 
 ## Phase 31: One-Command Reviewed Provider Preview
 
@@ -1712,6 +1722,21 @@ for reproducible Greg/agent runs.
 - [ ] P31.1 Reviewed manifest discovery and cumulative apply defaults.
 - [ ] P31.2 Combined source-review plus approval-preview workflow docs.
 - [ ] P31.3 Validation, usability checks, and closeout.
+
+Local implementation note, 2026-07-06: unissued local work added an
+unsupervised fixture-backed provider sandbox auto-import preview command
+(`bc-nppd auto-import-provider-sandboxes`) and documented it as a preview path.
+Follow-up work on 2026-07-07 preserved generated provider-side
+`candidate_species.csv` and `candidate_attributes.csv` tables in
+`provider_data/` outputs and made them part of provider-data validation. The
+current fixture-backed preview validates at 166 plant rows. Fresh live
+source-sweep previews on 2026-07-07 auto-imported NWM, WCS, Premier, and Oak
+Summit into ignored outputs and validated at 493 plant rows. This all-provider
+preview was promoted on 2026-07-07 into the tracked Vancouver PoC artifacts
+under `data/poc/vancouver`; provider-derived rows remain candidate/pending
+review data with source-attribution caveats.
+This does not close P31 because P31 still needs issue records, reviewed-manifest
+discovery behavior, branch/PR closeout, and accepted verification.
 
 ## Phase 32: E-Flora Attribute Boost Sandbox
 
